@@ -1,0 +1,57 @@
+<roles>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/ill" aat="http://vocab.getty.edu/aat/300025123"
+        technique="http://vocab.getty.edu/aat/300054200" techniqueLabel="illustration (process)">illustrator</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/prt" aat="http://vocab.getty.edu/aat/300025732"
+        technique="http://vocab.getty.edu/aat/300053319" techniqueLabel="printing (process)">printer</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/pbl" aat="http://vocab.getty.edu/aat/300025574"
+        technique="http://vocab.getty.edu/aat/300054686" techniqueLabel="publishing">publisher</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/egr" aat="http://vocab.getty.edu/aat/300025165"
+        technique="http://vocab.getty.edu/aat/300053225" techniqueLabel="engraving (printing process)">engraver</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/srv" aat="http://vocab.getty.edu/aat/300025100"
+        technique="http://vocab.getty.edu/aat/300054691" techniqueLabel="surveying (process)">surveyor</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/art" aat="http://vocab.getty.edu/aat/300025103"
+        technique="http://vocab.getty.edu/aat/300054154" techniqueLabel="visual arts (discipline)">artist</role>
+    <role property="influenced_by" marcrelator="http://id.loc.gov/vocabulary/relators/dte" aat="http://vocab.getty.edu/aat/300121765">dedicatee</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/bnd" aat="http://vocab.getty.edu/aat/300025704"
+        technique="http://vocab.getty.edu/aat/300053592" techniqueLabel="bookbinding (process)">binder</role>
+    <role property="provenance" marcrelator="http://id.loc.gov/vocabulary/relators/bsl" aat="http://vocab.getty.edu/aat/300025244" technique="http://vocab.getty.edu/aat/300264557"
+        techniqueLabel="bookselling">bookseller</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/trl" aat="http://vocab.getty.edu/aat/300025601"
+        technique="http://vocab.getty.edu/aat/300069831" techniqueLabel="translation (function)">translator</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/aut" aat="http://vocab.getty.edu/aat/300025492"
+        technique="http://vocab.getty.edu/aat/300056110" techniqueLabel="authorship">author</role>
+    <role property="influenced_by" marcrelator="http://id.loc.gov/vocabulary/relators/rcp">addressee</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/crp" aat="https://vocab.getty.edu/aat/300225705"
+        technique="http://vocab.getty.edu/aat/300026877" techniqueLabel="correspondence">correspondent</role>
+    <role property="provenance" marcrelator="http://id.loc.gov/vocabulary/relators/fmo" aat="http://vocab.getty.edu/aat/300203630">former owner</role>
+    <role property="influenced_by" marcrelator="http://id.loc.gov/vocabulary/relators/att">attributed name</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/lyr" aat="http://vocab.getty.edu/aat/300025675">lyricist</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/ltg" aat="http://vocab.getty.edu/aat/300025175"
+        technique="http://vocab.getty.edu/aat/300053271" techniqueLabel="lithography">lithographer</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/arr" aat="http://vocab.getty.edu/aat/300025667">arranger</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/lbt" aat="http://vocab.getty.edu/aat/300025674">librettist</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/prf" aat="http://vocab.getty.edu/aat/300068931">performer</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/pht" aat="http://vocab.getty.edu/aat/300025687"
+        technique="http://vocab.getty.edu/aat/300054225" techniqueLabel="photography (process)">photographer</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/edt" aat="http://vocab.getty.edu/aat/300025526"
+        technique="http://vocab.getty.edu/aat/300054700" techniqueLabel="editing">editor</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/wde" aat="http://vocab.getty.edu/aat/300025167"
+        technique="http://vocab.getty.edu/aat/300053303" techniqueLabel="wood engraving (process)">wood engraver</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/elt" technique="http://vocab.getty.edu/aat/300234668"
+        techniqueLabel="electrotyping (platemaking)">electrotyper</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/str" aat="http://vocab.getty.edu/aat/300025743"
+        technique="http://vocab.getty.edu/aat/300234669" techniqueLabel="stereotyping (platemaking)">stereotyper</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/tyg" aat="http://vocab.getty.edu/aat/300025745"
+        technique="http://vocab.getty.edu/aat/300195853" techniqueLabel="typography">typographer</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/cmp" aat="http://vocab.getty.edu/aat/300025671">composer</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/trc" aat="http://vocab.getty.edu/aat/300440751"
+        technique="http://vocab.getty.edu/aat/300440752" techniqueLabel="transcribing (process)">transcriber</role>
+    <role property="influenced_by" marcrelator="http://id.loc.gov/vocabulary/relators/dfd" aat="http://vocab.getty.edu/aat/300440757">defendant</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/dnr" aat="http://vocab.getty.edu/aat/300025240">donor</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/ctg" aat="http://vocab.getty.edu/aat/300025593"
+        technique="http://vocab.getty.edu/aat/300053163" techniqueLabel="cartography (discipline)">cartographer</role>
+    <role property="influenced_by" marcrelator="http://id.loc.gov/vocabulary/relators/asn">associated name</role>
+    <role property="carried_out_by" marcrelator="http://id.loc.gov/vocabulary/relators/rpt" aat="http://vocab.getty.edu/aat/300025508"
+        technique="http://vocab.getty.edu/aat/300137552" techniqueLabel="reporting">reporter</role>
+    <role property="influenced_by" marcrelator="http://id.loc.gov/vocabulary/relators/ptf" aat="http://vocab.getty.edu/aat/300440758">plaintiff</role>
+</roles>

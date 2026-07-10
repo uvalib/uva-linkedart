@@ -1,0 +1,109 @@
+ID,Sirsi Value,Preferred Label,URI
+2c9ca20d-d3d4-3efa-96ba-227dfa08f1d6,abstract or summary,summaries,http://vocab.getty.edu/aat/300139067
+704f0a3e-68cb-34c2-b52a-f9a5f90b8c4a,art original,visual art (art genre),http://vocab.getty.edu/aat/300411642
+807e37e6-7f02-3b69-8dd5-b38b5a9d98a8,art reproduction,reproductions (derivative objects),http://vocab.getty.edu/aat/300015643
+0e853991-fec6-397a-b4c8-5b2b65c81b0c,article,articles,http://vocab.getty.edu/aat/300048715
+f15e5476-368d-3320-98b9-b7307fc8669f,atlas,atlases,http://vocab.getty.edu/aat/300028053
+f7b7f07a-891d-3181-989a-f891b6bd9ce7,autobiography,autobiography (genre),http://vocab.getty.edu/aat/300026049
+c504804c-4271-303e-ae64-dbc839aeccd4,bibliographic data,bibliographic utilities,http://vocab.getty.edu/aat/300153056
+2ea275e9-3c4b-3d5d-91d7-f2297f75455e,bibliography,bibliographies,http://vocab.getty.edu/aat/300026497
+4999a921-4e77-3744-80ae-277c024cae75,biography,biography (general genre),http://vocab.getty.edu/aat/300055908
+645db49c-2fbe-3c25-aa75-208e22c8fe6f,book,books,http://vocab.getty.edu/aat/300028051
+9267a35e-3f85-324e-ac7e-2de9933c84bf,calendar,calendars (documents),http://vocab.getty.edu/aat/300026741
+d56fdf24-06dc-391f-8f4d-98085159dc15,catalog,catalogs (documents),http://vocab.getty.edu/aat/300026059
+612818c3-4aa0-3ce1-94af-f53523b6b6ea,chart,charts (graphic documents),http://vocab.getty.edu/aat/300026848
+405b2bba-ccc1-373d-bcc0-0d653a3cd83d,comedy,comedy (general genre),http://vocab.getty.edu/aat/300055911
+dd7c9c61-5f95-3311-b4fc-6ea603a325bc,comic or graphic novel,comics (documents),http://vocab.getty.edu/aat/300015635
+1ada6795-d749-3130-abc0-d4b5cf93d2d4,computer program,programs (computer),http://vocab.getty.edu/aat/300312188
+c74ee000-37e4-3dfa-82a0-5dab47e17061,conference publication,conference proceedings,http://vocab.getty.edu/aat/300417790
+705d2e1b-829b-37c1-aca4-b36312d1f239,database,databases,http://vocab.getty.edu/aat/300028543
+b486b13c-e110-3cda-9b64-a066015a9243,dictionary,dictionaries,http://vocab.getty.edu/aat/300026186
+40f182cc-ee16-3e16-a665-247a58bacd8b,diorama,dioramas,http://vocab.getty.edu/aat/300047762
+4abcdc7f-a7cc-3b0c-b1b1-4f693b65e843,directory,directories,http://vocab.getty.edu/aat/300026234
+13aed717-b2c0-3eb2-badd-7235b22df8df,discography,discographies,http://vocab.getty.edu/aat/300026538
+dbe465d2-f6a9-3123-87cf-3628213e6d44,document (computer),digital documents,http://vocab.getty.edu/aat/300424602
+48909da7-78b8-360c-8acd-c2209135f9e3,drama,drama (literary genre),http://vocab.getty.edu/aat/300417554
+8fb605ed-d3f4-31f6-b357-eaa31c33db5b,encyclopedia,encyclopedias,http://vocab.getty.edu/aat/300129439
+c0756999-3e48-3540-898e-f7de8dde83e9,essay,essays,http://vocab.getty.edu/aat/300026291
+7b759b32-2432-38dd-abd9-504ad09eece8,festschrift,Festschriften,http://vocab.getty.edu/aat/300026297
+18c65209-8a32-3b95-9f56-482a4af11114,fiction,fiction (general genre),http://vocab.getty.edu/aat/300055918
+e16978f4-d877-334e-bdcf-5988c4e1631a,filmography,filmographies,http://vocab.getty.edu/aat/300191055
+d57661c5-3b4c-382a-9e75-0d5d0d4b64c2,filmstrip,filmstrips,http://vocab.getty.edu/aat/300028048
+f77c1465-4f60-363f-bd1c-9218e40ce40a,finding aid,finding aids,http://vocab.getty.edu/aat/300026539
+9a0ba70a-11f4-3765-ae5c-b9826787bcc9,flash card,flash cards,http://vocab.getty.edu/aat/300425631
+dc94eb88-60d0-3774-9dec-8cf61a1cadbd,folktale,folk tales,http://vocab.getty.edu/aat/300055922
+ca5fff2c-6f57-3044-8cb9-68f4e3e692de,font,fonts (type composition equipment),http://vocab.getty.edu/aat/300208335
+a41f03b2-4fc3-3bb4-9ffb-53668fc31a14,game,games,http://vocab.getty.edu/aat/300424740
+f2c4e4dc-7426-370f-9217-6b61d0a07650,globe,globes (cartographic spheres),http://vocab.getty.edu/aat/300028089
+eb1806c5-8859-33f8-9195-f26aef382c52,government publication,government records,http://vocab.getty.edu/aat/300027777
+59d6499a-2580-32a4-bd54-0075e0426efa,graphic,graphic arts,http://vocab.getty.edu/aat/300264849
+5cffab8b-6b0e-3b6b-a615-f3d8fd12ee3e,handook,handbooks,http://vocab.getty.edu/aat/300311807
+94afef9b-0acf-3360-a2cd-b04842ce871e,history,histories (literary genre),http://vocab.getty.edu/aat/300026358
+d85c30b1-e447-3c41-ac53-62404cf8d727,"humor, satire",satire (artistic device),http://vocab.getty.edu/aat/300055934
+23ad8cf9-bebb-31a3-906c-1476f00b890c,index,indexes (reference sources),http://vocab.getty.edu/aat/300026554
+fbd0187e-cd68-30c3-bf6e-0118bb3f861a,instruction,instructions (document genre),http://vocab.getty.edu/aat/300027042
+e7449826-393f-3d84-b741-f6a264f617e5,interactive multimedia,multimedia works,http://vocab.getty.edu/aat/300047910
+923bb6ce-186c-3291-8865-77e9507ee5e1,interview,interviews,http://vocab.getty.edu/aat/300026392
+ae5335af-6b1b-3388-b999-91da00d7a880,issue,issues (object groupings),http://vocab.getty.edu/aat/300312349
+86f70ccb-982a-30f2-a901-500cc228a378,journal,journals (periodicals),http://vocab.getty.edu/aat/300215390
+e8792842-62a6-32a2-8e40-6e92a66df1da,kit,kits (sets),http://vocab.getty.edu/aat/300247921
+n49,language instruction,,
+b604515a-930c-35a2-af49-b609d2a38092,law report or digest,digests (periodicals),http://vocab.getty.edu/aat/300026661
+634d49b3-bb1c-39dd-a217-ce1095d27905,legal article,legal documents,http://vocab.getty.edu/aat/300027590
+837f08cd-aaaa-32bd-9aec-d4207f121dd3,legal case and case notes,legal files,http://vocab.getty.edu/aat/300026979
+5acf4363-ed9d-318a-911c-e465db627611,legislation,legislation (declaration of laws),http://vocab.getty.edu/aat/300055570
+56439912-9b12-3e66-8f3a-8bcd6fd33c31,letter,letters (correspondence),http://vocab.getty.edu/aat/300026879
+b41138a1-effe-39b8-86f6-d33bf03f4d0b,loose-leaf,loose-leaf binders,http://vocab.getty.edu/aat/300252990
+c0c4b000-59fd-3579-9509-f1b5ed5cb17a,manuscript,manuscripts (documents),http://vocab.getty.edu/aat/300028569
+c407f35f-a955-375e-b527-bf25851f77db,map,maps (documents),http://vocab.getty.edu/aat/300028094
+d0adf431-e7c8-3207-81f4-f9a623abc9e4,memoir,memoirs,http://vocab.getty.edu/aat/300202559
+336f2db7-f247-3433-aadc-3024520192f2,microscope slide,slides (microscopy),http://vocab.getty.edu/aat/300380440
+72584f75-e75a-35cb-8db9-45099d955fd1,model,models (representations),http://vocab.getty.edu/aat/300047753
+7fadcb79-049d-3f6d-a740-8a9b4fbca2f0,motion picture,motion pictures (visual works),http://vocab.getty.edu/aat/300136900
+a292a4e5-05f5-325e-a5a1-9518a4e594d2,newspaper,newspapers,http://vocab.getty.edu/aat/300026656
+caac7a0a-1215-3206-9174-38446640c32c,nonmusical sound,sound recordings,http://vocab.getty.edu/aat/300028633
+2ffd5845-ffb6-3801-9b8e-cef3281efe06,novel,novels,http://vocab.getty.edu/aat/300202580
+n65,numeric data,,
+597f1cef-dd4f-3ac3-a5b7-d5af4e22f643,offprint,offprints,http://vocab.getty.edu/aat/300262918
+687c8b97-630f-3462-87ea-7147e45142ac,online system or service,information retrieval services,http://vocab.getty.edu/aat/300150744
+cb0eb103-3074-38a6-a5f3-201a47723519,patent,patents,http://vocab.getty.edu/aat/300027832
+a4dd63e2-071d-3baf-9bb0-55165c605e2f,periodical,periodicals,http://vocab.getty.edu/aat/300026657
+0d8e31f4-14de-3224-9098-31f9446bc3a6,picture,pictures (object genre),http://vocab.getty.edu/aat/300264388
+2d06af65-db74-362b-9da2-6d09233fbf88,playing cards,playing cards,http://vocab.getty.edu/aat/300211294
+3f020d30-fd72-3364-91da-19e2c4377033,poetry,poetry,http://vocab.getty.edu/aat/300055931
+bfae3ac0-097d-375f-ad4f-51c5cb9ddf4e,postcard,postcards,http://vocab.getty.edu/aat/300026816
+c87ee674-4ddc-3efe-a74e-dfe25da5d7b3,programmed text,,
+095aef9f-697a-31c1-a840-6f69c1afa421,puzzle,puzzles (recreational artifacts),http://vocab.getty.edu/aat/300211207
+170a0c9a-e846-3159-b192-b059e6bba944,realia,realia,http://vocab.getty.edu/aat/300265419
+n77,rehearsal,,
+d52fc30e-da87-3397-9c0f-7a2e7d701bcf,remote sensing image,remote sensing,http://vocab.getty.edu/aat/300137339
+9a391812-667c-3f8b-adc3-27266fcd6a68,reporting,reporting,http://vocab.getty.edu/aat/300137552
+1b023a1b-3fba-3ef2-9662-3d4021ef732a,representational,method of representation (information indicator),http://vocab.getty.edu/aat/300404459
+8e2f58e3-5b78-3860-ab8c-1bd5e4d401c6,review,reviews (documents),http://vocab.getty.edu/aat/300026480
+598e38df-f713-399b-a87c-65dd0613e875,script,scripts (documents),http://vocab.getty.edu/aat/300026487
+38cba441-3df1-30f1-9c8e-44d897520fc5,series,series (object groupings),http://vocab.getty.edu/aat/300027349
+f6e60328-bbd4-3511-9b1b-3db3e747fe1c,short story,short stories,http://vocab.getty.edu/aat/300202607
+ec750fdb-6b38-32f4-9341-9cf39c81dec5,slide,slides (photographs),http://vocab.getty.edu/aat/300128371
+9de19f41-2741-3582-8d1e-9297a356e381,sound,sound (acoustics),http://vocab.getty.edu/aat/300056060
+5058b373-afe6-3e35-b65b-1059ba12c2d3,speech,speeches (compositions),http://vocab.getty.edu/aat/300417595
+4dbd4769-fa52-3ff8-8926-89ccf2d6f7bf,standard or specifications,specifications,http://vocab.getty.edu/aat/300027723
+n89,statistics,,
+n90,survey of literature,,
+837a0a3a-118c-3aaa-9444-faf2c13d0bb6,technical report,technical reports,http://vocab.getty.edu/aat/300027323
+fce4e7c4-78d3-3d93-bc93-cc2e7e09fd9d,thesis,theses,http://vocab.getty.edu/aat/300028028
+84aef2cc-e6c8-3751-8211-341c8bb6a8ff,toy,toys (recreational artifacts),http://vocab.getty.edu/aat/300211037
+89679fc1-46b8-3c19-978e-ebdb10da5df1,transparency,transparencies,http://vocab.getty.edu/aat/300127478
+c36a83df-a53a-37d9-ac39-6f6feb6351b8,treaty,treaties,http://vocab.getty.edu/aat/300027956
+4233b7e2-339f-3c45-a2ad-682b7dd4a547,videorecording,video recordings (physical artifacts),http://vocab.getty.edu/aat/300028682
+a9efeaa8-cf79-36c6-a579-4cd5bf46478c,wall map,wall maps,http://vocab.getty.edu/aat/300440746
+79f2a797-112f-3ab2-ad8b-00b744b34fa2,web site,Web sites,http://vocab.getty.edu/aat/300265431
+type01,text,texts (documents),http://vocab.getty.edu/aat/300263751
+type02,cartographic,cartographic materials,http://vocab.getty.edu/aat/300028052
+type03,notated music,musical notation,http://vocab.getty.edu/aat/300417622
+type04,sound recording-nonmusical,sound recordings,http://vocab.getty.edu/aat/300028633
+type05,sound recording-musical,sound recordings,http://vocab.getty.edu/aat/300028633
+type06,still image,images (object genre),http://vocab.getty.edu/aat/300264387
+type07,moving image,moving images,http://vocab.getty.edu/aat/300263857
+type08,three dimensional object,artifacts (object genre),http://vocab.getty.edu/aat/300117127
+type09,"software, multimedia",software,http://vocab.getty.edu/aat/300028566
+type10,mixed material,multiple materials (materials for groups),http://vocab.getty.edu/aat/300404821

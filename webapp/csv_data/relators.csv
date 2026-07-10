@@ -1,0 +1,65 @@
+ID,Sirsi Value,Preferred Label,URI
+5a66e885-073e-3572-b9ce-19c466fe188e,illus,illustrator,http://id.loc.gov/vocabulary/relators/ill
+b426d911-f5f9-33c5-a80b-157a3a04d012,printer,printer,http://id.loc.gov/vocabulary/relators/prt
+8b376014-4a2e-3579-9ef1-74d78a2079b9,publisher,publisher,http://id.loc.gov/vocabulary/relators/pbl
+eaa0185a-45d7-3758-ac1c-5500cabb042e,engraver,engraver,http://id.loc.gov/vocabulary/relators/egr
+31737ab3-f5bc-30bd-8fd1-c364b3103953,surveyor,surveyor,http://id.loc.gov/vocabulary/relators/srv
+f1039e40-9f9e-30b3-8cbc-e65e3fabdf60,(cartouche) engraver,engraver,http://id.loc.gov/vocabulary/relators/egr
+69b6042a-b30b-30ba-8ad6-5046aec82f65,(cartouche) artist,artist,http://id.loc.gov/vocabulary/relators/art
+825968fa-c190-3b7e-93a4-5d467de1cdd0,dedicatee,dedicatee,http://id.loc.gov/vocabulary/relators/dte
+60fc513d-3bad-38e3-b6f7-5fc61df9cf16,binder,binder,http://id.loc.gov/vocabulary/relators/bnd
+c46d887b-c8dc-35db-8f47-588e4eb8dfef,bookseller,bookseller,http://id.loc.gov/vocabulary/relators/bsl
+823d145a-a01c-3512-8c67-c67f75931883,translator,translator,http://id.loc.gov/vocabulary/relators/trl
+b2dc98c0-3671-343b-9bf3-536fa1ad4942,binder.?UNAUTHORIZED,binder,http://id.loc.gov/vocabulary/relators/bnd
+e21b6181-cc94-3dc7-b53e-1ad5c09a6f04,supposed author,author,http://id.loc.gov/vocabulary/relators/aut
+03ffafc8-3d21-32ef-82c3-abd185215737,recipient,addressee,http://id.loc.gov/vocabulary/relators/rcp
+f66487a2-6aa4-3ffc-a21b-ba13febd6695,correspondent,correspondent,http://id.loc.gov/vocabulary/relators/crp
+57fdf338-a251-36d5-8f7e-4e4b8bb23249,former owner,former owner,http://id.loc.gov/vocabulary/relators/fmo
+774b5667-1336-329e-9eef-e8e7d1f19f5e,attributed name,attributed name,http://id.loc.gov/vocabulary/relators/att
+bbd68bda-4ee1-3cd0-b450-9a0bfcf8cc6e,engr,engraver,http://id.loc.gov/vocabulary/relators/egr
+063f988e-d4b6-3e90-9beb-246c4380f53a,artist,artist,http://id.loc.gov/vocabulary/relators/art
+c2cbf21f-70a9-313b-b456-6574c3b617cf,lyricist,lyricist,http://id.loc.gov/vocabulary/relators/lyr
+013bbe83-1685-391e-b3fc-329c1acdf017,lithographer,lithographer,http://id.loc.gov/vocabulary/relators/ltg
+711dc8ea-7998-378f-b931-548bb8be42e3,arranger,arranger,http://id.loc.gov/vocabulary/relators/arr
+28190771-b5dd-310d-9b26-b7e928f97aa7,librettist,librettist,http://id.loc.gov/vocabulary/relators/lbt
+b225cece-d970-3387-8ff0-c916bce3b89c,performer,performer,http://id.loc.gov/vocabulary/relators/prf
+d5f5379a-afb1-380c-a831-66e1085cdf98,illustrator,illustrator,http://id.loc.gov/vocabulary/relators/ill
+42882f50-ddd9-3f09-9b65-881e797d39ed,photographer,photographer,http://id.loc.gov/vocabulary/relators/pht
+896bb34e-b5aa-343f-b401-ebbf716ee387,editor,editor,http://id.loc.gov/vocabulary/relators/edt
+b7967d65-4ddf-3207-80f3-fc7c1f94585f,engravers,wood engraver,http://id.loc.gov/vocabulary/relators/wde
+65777984-2d7b-3b24-8a5e-758a0c46673a,electrotyper,electrotyper,http://id.loc.gov/vocabulary/relators/elt
+8be31f4f-4f62-372d-b72e-df0a6bbafc03,egr,engraver,http://id.loc.gov/vocabulary/relators/egr
+841dcfae-6595-34fd-999b-9163b03c4ee8,printers,printer,http://id.loc.gov/vocabulary/relators/prt
+6e751086-8dcc-3780-ba87-efcece61151e,litographer,lithographer,http://id.loc.gov/vocabulary/relators/ltg
+f6c1e4a6-da36-3c6c-811c-d95eed557e0c,stereotyper,stereotyper,http://id.loc.gov/vocabulary/relators/str
+2b0120b0-bcf4-3422-a812-2b6af8e829a8,perfomer,performer,http://id.loc.gov/vocabulary/relators/prf
+1e3bcc02-7e9f-3f82-9381-edabd3b2bfd9,typographer,typographer,http://id.loc.gov/vocabulary/relators/tyg
+c81dab42-7467-34cb-a0aa-a2e19e800011,arr,arranger,http://id.loc.gov/vocabulary/relators/arr
+866901de-ef61-371c-acb8-8cc3b5879df5,supposed composer,composer,http://id.loc.gov/vocabulary/relators/cmp
+7a8f55d8-5300-3c94-8964-01382311640b,lithogropher,lithographer,http://id.loc.gov/vocabulary/relators/ltg
+a307df35-f699-3304-b05f-4345705c2695,lyr,lyricist,http://id.loc.gov/vocabulary/relators/lyr
+9900588e-7d82-3c71-8fdf-1c07510ee1e6,trl,translator,http://id.loc.gov/vocabulary/relators/trl
+7a5b3415-f261-3f5b-af81-cc6228dd5fa8,transcriber,transcriber,http://id.loc.gov/vocabulary/relators/trc
+71fe17ef-1ca9-3a2e-9ed4-93eb1d364af5,ltg,lithographer,http://id.loc.gov/vocabulary/relators/ltg
+9db2c20f-a93d-3ba6-86f9-4c975660f6ff,prf,performer,http://id.loc.gov/vocabulary/relators/prf
+6265cece-3160-3735-b616-fe57db0c54a8,dte,dedicatee,http://id.loc.gov/vocabulary/relators/dte
+8e24c839-f1a4-331e-b435-dbfe40347866,translattor,translator,http://id.loc.gov/vocabulary/relators/trl
+ca3921b0-5de8-362f-8ecb-c2bfba76bd76,editorr,editor,http://id.loc.gov/vocabulary/relators/edt
+70f2b214-0bcc-324c-a861-33cc00dfdd82,Portraits,,
+f3c8d47a-183f-38a9-99ec-baba9e76d6e2,stereotypers,stereotyper,http://id.loc.gov/vocabulary/relators/str
+410228eb-ff6c-34b7-a5e4-29689f9dd4d9,electroyper,electrotyper,http://id.loc.gov/vocabulary/relators/elt
+b006c59a-c994-315d-bd8b-e7b5082b2a49,Musical settings,,
+3987c9b7-1ead-3cfe-ad95-f8d91688e89c,defendant,defendant,http://id.loc.gov/vocabulary/relators/dfd
+e6e3edb6-baaf-30c6-b9e2-363b20e1d043,joint author,author,http://id.loc.gov/vocabulary/relators/aut
+0c0a2ffb-0dec-367c-b953-9c31a1ec4cda,tr,translator,http://id.loc.gov/vocabulary/relators/trl
+34287f46-d74f-3574-99b0-af07d737221c,donor,donor,http://id.loc.gov/vocabulary/relators/dnr
+91acdcee-d950-3217-9d7b-89832d3635fb,cmp,composer,http://id.loc.gov/vocabulary/relators/cmp
+a7bea159-5ea1-3192-ba09-4520cd65dc35,cartographer,cartographer,http://id.loc.gov/vocabulary/relators/ctg
+5f354fb9-62b2-3533-93f8-76013e27b261,associated name,associated name,http://id.loc.gov/vocabulary/relators/asn
+25c34da9-73f6-3d0f-9395-afe7adc54274,map engraver,engraver,http://id.loc.gov/vocabulary/relators/egr
+b3bbaac9-8cf3-3b1c-a7ab-3e62dda52701,ed,editor,http://id.loc.gov/vocabulary/relators/edt
+3da288e0-b453-3224-b2ab-caf86ac83dd1,composer,composer,http://id.loc.gov/vocabulary/relators/cmp
+3a5b292c-9447-32c0-b438-3d910485480e,reporter,reporter,http://id.loc.gov/vocabulary/relators/rpt
+b9e209a5-dd64-36b4-b7f6-5fbf257c5183,ed.],editor,http://id.loc.gov/vocabulary/relators/edt
+dfac557c-62de-35aa-b02e-52cb9f36a87e,plaintiff,plaintiff,http://id.loc.gov/vocabulary/relators/ptf
+54fb180f-2d6d-3cfb-afc3-087b63e2bd1e,prt,printer,http://id.loc.gov/vocabulary/relators/prt
