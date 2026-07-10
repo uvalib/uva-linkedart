@@ -8,7 +8,6 @@ import sqlite3, argparse, time, csv, os
 from edtf import parse_edtf, struct_time_to_date
 from rdflib import Graph, URIRef, Literal, Namespace, BNode
 from rdflib.namespace import RDF, XSD, SKOS, RDFS, DCTERMS
-from SPARQLWrapper import SPARQLWrapper
 
 DATABASE = 'webapp/entities.db'
 

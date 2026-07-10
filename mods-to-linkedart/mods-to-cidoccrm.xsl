@@ -100,7 +100,7 @@
                                                 </xsl:choose>
                                             </xsl:variable>
 
-                                            <xsl:element name="crm:{if ($property = 'carried_out_by') then 'P14_carried_out_by' else 'P15_was_influence_by'}"
+                                            <xsl:element name="crm:{if ($property = 'carried_out_by') then 'P14_carried_out_by' else 'P15_was_influenced_by'}"
                                                 namespace="http://www.cidoc-crm.org/cidoc-crm/">
                                                 <xsl:attribute name="rdf:resource" select="@valueURI"/>
                                             </xsl:element>
@@ -137,7 +137,7 @@
                                     </xsl:variable>
 
                                     <xsl:if test="not($property = 'provenance')">
-                                        <xsl:element name="crm:{if ($property = 'carried_out_by') then 'P14_carried_out_by' else 'P15_was_influence_by'}"
+                                        <xsl:element name="crm:{if ($property = 'carried_out_by') then 'P14_carried_out_by' else 'P15_was_influenced_by'}"
                                             namespace="http://www.cidoc-crm.org/cidoc-crm/">
                                             <xsl:attribute name="rdf:resource" select="@valueURI"/>
                                         </xsl:element>
