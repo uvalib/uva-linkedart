@@ -1,7 +1,8 @@
 """
 Author: Ethan Gruber
 Date modified: June 2026
-Function: Simple FastAPI web app to reconcile entity strings to URIs with SQLite lookups
+Function: Simple FastAPI web app to reconcile entity strings to URIs with SQLite lookups. 
+    Also includes EDTF date normalization to ISO8601
 """
 
 import sqlite3, json, os, uuid, uvicorn
