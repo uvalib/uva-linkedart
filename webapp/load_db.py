@@ -1,10 +1,11 @@
 """
 Author: Ethan Gruber
-Date modified: June 2026
+Date modified: July 2026
 Function: Load CSV files into appropriate SQLite table for the entity normalization webapp
 """
 
-import argparse, sqlite3, sys, os, csv
+import argparse, sqlite3, sys, os, csv, uuid
+import xml.etree.ElementTree as ET
 
 DATABASE = 'entities.db'
 
@@ -119,6 +120,24 @@ def main():
                         count += 1
                         
                 print("Inserted", count, "rows into", table)
+            
+            #parse the role XML file to extract the techniques    
+            if table == 'relators':
+                print("Checking relator - AAT technique concordance")
+                count = 0
+                tree = ET.parse('../mods-to-linkedart/roles.xml')
+                root = tree.getroot()
+                
+                for role in root.findall('./role'):
+                    if role.get('technique'):
+                        id = str(uuid.uuid3(uuid.NAMESPACE_URL, role.get('technique')))
+                        tuple = (id, role.text, role.get('techniqueLabel'), role.get('technique'))
+                        if id not in entities:
+                            insert_into_db(table, tuple)
+                            count += 1
+                            
+                print("Inserted", count, "rows into", table)
+                       
         else:
             print("Error: table or filename is invalid")
         

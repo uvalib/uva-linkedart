@@ -1,27 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>MARC Remediation Reports</title>
+        <title>SPARQL Demo</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>      
-        <!-- <script src="{{url_for('static', filename='app.js')}}"></script> -->        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/universalviewer@4.0.0/dist/uv.css"/>
+    	<script type="application/javascript" src="https://cdn.jsdelivr.net/npm/universalviewer@4.0.0/dist/umd/UV.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+     	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    	<script src="{{url_for('static', filename='app.js')}}"></script>  
+        <script src="{{url_for('static', filename='leaflet.ajax.min.js')}}"></script> 
+        <style type="text/css">
+        	#map { 
+        		height: 300px; 
+        		width: 100%;
+        	}
+        	#uv {
+		        width: 100%;
+		        height: 668px;
+		      }
+        </style>
     </head>
     <body>        
         <div class="container">
             <div class="row">
-                <div class="col-md-12 content">
+                
                     {% if page == "index" %}
-                    <h1>Linked Art SPARQL Demo</h1>
-                    <p>Here is some page content.</p>
-                    
-                    
+                    <div class="col-md-12 content">
+	                    <h1>Linked Art SPARQL Demo</h1>
+	                    <p>Here is some page content.</p>
+	                </div>
                     {% elif page == "object" %}
-                    <h1>{{data["label"]}}</h1>
+                    <div class="col-md-12 content">
+                    
+	                    <h1>{{data["label"]}}</h1>
+	                    
+	                    <div class="uv" id="uv"></div>
+	              	</div>     
+	              	
+                    <div class="col-md-6 content">
+                    	<h2>About</h2>
+	                    <dl class="dl-horizontal">
+	                    	{% if "creators" in data %}
+	                    	
+	                    	<dt>Creator</dt>
+	                    	<dd>
+	                    		{% for uri, node in data["creators"].items() %}
+	                    		<a href="{{uri}}" title="{{node['label']}}">{{node["label"]}}</a>
+	                    			{% if "technique" in node %}
+	                    				(technique/role: <a href="{{node['technique']}}">{{node["techniqueLabel"]}}</a>)
+	                    			{% endif %}
+	                    		<br/>
+	                    		{% endfor %}
+	                    	</dd>
+	                    	{% endif %}
+	                    	
+	                    	{% if "types" in data %}
+	                    	
+	                    	<dt>Type</dt>
+	                    	<dd>
+	                    		{% for uri, label in data["types"].items() %}
+	                    		<a href="{{uri}}" title="{{label}}">{{label}}</a><br/>
+	                    		{% endfor %}
+	                    	</dd>
+	                    	{% endif %}
+	                    	{% if "places" in data %}
+	                    	
+	                    	<dt>Production Place</dt>
+	                    	<dd>
+	                    		{% for uri, node in data["places"].items() %}
+	                    		<a href="{{uri}}" title="{{node['label']}}">{{node["label"]}}</a><br/>
+	                    		{% endfor %}
+	                    	</dd>
+	                    	{% endif %}
+	                    </dl>
+                    </div>
+                    <div class="col-md-6 content">
+	                    {% if hasCoords == True %}
+                    		 <div id="map"></div>
+                    	{% endif %}
+                    	
+                    	<div class="invisible" id="iiif-manifest">
+                    		{{data["manifest"]}}
+                    	</div>
+                    </div>
                         
                     {% else %}
-                    <h1>Not a page</h1>
+                    <div class="col-md-12 content">
+                    	<h1>Not a page</h1>
+                   	</div>
                     {% endif %}
                 </div>
             </div>

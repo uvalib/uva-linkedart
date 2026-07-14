@@ -126,6 +126,8 @@ def process_concept(table, uri, prefLabel):
         namespace = 'lcsh'
     elif 'id.loc.gov/authorities/genreForms/' in uri:
         namespace = 'lcgft'
+    elif 'id.loc.gov/vocabulary/relators/' in uri:
+        namespace = 'relators'
     elif 'vocab.getty.edu/aat/' in uri:
         namespace = 'aat'
      
@@ -148,7 +150,12 @@ def process_concept(table, uri, prefLabel):
         lc_data = query_lc(uri)
         metadata["prefLabel"] = lc_data["lc:prefLabel"]
         metadata.update(lc_data)
-        #metadata.update(lc_data)
+    elif namespace == 'relators':
+        lc_data = query_lc(uri)
+        metadata["prefLabel"] = lc_data["lc:prefLabel"]
+        #AAT URI for 'role'
+        metadata["classified_as"] = "http://vocab.getty.edu/aat/300435108"
+        metadata.update(lc_data)
     elif namespace == 'lcsh' or namespace == 'lcgft':
         lc_data = query_lc(uri)
         metadata["prefLabel"] = lc_data["lc:prefLabel"]
@@ -585,6 +592,9 @@ def query_wikidata(uri):
             namespace = 'lcsh'
         elif 'id.loc.gov/authorities/genreForms/' in uri:
             namespace = 'lcgft'
+        elif 'id.loc.gov/vocabulary/relators/' in uri:
+            id = f"relators/{id}"
+            namespace = 'relators'
         elif 'vocab.getty.edu/aat/' in uri:
             namespace = 'aat'
         
@@ -601,6 +611,7 @@ def query_wikidata(uri):
           ?entity wdt:P1014 "ID".
           OPTIONAL {?entity wdt:P4953 ?lcgft}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
+          OPTIONAL {?entity wdt:P4801 ?relators}
         }}
         """
     elif namespace == 'lcgft':        
@@ -611,6 +622,18 @@ def query_wikidata(uri):
           ?entity wdt:P4953 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
+          OPTIONAL {?entity wdt:P244 ?lcsh}
+        }}
+        """
+    elif namespace == 'relators':        
+        sparql_query = """
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT * WHERE {
+        SERVICE <https://qlever.dev/api/wikidata> {
+          ?entity wdt:P4801 "ID".
+          OPTIONAL {?entity wdt:P1014 ?aat}
+          OPTIONAL {?entity wdt:P5160 ?lctgm}
+          OPTIONAL {?entity wdt:P244 ?lcsh}
         }}
         """
     elif namespace == 'lcnaf' or namespace == 'lcsh':
@@ -632,6 +655,7 @@ def query_wikidata(uri):
           OPTIONAL {?entity wdt:P569 ?birth}
           OPTIONAL {?entity wdt:P570 ?death}
           OPTIONAL {?entity wdt:P571 ?inception}
+          OPTIONAL {?entity wdt:P625 ?coords}
         }}
         """ 
     elif namespace == 'geonames':
@@ -688,6 +712,10 @@ def query_wikidata(uri):
                     exactMatch = "http://id.loc.gov/vocabulary/graphicMaterials/" + row.lctgm
                     if exactMatch not in matches:
                         matches.append(exactMatch)
+                if row.relators:
+                    exactMatch = "http://id.loc.gov/vocabulary/" + row.relators
+                    if exactMatch not in matches:
+                        matches.append(exactMatch)
         if namespace == "lcgft":
             for row in results:
                 if str(row.entity) not in matches:                    
@@ -698,6 +726,22 @@ def query_wikidata(uri):
                         matches.append(exactMatch)
                 if row.lctgm:
                     exactMatch = "http://id.loc.gov/vocabulary/graphicMaterials/" + row.lctgm
+                    if exactMatch not in matches:
+                        matches.append(exactMatch)
+        if namespace == "relators":
+            for row in results:
+                if str(row.entity) not in matches:                    
+                    matches.append(str(row.entity))
+                if row.aat:
+                    exactMatch = "http://vocab.getty.edu/aat/" + row.aat
+                    if exactMatch not in matches:
+                        matches.append(exactMatch)
+                if row.lctgm:
+                    exactMatch = "http://id.loc.gov/vocabulary/graphicMaterials/" + row.lctgm
+                    if exactMatch not in matches:
+                        matches.append(exactMatch)
+                if row.lcsh:
+                    exactMatch = "http://id.loc.gov/authorities/subjects/" + row.lcsh
                     if exactMatch not in matches:
                         matches.append(exactMatch)
         elif namespace == 'lcnaf' or namespace == 'lcsh' or namespace == 'wikidata':
@@ -742,6 +786,11 @@ def query_wikidata(uri):
                     exactMatch = "http://vocab.getty.edu/aat/" + row.aat
                     if exactMatch not in matches:
                         matches.append(exactMatch)
+                
+                #coordinates for subjects, distinct from places from LCNAF
+                if namespace == 'lcsh':                    
+                    if row.coords:
+                        metadata["wd:coords"] = str(row.coords)
                 
                 if namespace == 'wikidata':        
                     if str(row.type) == "http://www.wikidata.org/entity/Q5":
@@ -833,6 +882,9 @@ def generate_rdf(table, entities):
         g.add((name, RDF.type, crm.E33_E41_Linguistic_Appellation))
         g.add((name, crm.P2_has_type, URIRef("http://vocab.getty.edu/aat/300404670")))
         g.add((name, crm.P190_has_symbolic_content, Literal(metadata["prefLabel"])))
+        
+        if "wd:coords" in metadata:
+            g.add((subject, crm.P168_place_is_defined_by, Literal(metadata["wd:coords"], datatype=opengis.wktLiteral)))
         
         #-------------------------
         #PERSONS AND ORGANIZATIONS
