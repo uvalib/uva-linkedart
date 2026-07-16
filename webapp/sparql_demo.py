@@ -7,11 +7,14 @@ Function: Simple Python Flask webapp to serve as a layer over SPARQL
 from flask import Flask, render_template, request, Response
 from SPARQLWrapper import SPARQLWrapper, TURTLE, JSON
 from geomet import wkt
-#from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 SPARQL_ENDPOINT = "http://localhost:3030/uvalib/query"
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
 
 def get_label(uri):
     sparql = SPARQLWrapper(SPARQL_ENDPOINT)
@@ -194,6 +197,6 @@ def generate_geojson():
     else:
         return {"error": "no uri parameter supplied"}
 
-if __name__=="__main__":
-    main()
+if __name__ == '__main__':
+    app.run(debug=False)
 
