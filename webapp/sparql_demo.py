@@ -277,6 +277,8 @@ def generate_geojson():
                 radius = derive_radius(count, grade)
                 
                 feature["properties"]["radius"] = radius
+            else:
+                 feature["properties"]["radius"] = 5
                  
             
             features.append(feature)
@@ -290,6 +292,8 @@ def generate_geojson():
                 radius = derive_radius(count, grade)
                 
                 feature["properties"]["radius"] = radius
+            else:
+                 feature["properties"]["radius"] = 5
             
             features.append(feature)
     
