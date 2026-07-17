@@ -34,11 +34,13 @@ function initialize_map(uri) {
         zoom: 4,
         layers:[osm]
     });
+	
+	alert($('#geo-path').text())
     
 	if (uri == 'null' || uri == null || uri == undefined) {
-		url = "getGeo";
+		url = $('#geo-path').text();
 	} else {
-		url = "getGeo?uri=" + uri;
+		url = $('#geo-path').text() + "?uri=" + uri;
 	}
 	
     var pointLayer = L.geoJson.ajax(url, {

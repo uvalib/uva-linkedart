@@ -66,6 +66,10 @@
 					</table>
 					
 					 <div id="map"></div>
+					 
+					 <div class="hidden">
+					 	<span id="geo-path">{{url_for('generate_geojson')}}</span>
+					 </div>
 					
 				</div>
 			{% elif page == "object" %}
@@ -120,9 +124,12 @@
 						 <div><strong>GeoJSON: </strong><code><a href="{{url_for('generate_geojson')}}?uri={{data['uri']}}">{{url_for('generate_geojson')}}?uri={{data['uri']}}</a></code></div>
 					{% endif %}
 			    	
-			    	<div class="invisible" id="iiif-manifest">
-			    		{{data["manifest"]}}
+			    	<div class="invisible">
+			    		<span id="iiif-manifest">{{data["manifest"]}}</span>
+			    		<span id="geo-path">{{url_for('generate_geojson')}}</span>
 			    	</div>
+			    	
+			    	<
 			    </div>
 			    
 			    <div class="col-md-12 content">
