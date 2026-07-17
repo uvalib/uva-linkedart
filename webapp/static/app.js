@@ -34,8 +34,6 @@ function initialize_map(uri) {
         zoom: 4,
         layers:[osm]
     });
-	
-	alert($('#geo-path').text())
     
 	if (uri == 'null' || uri == null || uri == undefined) {
 		url = $('#geo-path').text();
