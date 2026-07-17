@@ -24,77 +24,121 @@
         </style>
     </head>
     <body>        
+    	{% include 'nav.html' %}
         <div class="container">
             <div class="row">
                 
-                    {% if page == "index" %}
-                    <div class="col-md-12 content">
-	                    <h1>Linked Art SPARQL Demo</h1>
-	                    <p>Here is some page content.</p>
-	                </div>
-                    {% elif page == "object" %}
-                    <div class="col-md-12 content">
-                    
-	                    <h1>{{data["label"]}}</h1>
-	                    
-	                    <div class="uv" id="uv"></div>
-	              	</div>     
-	              	
-                    <div class="col-md-6 content">
-                    	<h2>About</h2>
-	                    <dl class="dl-horizontal">
-	                    	{% if "creators" in data %}
-	                    	
-	                    	<dt>Creator</dt>
-	                    	<dd>
-	                    		{% for uri, node in data["creators"].items() %}
-	                    		<a href="{{uri}}" title="{{node['label']}}">{{node["label"]}}</a>
-	                    			{% if "technique" in node %}
-	                    				(technique/role: <a href="{{node['technique']}}">{{node["techniqueLabel"]}}</a>)
-	                    			{% endif %}
-	                    		<br/>
-	                    		{% endfor %}
-	                    	</dd>
-	                    	{% endif %}
-	                    	
-	                    	{% if "types" in data %}
-	                    	
-	                    	<dt>Type</dt>
-	                    	<dd>
-	                    		{% for uri, label in data["types"].items() %}
-	                    		<a href="{{uri}}" title="{{label}}">{{label}}</a><br/>
-	                    		{% endfor %}
-	                    	</dd>
-	                    	{% endif %}
-	                    	{% if "places" in data %}
-	                    	
-	                    	<dt>Production Place</dt>
-	                    	<dd>
-	                    		{% for uri, node in data["places"].items() %}
-	                    		<a href="{{uri}}" title="{{node['label']}}">{{node["label"]}}</a><br/>
-	                    		{% endfor %}
-	                    	</dd>
-	                    	{% endif %}
-	                    </dl>
-                    </div>
-                    <div class="col-md-6 content">
-	                    {% if hasCoords == True %}
-                    		 <div id="map"></div>
-                    	{% endif %}
-                    	
-                    	<div class="invisible" id="iiif-manifest">
-                    		{{data["manifest"]}}
-                    	</div>
-                    </div>
-                        
-                    {% else %}
-                    <div class="col-md-12 content">
-                    	<h1>Not a page</h1>
-                   	</div>
+			{% if page == "index" %}
+				<div class="col-md-12 content">
+					<h1>Linked Art SPARQL Demo</h1>
+					
+					<h2>Example Results</h2>
+					
+					{% if data["results"]["bindings"]|length > 0 %}                    
+                        {% include 'pagination.html' %}                        
                     {% endif %}
-                </div>
-            </div>
-        </div>
+					
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th style="width:50%">Title</th>
+								<th style="width:30%">Creator</th>
+								<th>Date</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for row in data["results"]["bindings"] %}
+							<tr>
+								<td><a href="{{url_for('page_object')}}?uri={{row['object']['value']}}">{{row["label"]["value"]}}</a></td>
+								{% if "creators" in row %}
+									<td>{{row["creators"]["value"]}}</td>
+								{% else %}
+									<td></td>							
+								{% endif %}
+								{% if "date" in row %}
+									<td>{{row["date"]["value"]}}</td>
+								{% else %}
+									<td></td>							
+								{% endif %}
+							</tr>
+						{% endfor %}
+						</tbody>					
+					</table>
+					
+					 <div id="map"></div>
+					
+				</div>
+			{% elif page == "object" %}
+			    <div class="col-md-12 content">			    
+				     <h1>{{data["label"]}}</h1>
+				     <p><strong>Permalink: </strong><code><a href="{{data['uri']}}">{{data['uri']}}</a></code>
+				     </p>
+				     
+				     <div class="uv" id="uv"></div>
+				</div>     
+			
+				<div class="col-md-6 content">
+					<h2>About</h2>
+					<dl class="dl-horizontal">
+						{% if "creators" in data %}
+						
+						<dt>Creator</dt>
+						<dd>
+							{% for uri, node in data["creators"].items() %}
+							<a href="{{uri}}" title="{{node['label']}}">{{node["label"]}}</a>
+								{% if "technique" in node %}
+									(technique/role: <a href="{{node['technique']}}">{{node["techniqueLabel"]}}</a>)
+								{% endif %}
+							<br/>
+							{% endfor %}
+						</dd>
+						{% endif %}
+						
+						{% if "types" in data %}
+						
+						<dt>Type</dt>
+						<dd>
+							{% for uri, label in data["types"].items() %}
+							<a href="{{uri}}" title="{{label}}">{{label}}</a><br/>
+							{% endfor %}
+						</dd>
+						{% endif %}
+						{% if "places" in data %}
+						
+						<dt>Production Place</dt>
+						<dd>
+							{% for uri, node in data["places"].items() %}
+							<a href="{{uri}}" title="{{node['label']}}">{{node["label"]}}</a><br/>
+							{% endfor %}
+						</dd>
+						{% endif %}
+					</dl>
+				</div>
+			    <div class="col-md-6 content">
+					{% if hasCoords == True %}
+						 <div id="map"></div>
+						 <div><strong>GeoJSON: </strong><code><a href="{{url_for('generate_geojson')}}?uri={{data['uri']}}">{{url_for('generate_geojson')}}?uri={{data['uri']}}</a></code></div>
+					{% endif %}
+			    	
+			    	<div class="invisible" id="iiif-manifest">
+			    		{{data["manifest"]}}
+			    	</div>
+			    </div>
+			    
+			    <div class="col-md-12 content">
+			    <h2>Data</h2>
+			    	<code>
+			    		<pre>{{data["ttl"]}}</pre>
+		    		</code>
+			    </div>
+			        
+			    {% else %}
+				    <div class="col-md-12 content">
+				    	<h1>Not a page</h1>
+				   	</div>
+			    {% endif %}
+			</div>
+		</div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>

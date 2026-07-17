@@ -6,17 +6,19 @@
  ************************************/
 $(document).ready(function () {
     uri = getURLParameter('uri')
-    
+	
     if ($('#map').length > 0) {
         initialize_map(uri);
     }
     
-    const data = {
-        manifest: $('#iiif-manifest').text(),
-        embedded: true // needed for codesandbox frame
-    };
-    
-    uv = UV.init("uv", data);
+	if ($('#uv').length > 0) {
+	    const data = {
+	        manifest: $('#iiif-manifest').text(),
+	        embedded: true // needed for codesandbox frame
+	    };
+	    
+	    uv = UV.init("uv", data);
+	}
 });
 
 function initialize_map(uri) {
@@ -33,7 +35,13 @@ function initialize_map(uri) {
         layers:[osm]
     });
     
-    var pointLayer = L.geoJson.ajax("getGeo?uri=" + uri, {
+	if (uri == 'null' || uri == null || uri == undefined) {
+		url = "getGeo";
+	} else {
+		url = "getGeo?uri=" + uri;
+	}
+	
+    var pointLayer = L.geoJson.ajax(url, {
         onEachFeature: onEachFeature,
         pointToLayer: renderPoints
     }).addTo(map);
@@ -56,7 +64,7 @@ function initialize_map(uri) {
         }
         
         return new L.CircleMarker(latlng, {
-            radius: 5,
+            radius: feature.properties.radius,
             fillColor: fillColor,
             color: "#000",
             weight: 1,
