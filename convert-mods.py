@@ -1,6 +1,6 @@
 """
 Author: Ethan Gruber
-Date: June 2026
+Date: September 2026
 Function: Iterate through CSV with two columns (catalog_key and pid) to request MARC XML from API to convert to modsign2map
 """
 

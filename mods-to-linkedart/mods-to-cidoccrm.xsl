@@ -189,12 +189,24 @@
                         <la:digitally_carried_by>
                             <dig:D1_Digital_Object>
                                 <la:access_point rdf:resource="{concat($manifestBaseURL, replace($pid, ':', '-'))}"/>
-                                <dc:format>application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'</dc:format>
-                                <dcterms:conformsTo rdf:resource="http://iiif.io/api/presentation"/>
+                                <dc:format>application/ld+json;profile='http://iiif.io/api/presentation/2/context.json'</dc:format>
+                                <dcterms:conformsTo rdf:resource="http://iiif.io/api/presentation/2/context.json"/>
                             </dig:D1_Digital_Object>
                         </la:digitally_carried_by>
                     </crm:E33_Linguistic_Object>
                 </crm:P129i_is_subject_of>
+                <crm:P138i_has_representation>
+                    <crm:VisualItem>
+                        <la:digitally_shown_by>
+                            <dig:D1_Digital_Object>
+                                <rdfs:label>Primary Image Thumbnail</rdfs:label>
+                                <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300215302"/>
+                                <dc:format>image/jpeg</dc:format>
+                                <la:access_point rdf:resource="{concat('https://iiif.lib.virginia.edu/iiif/', $pid, '/full/!200,200/0/default.jpg')}"/>
+                            </dig:D1_Digital_Object>
+                        </la:digitally_shown_by>
+                    </crm:VisualItem>
+                </crm:P138i_has_representation>
             </xsl:if>
 
         </crm:E22_Human-Made_Object>

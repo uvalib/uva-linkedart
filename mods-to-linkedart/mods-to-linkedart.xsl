@@ -283,6 +283,7 @@
                                 <_array>
                                     <_object>
                                         <type>DigitalObject</type>
+                                        <_label>IIIF v2 Manifest</_label>
                                         <access_point>
                                             <_array>
                                                 <_object>
@@ -296,18 +297,54 @@
                                         <conforms_to>
                                             <_array>
                                                 <_object>
-                                                    <id>http://iiif.io/api/presentation/</id>
+                                                    <id>http://iiif.io/api/presentation/2/context.json</id>
                                                     <type>InformationObject</type>
                                                 </_object>
                                             </_array>
                                         </conforms_to>
-                                        <format>application/ld+json;profile='http://iiif.io/api/presentation/3/context.json'</format>
+                                        <format>application/ld+json;profile='http://iiif.io/api/presentation/2/context.json'</format>
                                     </_object>
                                 </_array>
                             </digitally_carried_by>
                         </_object>
                     </_array>
                 </subject_of>
+                
+                <representation>
+                    <_array>
+                        <_object>
+                            <type>VisualItem</type>
+                            <digitally_shown_by>
+                                <_array>
+                                    <_object>
+                                        <type>DigitalObject</type>
+                                        <_label>Primary Image Thumbnail</_label>
+                                        <classified_as>
+                                            <_array>
+                                                <_object>
+                                                    <id>http://vocab.getty.edu/aat/300215302</id>
+                                                    <type>Type</type>
+                                                    <_label>Digital Image</_label>
+                                                </_object>
+                                            </_array>
+                                        </classified_as>
+                                        <format>image/jpeg</format>
+                                        <access_point>
+                                            <_array>
+                                                <_object>
+                                                    <id>
+                                                        <xsl:value-of select="concat('https://iiif.lib.virginia.edu/iiif/', $pid, '/full/!200,200/0/default.jpg')"/>
+                                                    </id>
+                                                    <type>DigitalObject</type>
+                                                </_object>
+                                            </_array>
+                                        </access_point>
+                                    </_object>
+                                </_array>
+                            </digitally_shown_by>
+                        </_object>
+                    </_array>
+                </representation>
             </xsl:if>
         </_object>
     <!-- end of HMO -->
