@@ -45,7 +45,7 @@
             <id>
                 <xsl:value-of select="concat('https://search.lib.virginia.edu/sources/images/items/', $id)"/>
             </id>
-            <type>HumanMadeObject</type>
+            <type>LinguisticObject</type>
             <_label>
                 <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
             </_label>
@@ -69,9 +69,9 @@
             
             <!-- production event -->
             <xsl:if test="mods:name or mods:relatedItem[@type = 'original']/mods:originInfo or mods:originInfo">
-                <produced_by>
+                <created_by>
                     <_object>
-                        <type>Production</type>
+                        <type>Creation</type>
                         
                         <!-- accommodate differing originInfo, depending on MARC source or manual MODS -->
                         <xsl:choose>
@@ -201,7 +201,7 @@
                         </xsl:choose>
                         
                     </_object>
-                </produced_by>
+                </created_by>
             </xsl:if>
             
             <!-- physical description -->
@@ -209,13 +209,11 @@
             
             <!-- General subject terms/aboutness, use mods:form conditional -->
             <xsl:if test="mods:subject[@authority = 'lcsh' and child::*[@valueURI]] or mods:subject[mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]]">
-                <about>
-                    <_array>
-                        <!-- a mods:subject with child level URIs will have individually addressable parts -->
-                        <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and child::*[@valueURI]]"/>
-                        <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]"/>
-                    </_array>
-                </about>
+                <_array>
+                    <!-- a mods:subject with child level URIs will have individually addressable parts -->
+                    <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and child::*[@valueURI]]"/>
+                    <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]"/>
+                </_array>                
             </xsl:if>
             
             <!-- VisualItems depicted or represented in image: rewrite based on mods:form conditional -->
@@ -275,6 +273,18 @@
             </xsl:if>
             
             <xsl:if test="string($pid)">
+                
+                <!-- get exemplar PID IIIF image from API -->
+                <xsl:variable name="manifest-uri" select="concat($manifestBaseURL, replace($pid, ':', '-'))"/>
+                
+                <xsl:variable name="response">
+                    <xsl:if test="unparsed-text-available($manifest-uri)">
+                        <xsl:copy-of select="json-to-xml(unparsed-text($manifest-uri))"/>
+                    </xsl:if>
+                </xsl:variable>
+                
+                <xsl:variable name="thumbnail-uri" select="$response/xpf:map/xpf:map[@key = 'thumbnail']/xpf:string[@key = '@id']"/>
+                
                 <subject_of>
                     <_array>
                         <_object>
@@ -288,7 +298,7 @@
                                             <_array>
                                                 <_object>
                                                     <id>
-                                                        <xsl:value-of select="concat($manifestBaseURL, replace($pid, ':', '-'))"/>
+                                                        <xsl:value-of select="$manifest-uri"/>
                                                     </id>
                                                     <type>DigitalObject</type>
                                                 </_object>
@@ -333,7 +343,7 @@
                                             <_array>
                                                 <_object>
                                                     <id>
-                                                        <xsl:value-of select="concat('https://iiif.lib.virginia.edu/iiif/', $pid, '/full/!200,200/0/default.jpg')"/>
+                                                        <xsl:value-of select="$thumbnail-uri"/>
                                                     </id>
                                                     <type>DigitalObject</type>
                                                 </_object>

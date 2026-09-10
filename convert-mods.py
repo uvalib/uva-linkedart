@@ -20,12 +20,12 @@ def transform_marcxml():
     modsfile = "mods.xml"
 
     #convert MARC XML to MODS
-    cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/MARC21slim2MODS3-7.xsl -s:marc/{marcfile} -o:mods/{modsfile}"
-    result = subprocess.call(cmd, shell=True, text=True)
+    #cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/MARC21slim2MODS3-7.xsl -s:marc/{marcfile} -o:mods/{modsfile}"
+    #result = subprocess.call(cmd, shell=True, text=True)
     
     #re-transform MODS to embed entity URIs and other minor normalization
-    cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/embed_uris_in_mods.xsl -s:mods/{modsfile} -o:mods/{modsfile}"
-    result = subprocess.call(cmd, shell=True, text=True)
+    #cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/embed_uris_in_mods.xsl -s:mods/{modsfile} -o:mods/{modsfile}"
+    #result = subprocess.call(cmd, shell=True, text=True)
 
     print("Transforming MODS to Linked Art JSON-LD")
     
@@ -125,12 +125,12 @@ def main():
             
             ckey_param = ','.join(ckeys[start:end])
             
-            download_marcxml(ckey_param, batch=page + 1)
+            #download_marcxml(ckey_param, batch=page + 1)
             
             page = page + 1
     
     #combine all MARC XML into one file
-    combine_xml_files()
+    #combine_xml_files()
     
     #transform batch of MARC XML into MODS and continue workflow
     transform_marcxml()

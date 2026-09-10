@@ -29,8 +29,8 @@
     <xsl:template match="mods:mods">
         <xsl:variable name="id" select="mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI']"/>
         <xsl:variable name="pid" select="mods:recordInfo/mods:recordIdentifier[@source = 'PID']"/>
-        
-        <crm:E22_Human-Made_Object>
+
+        <crm:E33_Linguistic_Object>
             <xsl:attribute name="rdf:about" select="concat('https://search.lib.virginia.edu/sources/images/items/', $id)"/>
             <rdfs:label>
                 <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
@@ -55,8 +55,8 @@
 
             <!-- production event -->
             <xsl:if test="mods:name or mods:relatedItem[@type = 'original']/mods:originInfo or mods:originInfo">
-                <crm:P108i_was_produced_by>
-                    <crm:E12_Production>
+                <crm:P94i_was_created_by>
+                    <crm:E65_Creation>
                         <!-- accommodate differing originInfo, depending on MARC source or manual MODS -->
                         <xsl:choose>
                             <xsl:when test="mods:relatedItem[@type = 'original']/mods:originInfo">
@@ -157,8 +157,8 @@
                                 </xsl:for-each>
                             </xsl:otherwise>
                         </xsl:choose>
-                    </crm:E12_Production>
-                </crm:P108i_was_produced_by>
+                    </crm:E65_Creation>
+                </crm:P94i_was_created_by>
             </xsl:if>
 
             <!-- physical description -->
@@ -168,7 +168,8 @@
             <!-- a mods:subject with child level URIs will have individually addressable parts -->
             <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and child::*[@valueURI]] | mods:subject[@authority = 'lcnaf' and child::*[@valueURI]]"/>
             <xsl:apply-templates
-                select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/') or starts-with(@valueURI, 'http://vocab.getty.edu/tgn/')]"/>
+                select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/') or starts-with(@valueURI, 'http://vocab.getty.edu/tgn/')]"
+            />
 
             <!-- VisualItems depicted or represented in image: rewrite based on mods:form conditional -->
             <xsl:apply-templates select="mods:subject[@valueURI and not(@authority)][mods:topic]"/>
@@ -184,11 +185,23 @@
             </xsl:if>
 
             <xsl:if test="string($pid)">
+
+                <!-- get exemplar PID IIIF image from API -->
+                <xsl:variable name="manifest-uri" select="concat($manifestBaseURL, replace($pid, ':', '-'))"/>
+
+                <xsl:variable name="response">
+                    <xsl:if test="unparsed-text-available($manifest-uri)">
+                        <xsl:copy-of select="json-to-xml(unparsed-text($manifest-uri))"/>
+                    </xsl:if>
+                </xsl:variable>
+
+                <xsl:variable name="thumbnail-uri" select="$response/xpf:map/xpf:map[@key = 'thumbnail']/xpf:string[@key = '@id']"/>
+
                 <crm:P129i_is_subject_of>
                     <crm:E33_Linguistic_Object>
                         <la:digitally_carried_by>
                             <dig:D1_Digital_Object>
-                                <la:access_point rdf:resource="{concat($manifestBaseURL, replace($pid, ':', '-'))}"/>
+                                <la:access_point rdf:resource="{$manifest-uri}"/>
                                 <dc:format>application/ld+json;profile='http://iiif.io/api/presentation/2/context.json'</dc:format>
                                 <dcterms:conformsTo rdf:resource="http://iiif.io/api/presentation/2/context.json"/>
                             </dig:D1_Digital_Object>
@@ -202,14 +215,14 @@
                                 <rdfs:label>Primary Image Thumbnail</rdfs:label>
                                 <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300215302"/>
                                 <dc:format>image/jpeg</dc:format>
-                                <la:access_point rdf:resource="{concat('https://iiif.lib.virginia.edu/iiif/', $pid, '/full/!200,200/0/default.jpg')}"/>
+                                <la:access_point rdf:resource="{$thumbnail-uri}"/>
                             </dig:D1_Digital_Object>
                         </la:digitally_shown_by>
                     </crm:VisualItem>
                 </crm:P138i_has_representation>
             </xsl:if>
 
-        </crm:E22_Human-Made_Object>
+        </crm:E33_Linguistic_Object>
         <!-- end of HMO -->
     </xsl:template>
 
