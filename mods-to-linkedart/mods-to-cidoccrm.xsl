@@ -22,13 +22,22 @@
     <xsl:template match="/">
         <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
             xmlns:crm="http://www.cidoc-crm.org/cidoc-crm/">
-            <xsl:apply-templates select="//mods:mods"/>
+            <xsl:apply-templates select="//mods:mods">
+                <xsl:with-param name="type">HumanMadeObject</xsl:with-param>
+            </xsl:apply-templates>
+            <xsl:apply-templates select="//mods:mods">
+                <xsl:with-param name="type">LinguisticObject</xsl:with-param>
+            </xsl:apply-templates>
         </rdf:RDF>
     </xsl:template>
 
     <xsl:template match="mods:mods">
+        <xsl:param name="type"/>
+        
         <xsl:variable name="id" select="mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI']"/>
         <xsl:variable name="pid" select="mods:recordInfo/mods:recordIdentifier[@source = 'PID']"/>
+
+        
 
         <crm:E33_Linguistic_Object>
             <xsl:attribute name="rdf:about" select="concat('https://search.lib.virginia.edu/sources/images/items/', $id)"/>

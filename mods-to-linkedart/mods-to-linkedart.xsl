@@ -6,7 +6,7 @@
     <xsl:include href="json-metamodel.xsl"/>
 
     <xsl:output method="text" encoding="UTF-8" indent="yes"/>
-    
+
     <xsl:variable name="manifestBaseURL">https://s3.us-east-1.amazonaws.com/iiif-manifest-cache-production/pid-</xsl:variable>
 
     <xsl:variable name="resolver-url">http://127.0.0.1:8001/</xsl:variable>
@@ -21,42 +21,55 @@
 
     <xsl:template match="/">
         <xsl:variable name="model" as="item()*">
-            <xsl:apply-templates select="mods:modsCollection|mods:mods"/>
+            <xsl:apply-templates select="mods:modsCollection | mods:mods"/>
         </xsl:variable>
 
         <xsl:apply-templates select="$model"/>
 
-       <!-- <xsl:copy-of select="$model"/>-->
+        <!-- <xsl:copy-of select="$model"/>-->
 
     </xsl:template>
-    
+
     <xsl:template match="mods:modsCollection">
         <_array>
-            <xsl:apply-templates select="//mods:mods"/>
+            <xsl:apply-templates select="//mods:mods">
+                <xsl:with-param name="type">HumanMadeObject</xsl:with-param>
+            </xsl:apply-templates>
+            <xsl:apply-templates select="//mods:mods">
+                <xsl:with-param name="type">LinguisticObject</xsl:with-param>
+            </xsl:apply-templates>
         </_array>
     </xsl:template>
 
     <xsl:template match="mods:mods">
+        <xsl:param name="type"/>
+
         <xsl:variable name="pid" select="mods:recordInfo/mods:recordIdentifier[@source = 'PID']"/>
         <xsl:variable name="id" select="mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI']"/>
         
         <_object>
             <__context>https://linked.art/ns/v1/linked-art.json</__context>
             <id>
-                <xsl:value-of select="concat('https://search.lib.virginia.edu/sources/images/items/', $id)"/>
+                <xsl:value-of select="
+                        concat('https://search.lib.virginia.edu/sources/images/items/', if ($type = 'HumanMadeObject') then
+                            $id
+                        else
+                            $pid)"/>
             </id>
-            <type>LinguisticObject</type>
+            <type>
+                <xsl:value-of select="$type"/>
+            </type>
             <_label>
                 <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
             </_label>
-            
+
             <identified_by>
                 <_array>
                     <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
                     <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:identifier[@type = 'local']"/>
                 </_array>
             </identified_by>
-            
+
             <!-- HMO classification -->
             <xsl:if test="mods:genre[@authority and @valueURI] or mods:typeOfResource">
                 <classified_as>
@@ -66,156 +79,211 @@
                     </_array>
                 </classified_as>
             </xsl:if>
-            
-            <!-- production event -->
-            <xsl:if test="mods:name or mods:relatedItem[@type = 'original']/mods:originInfo or mods:originInfo">
-                <created_by>
-                    <_object>
-                        <type>Creation</type>
-                        
-                        <!-- accommodate differing originInfo, depending on MARC source or manual MODS -->
-                        <xsl:choose>
-                            <xsl:when test="mods:relatedItem[@type = 'original']/mods:originInfo">
-                                <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:originInfo[1]"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:apply-templates select="mods:originInfo[1]"/>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                        
-                        <!-- if more than one role is reported among the name(s), then split the production activity into parts: evaluate on various conditionals -->
-                        <xsl:variable name="productionHasParts" as="xs:boolean">
+
+            <!-- HMO "carries" LO -->
+            <xsl:if test="$type = 'HumanMadeObject'">
+                <carries>
+                    <_array>
+                        <_object>
+                            <id>
+                                <xsl:value-of select="concat('https://search.lib.virginia.edu/sources/images/items/', $pid)"/>
+                            </id>
+                            <type>LinguisticObject</type>
+                            <_label>
+                                <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
+                            </_label>
+                        </_object>
+                    </_array>
+                </carries>
+            </xsl:if>
+
+            <!-- production/creation event. Only include creation for LinguisticObjects for printed, mass produced resources -->
+            <xsl:if test="$type = 'LinguisticObject'">
+                <xsl:if test="mods:name or mods:relatedItem[@type = 'original']/mods:originInfo or mods:originInfo">
+                    <xsl:variable name="event-property" select="
+                            if (($type) = 'HumanMadeObject') then
+                                'produced_by'
+                            else
+                                'created_by'"/>
+                    <xsl:variable name="event-class" select="
+                            if (($type) = 'HumanMadeObject') then
+                                'Production'
+                            else
+                                'Creation'"/>
+
+                    <xsl:element name="{$event-property}">
+                        <_object>
+                            <type>
+                                <xsl:value-of select="$event-class"/>
+                            </type>
+                            
+                            <!-- accommodate differing originInfo, depending on MARC source or manual MODS -->
                             <xsl:choose>
-                                <xsl:when test="count(distinct-values(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)) &gt; 1 and count(mods:name) &gt; 1">
-                                    <xsl:value-of select="true()"/>
-                                </xsl:when>
-                                <xsl:when test="mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI] and mods:name[not(mods:role)]">
-                                    <xsl:value-of select="true()"/>
+                                <xsl:when test="mods:relatedItem[@type = 'original']/mods:originInfo">
+                                    <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:originInfo[1]"/>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <xsl:value-of select="false()"/>
+                                    <xsl:apply-templates select="mods:originInfo[1]"/>
                                 </xsl:otherwise>
                             </xsl:choose>
                             
-                        </xsl:variable>
-                        
-                        <xsl:choose>
-                            <xsl:when test="$productionHasParts = true()">
-                                <part>
-                                    <_array>
-                                        <xsl:for-each select="mods:name">
-                                            <xsl:variable name="property">
-                                                <xsl:choose>
-                                                    <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
-                                                        <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
-                                                        
-                                                        <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
-                                                    </xsl:when>
-                                                    <xsl:otherwise>
-                                                        <xsl:text>carried_out_by</xsl:text>
-                                                    </xsl:otherwise>
-                                                </xsl:choose>
-                                            </xsl:variable>
-                                            
-                                            <!-- ignore names that should be considered under the provenance section, not related to production -->
-                                            <xsl:if test="not($property = 'provenance')">
-                                                <_object>
-                                                    <type>Production</type>
-                                                    
-                                                    <!-- properties should be carried_out_by or influenced_by -->
-                                                    <xsl:element name="{$property}">
-                                                        <_array>
-                                                            <xsl:apply-templates select="self::node()" mode="production"/>
-                                                        </_array>
-                                                    </xsl:element>
-                                                    
-                                                    <xsl:if test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
-                                                        <technique>
-                                                            <_array>
-                                                                <xsl:for-each select="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
-                                                                    <xsl:variable name="uri" select="@valueURI"/>
-                                                                    <!-- user Getty AAT URIs when possible, otherwise display MARC relators -->
-                                                                    <_object>
-                                                                        <id>
-                                                                            <xsl:value-of select="if ($roles//role[@marcrelator = $uri]/@technique) then $roles//role[@marcrelator = $uri]/@technique else $uri"/>
-                                                                        </id>
-                                                                        <type>Type</type>
-                                                                        <_label>
-                                                                            <xsl:value-of select="if($roles//role[@marcrelator = $uri]/@techniqueLabel) then $roles//role[@marcrelator = $uri]/@techniqueLabel else $roles//role[@marcrelator = $uri]"/>
-                                                                        </_label>
-                                                                    </_object>
-                                                                </xsl:for-each>
-                                                            </_array>
-                                                        </technique>
-                                                    </xsl:if>
-                                                </_object>
-                                            </xsl:if>
-                                        </xsl:for-each>
-                                    </_array>
-                                </part>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:if test="mods:name">
-                                    <xsl:variable name="property">
-                                        <xsl:choose>
-                                            <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
-                                                <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
+                            <!-- if more than one role is reported among the name(s), then split the production activity into parts: evaluate on various conditionals -->
+                            <xsl:variable name="productionHasParts" as="xs:boolean">
+                                <xsl:choose>
+                                    <xsl:when
+                                        test="count(distinct-values(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)) &gt; 1 and count(mods:name) &gt; 1">
+                                        <xsl:value-of select="true()"/>
+                                    </xsl:when>
+                                    <xsl:when test="mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI] and mods:name[not(mods:role)]">
+                                        <xsl:value-of select="true()"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:value-of select="false()"/>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                                
+                            </xsl:variable>
+                            
+                            <xsl:choose>
+                                <xsl:when test="$productionHasParts = true()">
+                                    <part>
+                                        <_array>
+                                            <xsl:for-each select="mods:name">
+                                                <xsl:variable name="property">
+                                                    <xsl:choose>
+                                                        <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
+                                                            <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
+                                                            
+                                                            <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                                        </xsl:when>
+                                                        <xsl:otherwise>
+                                                            <xsl:text>carried_out_by</xsl:text>
+                                                        </xsl:otherwise>
+                                                    </xsl:choose>
+                                                </xsl:variable>
                                                 
-                                                <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
-                                            </xsl:when>
-                                            <xsl:otherwise>
-                                                <xsl:text>carried_out_by</xsl:text>
-                                            </xsl:otherwise>
-                                        </xsl:choose>
-                                    </xsl:variable>
-                                    
-                                    <xsl:if test="not($property = 'provenance')">
-                                        <xsl:element name="{$property}">
-                                            <_array>
-                                                <xsl:apply-templates select="mods:name" mode="production"/>
-                                            </_array>
-                                        </xsl:element>
+                                                <!-- ignore names that should be considered under the provenance section, not related to production -->
+                                                <xsl:if test="not($property = 'provenance')">
+                                                    <_object>
+                                                        <type>
+                                                            <xsl:value-of select="$event-class"/>
+                                                        </type>
+                                                        
+                                                        <!-- properties should be carried_out_by or influenced_by -->
+                                                        <xsl:element name="{$property}">
+                                                            <_array>
+                                                                <xsl:apply-templates select="self::node()" mode="production"/>
+                                                            </_array>
+                                                        </xsl:element>
+                                                        
+                                                        <xsl:if test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
+                                                            <technique>
+                                                                <_array>
+                                                                    <xsl:for-each select="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
+                                                                        <xsl:variable name="uri" select="@valueURI"/>
+                                                                        <!-- user Getty AAT URIs when possible, otherwise display MARC relators -->
+                                                                        <_object>
+                                                                            <id>
+                                                                                <xsl:value-of select="
+                                                                                    if ($roles//role[@marcrelator = $uri]/@technique) then
+                                                                                    $roles//role[@marcrelator = $uri]/@technique
+                                                                                    else
+                                                                                    $uri"
+                                                                                />
+                                                                            </id>
+                                                                            <type>Type</type>
+                                                                            <_label>
+                                                                                <xsl:value-of select="
+                                                                                    if ($roles//role[@marcrelator = $uri]/@techniqueLabel) then
+                                                                                    $roles//role[@marcrelator = $uri]/@techniqueLabel
+                                                                                    else
+                                                                                    $roles//role[@marcrelator = $uri]"
+                                                                                />
+                                                                            </_label>
+                                                                        </_object>
+                                                                    </xsl:for-each>
+                                                                </_array>
+                                                            </technique>
+                                                        </xsl:if>
+                                                    </_object>
+                                                </xsl:if>
+                                            </xsl:for-each>
+                                        </_array>
+                                    </part>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:if test="mods:name">
+                                        <xsl:variable name="property">
+                                            <xsl:choose>
+                                                <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
+                                                    <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
+                                                    
+                                                    <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                                </xsl:when>
+                                                <xsl:otherwise>
+                                                    <xsl:text>carried_out_by</xsl:text>
+                                                </xsl:otherwise>
+                                            </xsl:choose>
+                                        </xsl:variable>
                                         
-                                        <xsl:if test="count(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]) &gt; 0">
-                                            <technique>
+                                        <xsl:if test="not($property = 'provenance')">
+                                            <xsl:element name="{$property}">
                                                 <_array>
-                                                    <xsl:for-each select="distinct-values(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)">
-                                                        <xsl:variable name="uri" select="."/>
-                                                        <!-- user Getty AAT URIs when possible, otherwise display MARC relators -->
-                                                        <_object>
-                                                            <id>
-                                                                <xsl:value-of select="if ($roles//role[@marcrelator = $uri]/@technique) then $roles//role[@marcrelator = $uri]/@technique else $uri"/>
-                                                            </id>
-                                                            <type>Type</type>
-                                                            <_label>
-                                                                <xsl:value-of select="if($roles//role[@marcrelator = $uri]/@techniqueLabel) then $roles//role[@marcrelator = $uri]/@techniqueLabel else $roles//role[@marcrelator = $uri]"/>
-                                                            </_label>
-                                                        </_object>
-                                                    </xsl:for-each>
+                                                    <xsl:apply-templates select="mods:name" mode="production"/>
                                                 </_array>
-                                            </technique>
+                                            </xsl:element>
+                                            
+                                            <xsl:if test="count(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]) &gt; 0">
+                                                <technique>
+                                                    <_array>
+                                                        <xsl:for-each select="distinct-values(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)">
+                                                            <xsl:variable name="uri" select="."/>
+                                                            <!-- user Getty AAT URIs when possible, otherwise display MARC relators -->
+                                                            <_object>
+                                                                <id>
+                                                                    <xsl:value-of select="
+                                                                        if ($roles//role[@marcrelator = $uri]/@technique) then
+                                                                        $roles//role[@marcrelator = $uri]/@technique
+                                                                        else
+                                                                        $uri"/>
+                                                                </id>
+                                                                <type>Type</type>
+                                                                <_label>
+                                                                    <xsl:value-of select="
+                                                                        if ($roles//role[@marcrelator = $uri]/@techniqueLabel) then
+                                                                        $roles//role[@marcrelator = $uri]/@techniqueLabel
+                                                                        else
+                                                                        $roles//role[@marcrelator = $uri]"
+                                                                    />
+                                                                </_label>
+                                                            </_object>
+                                                        </xsl:for-each>
+                                                    </_array>
+                                                </technique>
+                                            </xsl:if>
                                         </xsl:if>
                                     </xsl:if>
-                                </xsl:if>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                        
-                    </_object>
-                </created_by>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </_object>
+                    </xsl:element>
+                </xsl:if>
             </xsl:if>
-            
-            <!-- physical description -->
-            <xsl:apply-templates select="mods:physicalDescription"/>
-            
-            <!-- General subject terms/aboutness, use mods:form conditional -->
-            <xsl:if test="mods:subject[@authority = 'lcsh' and child::*[@valueURI]] or mods:subject[mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]]">
-                <_array>
-                    <!-- a mods:subject with child level URIs will have individually addressable parts -->
-                    <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and child::*[@valueURI]]"/>
-                    <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]"/>
-                </_array>                
+
+            <!-- General subject terms/aboutness for LinguisticObject, use mods:form conditional -->
+            <xsl:if test="$type = 'LinguisticObject'">
+                <xsl:if
+                    test="mods:subject[@authority = 'lcsh' and child::*[@valueURI]] or mods:subject[mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]]">
+                    <about>
+                        <_array>
+                            <!-- a mods:subject with child level URIs will have individually addressable parts -->
+                            <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and child::*[@valueURI]]"/>
+                            <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]"/>
+                        </_array>
+                    </about>
+                </xsl:if>
             </xsl:if>
-            
+
             <!-- VisualItems depicted or represented in image: rewrite based on mods:form conditional -->
             <xsl:if test="mods:subject[@valueURI and @authority = 'lcsh'][mods:topic] or mods:subject[@authority = 'tgn']/descendant::*[@valueURI]">
                 <shows>
@@ -223,7 +291,7 @@
                         <_object>
                             <type>VisualItem</type>
                             <_label>Visual content of <xsl:value-of select="mods:titleInfo/mods:title"/></_label>
-                            
+
                             <!-- Linked Art: Still life paintings, photographs and many other artworks depict things which we can 
                             recognize by type or classification, but not as unique or individual entities in reality. -->
                             <xsl:if test="mods:subject[@valueURI and not(@authority)]/mods:topic">
@@ -233,7 +301,7 @@
                                     </_array>
                                 </represents_instance_of_type>
                             </xsl:if>
-                            
+
                             <!-- Linked Art: Subjects are the concepts or things that the artwork evokes, as opposed to an 
                             object (real or imaginary) that is depicted by the artwork. -->
                             <xsl:if test="mods:subject[@valueURI and @authority = 'lcsh'][mods:topic] or mods:subject[@authority = 'tgn']/descendant::*[@valueURI]">
@@ -241,28 +309,30 @@
                                     <_array>
                                         <!-- a mods:subject with a top-level URI will concatenate child elements into a string -->
                                         <xsl:apply-templates select="mods:subject[@valueURI and @authority = 'lcsh'][child::*]"/>
-                                        
+
                                         <!-- hierarchical geographic subjects: only include the lowest-level gazetteer entry. Hierarchy will be rebuilt via vocabulary system -->
                                         <xsl:apply-templates select="mods:subject[@authority = 'tgn']/descendant::*[last()][@valueURI]"/>
                                     </_array>
                                 </about>
                             </xsl:if>
-                            
+
                         </_object>
                     </_array>
                 </shows>
             </xsl:if>
-            
+
             <!-- abstract -->
-            <xsl:if test="mods:abstract or mods:physicalDescription/mods:extent">
-                <referred_to_by>
-                    <_array>
-                        <xsl:apply-templates select="mods:abstract"/>
-                        <xsl:apply-templates select="mods:physicalDescription/mods:extent" mode="statement"/>
-                    </_array>
-                </referred_to_by>
+            <xsl:if test="$type = 'LinguisticObject'">
+                <xsl:if test="mods:abstract or mods:physicalDescription/mods:extent">
+                    <referred_to_by>
+                        <_array>
+                            <xsl:apply-templates select="mods:abstract"/>
+                            <xsl:apply-templates select="mods:physicalDescription/mods:extent" mode="statement"/>
+                        </_array>
+                    </referred_to_by>
+                </xsl:if>
             </xsl:if>
-            
+
             <!-- collection -->
             <xsl:if test="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of'][mods:location/mods:url]">
                 <member_of>
@@ -271,20 +341,20 @@
                     </_array>
                 </member_of>
             </xsl:if>
-            
+
             <xsl:if test="string($pid)">
-                
+
                 <!-- get exemplar PID IIIF image from API -->
                 <xsl:variable name="manifest-uri" select="concat($manifestBaseURL, replace($pid, ':', '-'))"/>
-                
+
                 <xsl:variable name="response">
                     <xsl:if test="unparsed-text-available($manifest-uri)">
                         <xsl:copy-of select="json-to-xml(unparsed-text($manifest-uri))"/>
                     </xsl:if>
                 </xsl:variable>
-                
+
                 <xsl:variable name="thumbnail-uri" select="$response/xpf:map/xpf:map[@key = 'thumbnail']/xpf:string[@key = '@id']"/>
-                
+
                 <subject_of>
                     <_array>
                         <_object>
@@ -319,7 +389,7 @@
                         </_object>
                     </_array>
                 </subject_of>
-                
+
                 <representation>
                     <_array>
                         <_object>
@@ -357,7 +427,7 @@
                 </representation>
             </xsl:if>
         </_object>
-    <!-- end of HMO -->
+        <!-- end of HMO -->
     </xsl:template>
 
     <!-- titles and identifiers -->
@@ -404,7 +474,7 @@
         <_object>
             <id>
                 <xsl:value-of select="@valueURI"/>
-            </id>            
+            </id>
             <type>Type</type>
             <_label>
                 <xsl:value-of select="."/>
@@ -420,7 +490,7 @@
             </classified_as>
         </_object>
     </xsl:template>
-    
+
     <xsl:template match="mods:genre">
         <_object>
             <xsl:if test="@valueURI">
@@ -710,8 +780,6 @@
             </_label>
         </_object>
     </xsl:template>
-
-    <xsl:template match="mods:physicalDescription"> </xsl:template>
 
     <xsl:template match="mods:extent" mode="statement">
         <_object>

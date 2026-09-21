@@ -32,7 +32,7 @@ def transform_marcxml():
     #transform to Linked Art JSON-LD and RDF/XML
     cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:mods/{modsfile} -o:json/objects.json"
     result = subprocess.call(cmd, shell=True, text=True)
-    
+    """
     print("Transforming MODS to Linked Art CIDOC-CRM RDF/XML")
     
     cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-cidoccrm.xsl -s:mods/{modsfile} -o:rdf/objects.rdf"
@@ -42,6 +42,7 @@ def transform_marcxml():
     graph = Graph()
     graph.parse("rdf/objects.rdf", format='application/rdf+xml')
     graph.serialize(destination="rdf/objects.ttl", format='text/turtle')
+    """
 
 def download_marcxml(ckey_param, batch):
     url = "https://ils.lib.virginia.edu/uhtbin/getMarc?ckey=" + ckey_param + "&type=xml"
