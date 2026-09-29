@@ -19,21 +19,27 @@ def main():
     else:        
         text = response.text
         pids = text.split(",")
-    
+        
+        count = 1
+        
         for pid in pids:
             url = f"https://tracksys-api-ws-dev.internal.lib.virginia.edu/api/pid/{pid}"
             
             with requests.get(url) as response:
-                print(f"Reading {pid}")
+                print(f"Reading {count} of {len(pids)}: {pid}")
                 obj = json.loads(response.text)
                 
                 if obj["type"] == "xml_metadata":
                     xml_url = f"https://tracksys-api-ws-dev.internal.lib.virginia.edu/api/metadata/{pid}?type=mods"
                     response = requests.get(xml_url)
                     
-                    with open(f"mods/tracksys/{pid}.xml", 'wb') as file:
+                    filename = pid.replace(":", "_")
+                    
+                    with open(f"mods/tracksys/{filename}.xml", 'w', encoding="utf8") as file:
                         print(f"Writing {pid}")
-                        file.write(response.content)
+                        file.write(response.text)
+                        
+            count += 1
     
     
 if __name__=="__main__":

@@ -15,6 +15,10 @@
     <xsl:variable name="marcCountries" as="node()">
         <xsl:copy-of select="document('countries.skosrdf.xml')"/>
     </xsl:variable>
+    
+    <xsl:variable name="roles" as="node()*">
+        <xsl:copy-of select="document('../mods-to-linkedart/roles.xml')"/>
+    </xsl:variable>
 
     <xsl:template match="@* | node()">
         <xsl:copy>
@@ -26,9 +30,47 @@
     <xsl:template match="mods:name[@type]">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
+                
+                <xsl:variable name="term">
+                    <xsl:choose>
+                        <xsl:when test="mods:namePart[@type = 'given'] and mods:namePart[@type = 'family']">
+                            <xsl:value-of select="mods:namePart[@type = 'family']"/>
+                            
+                            <!-- insert comma separator between last and first name, if applicable -->
+                            <xsl:choose>
+                                <xsl:when test="ends-with(mods:namePart[@type = 'family'], ',')">
+                                    <xsl:text> </xsl:text>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:text>, </xsl:text>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            
+                            <xsl:value-of select="mods:namePart[@type = 'given']"/>
+                            
+                            <!-- insert a comma between last name and date if applicable -->
+                            <xsl:if test="mods:namePart[@type = 'date']">
+                                <xsl:choose>
+                                    <xsl:when test="ends-with(mods:namePart[@type = 'given'], ',')">
+                                        <xsl:text> </xsl:text>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:text>, </xsl:text>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                                
+                                <xsl:value-of select="mods:namePart[@type = 'date']"/>
+                            </xsl:if>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="string-join(mods:namePart, ' ')"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:variable>
+                
 
                 <xsl:variable name="api-response" as="node()">
-                    <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/cpf?term=', encode-for-uri(string-join(mods:namePart, ' ')))))"/>
+                    <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/cpf?term=', encode-for-uri($term))))"/>
                 </xsl:variable>
 
                 <xsl:element name="{name()}">
@@ -241,26 +283,42 @@
     
     <xsl:template match="mods:role">
         <xsl:choose>
-            <xsl:when test="$resolver-on = true()">
-                <xsl:variable name="term" select="mods:roleTerm"/>
+            <xsl:when test="mods:roleTerm[@type = 'code' and @authority = 'marcrelator']">
+                <xsl:variable name="roleTerm" select="mods:roleTerm"/>
                 
-                <xsl:variable name="api-response" as="node()">
-                    <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/relators?term=', encode-for-uri($term))))"/>
-                </xsl:variable>
-                
-                <xsl:if test="$api-response//xpf:string[@key = 'uri']">
-                    <xsl:element name="role">
-                        <xsl:element name="roleTerm">
-                            <xsl:attribute name="type">text</xsl:attribute>
-                            <xsl:attribute name="authority">marcrelator</xsl:attribute>
-                            <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
-                            <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
-                        </xsl:element>
+                <xsl:element name="role">
+                    <xsl:element name="roleTerm">
+                        <xsl:attribute name="type">code</xsl:attribute>
+                        <xsl:attribute name="authority">marcrelator</xsl:attribute>
+                        <xsl:attribute name="valueURI" select="concat('http://id.loc.gov/vocabulary/relators/', $roleTerm)"/>
+                        <xsl:value-of select="$roles//role[@marcrelator = concat('http://id.loc.gov/vocabulary/relators/', $roleTerm)]/text()"/>
                     </xsl:element>
-                </xsl:if>
+                </xsl:element>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:copy-of select="self::node()"/>
+                <xsl:choose>
+                    <xsl:when test="$resolver-on = true()">
+                        <xsl:variable name="term" select="mods:roleTerm"/>
+                        
+                        <xsl:variable name="api-response" as="node()">
+                            <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/relators?term=', encode-for-uri($term))))"/>
+                        </xsl:variable>
+                        
+                        <xsl:if test="$api-response//xpf:string[@key = 'uri']">
+                            <xsl:element name="role">
+                                <xsl:element name="roleTerm">
+                                    <xsl:attribute name="type">text</xsl:attribute>
+                                    <xsl:attribute name="authority">marcrelator</xsl:attribute>
+                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
+                                    <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
+                                </xsl:element>
+                            </xsl:element>
+                        </xsl:if>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:copy-of select="self::node()"/>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -294,49 +352,29 @@
         <xsl:element name="typeOfResource">
             <xsl:choose>
                 <xsl:when test=". = 'text'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300263751</xsl:attribute>
-                    <xsl:text>texts (documents)</xsl:text>
+                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/txt</xsl:attribute>                    
                 </xsl:when>
                 <xsl:when test=". = 'cartographic'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300028052</xsl:attribute>
-                    <xsl:text>cartographic materials</xsl:text>
+                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/cri</xsl:attribute>
                 </xsl:when>
                 <xsl:when test=". = 'notated music'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300417622</xsl:attribute>
-                    <xsl:text>musical notation</xsl:text>
-                </xsl:when>
-                <xsl:when test=". = 'sound recording-nonmusical'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300028633</xsl:attribute>
-                    <xsl:text>sound recordings</xsl:text>
-                </xsl:when>
-                <xsl:when test=". = 'sound recording-musical'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300028633</xsl:attribute>
-                    <xsl:text>sound recordings</xsl:text>
-                </xsl:when>
+                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/ntm</xsl:attribute>
+                </xsl:when>                
                 <xsl:when test=". = 'still image'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300264387</xsl:attribute>
-                    <xsl:text>images (object genre)</xsl:text>
+                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/sti</xsl:attribute>
                 </xsl:when>
                 <xsl:when test=". = 'moving image'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300263857</xsl:attribute>
-                    <xsl:text>moving images</xsl:text>
+                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/tdi</xsl:attribute>
                 </xsl:when>
                 <xsl:when test=". = 'three dimensional object'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300117127</xsl:attribute>
-                    <xsl:text>artifacts (object genre)</xsl:text>
+                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/tdf</xsl:attribute>
                 </xsl:when>
                 <xsl:when test=". = 'software, multimedia'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300028566</xsl:attribute>
-                    <xsl:text>software</xsl:text>
-                </xsl:when>
-                <xsl:when test=". = 'mixed material'">
-                    <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300404821</xsl:attribute>
-                    <xsl:text>multiple materials (materials for groups)</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="."/>
-                </xsl:otherwise>
+                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/cop</xsl:attribute>
+                </xsl:when>                                
             </xsl:choose>
+            
+            <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
     
