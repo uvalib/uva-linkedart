@@ -282,9 +282,11 @@
     </xsl:template>
     
     <xsl:template match="mods:role">
+        
+        <!-- this will eliminate duplicate roleTerms when both text and code are used -->
         <xsl:choose>
             <xsl:when test="mods:roleTerm[@type = 'code' and @authority = 'marcrelator']">
-                <xsl:variable name="roleTerm" select="mods:roleTerm"/>
+                <xsl:variable name="roleTerm" select="mods:roleTerm[@type = 'code' and @authority = 'marcrelator']"/>
                 
                 <xsl:element name="role">
                     <xsl:element name="roleTerm">
@@ -298,7 +300,7 @@
             <xsl:otherwise>
                 <xsl:choose>
                     <xsl:when test="$resolver-on = true()">
-                        <xsl:variable name="term" select="mods:roleTerm"/>
+                        <xsl:variable name="term" select="if (mods:roleTerm[@type = 'text']) then mods:roleTerm[@type = 'text'] else mods:roleTerm[1]"/>
                         
                         <xsl:variable name="api-response" as="node()">
                             <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/relators?term=', encode-for-uri($term))))"/>
