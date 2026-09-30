@@ -72,7 +72,7 @@
             <identified_by>
                 <_array>
                     <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
-                    <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:identifier[@type = 'local']"/>
+                    <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:identifier[(@type = 'local' and contains(lower-case(@displayLabel), 'call number')) or@type = 'accession number']" mode="primary-identifier"/>
                 </_array>
             </identified_by>
 
@@ -132,7 +132,23 @@
                 </xsl:call-template>
             </xsl:if>
 
-            <!-- abstract -->
+            <!-- dimensions -->
+            <xsl:if test="mods:physicalDescription/mods:extent or mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent">
+                <xsl:call-template name="mods2la:parse-dimensions">
+                    <xsl:with-param name="extent">
+                        <xsl:choose>
+                            <xsl:when test="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent">
+                                <xsl:value-of select="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="mods:physicalDescription/mods:extent"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:if>
+            
+            <!-- textual statements: abstract and dimensions statement -->
             <xsl:if test="$information_object = 'VisualItem'">
                 <xsl:call-template name="mods2la:statements">
                     <xsl:with-param name="information_object" select="$information_object"/>
@@ -172,7 +188,6 @@
             <identified_by>
                 <_array>
                     <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
-                    <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:identifier[@type = 'local']"/>
                 </_array>
             </identified_by>
             
@@ -202,8 +217,9 @@
                         <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and child::*[@valueURI]]"/>
                         <!-- subjects that have top-level URIs with a single topic -->
                         <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and @valueURI][mods:topic]"/>
+                        <!-- TGN hierarchical geographic: structure like LCSH -->                      
                         
-                        <!-- TGN or Geonames subject places -->
+                        <!-- Geonames subject places -->
                         <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]"/>
                         <xsl:apply-templates select="mods:subject[@authority = 'tgn']/descendant::*[@valueURI]"/>
                     </_array>
@@ -239,24 +255,30 @@
         </_object>
     </xsl:template>
 
-    <xsl:template match="mods:identifier[@type = 'local']">
-        <xsl:if test="contains(lower-case(@displayLabel), 'call number')">
-            <_object>
-                <type>Identifier</type>
-                <content>
-                    <xsl:value-of select="."/>
-                </content>
-                <classified_as>
-                    <_array>
-                        <_object>
-                            <id>http://vocab.getty.edu/aat/300311706</id>
-                            <_label>call numbers</_label>
-                            <type>Type</type>
-                        </_object>
-                    </_array>
-                </classified_as>
-            </_object>
-        </xsl:if>
+    <xsl:template match="mods:identifier" mode="primary-identifier">
+        <_object>
+            <type>Identifier</type>
+            <content>
+                <xsl:value-of select="."/>
+            </content>
+            <classified_as>
+                <_array>
+                    <_object>
+                        <xsl:choose>
+                            <xsl:when test="@type = 'accession number'">
+                                <id>http://vocab.getty.edu/aat/300312355</id>
+                                <_label>accession numbers</_label>
+                            </xsl:when>
+                            <xsl:when test="contains(lower-case(@displayLabel), 'call number')">
+                                <id>http://vocab.getty.edu/aat/300311706</id>
+                                <_label>call numbers</_label>
+                            </xsl:when>
+                        </xsl:choose>
+                        <type>Type</type>
+                    </_object>
+                </_array>
+            </classified_as>
+        </_object>
     </xsl:template>
 
     <!-- classifications -->
@@ -926,6 +948,86 @@
                 </xsl:if>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    <!-- parse the extent statement to evaluate pieces tokenized by whitespace if they are numeric:
+        if there is at least one numeric value among pieces, then include the dimension property -->
+    <xsl:template name="mods2la:parse-dimensions">
+        <xsl:param name="extent"/>
+        
+        <xsl:variable name="pieces" select="tokenize($extent, ' ')"/>
+        
+        <xsl:variable name="values" as="node()">
+            <values>
+                <xsl:for-each select="$pieces">
+                    <xsl:if test=". castable as xs:decimal">
+                        <value>
+                            <xsl:value-of select="."/>
+                        </value>
+                    </xsl:if>
+                </xsl:for-each>
+            </values>
+        </xsl:variable>
+        
+        <xsl:if test="count($values/value) &gt; 0">
+            <dimension>
+                <_array>
+                    <xsl:for-each select="$values/value">
+                        <_object>
+                            <type>Dimension</type>
+                            <value><xsl:value-of select="."/></value>
+                            <classified_as>
+                                <_array>
+                                    <_object>
+                                        <type>Type</type>
+                                        <xsl:choose>
+                                            <xsl:when test="position() = 1">
+                                                <id>https://vocab.getty.edu/aat/300055644</id>
+                                                <_label>Height</_label>
+                                            </xsl:when>
+                                            <xsl:when test="position() = 2">
+                                                <id>https://vocab.getty.edu/aat/300055647</id>
+                                                <_label>Width</_label>
+                                            </xsl:when>
+                                            <xsl:when test="position() = 3">
+                                                <id>https://vocab.getty.edu/aat/300072633</id>
+                                                <_label>Depth</_label>
+                                            </xsl:when>
+                                        </xsl:choose>
+                                    </_object>
+                                </_array>
+                            </classified_as>
+                            
+                            <xsl:if test="contains($extent, 'in') or contains($extent, 'cm') or contains($extent, 'centimeter') or contains($extent, 'mm') or contains($extent, 'millimeter') or contains($extent, 'feet') or contains($extent, 'ft')">
+                                <unit>
+                                    <_object>
+                                        <type>MeasurementUnit</type>
+                                        <xsl:choose>
+                                            <xsl:when test="contains($extent, 'in')">
+                                                <id>https://vocab.getty.edu/aat/300379100</id>
+                                                <_label>inches</_label>
+                                            </xsl:when>
+                                            <xsl:when test="contains($extent, 'feet') or contains($extent, 'ft')">
+                                                <id>https://vocab.getty.edu/aat/300379101</id>
+                                                <_label>feet</_label>
+                                            </xsl:when>
+                                            <xsl:when test="contains($extent, 'mm') or contains($extent, 'millimeter')">
+                                                <id>https://vocab.getty.edu/aat/300379097</id>
+                                                <_label>millimeters</_label>
+                                            </xsl:when>
+                                            <xsl:when test="contains($extent, 'cm') or contains($extent, 'centimeter')">
+                                                <id>https://vocab.getty.edu/aat/300379098</id>
+                                                <_label>centimeters</_label>
+                                            </xsl:when>                                            
+                                        </xsl:choose>
+                                    </_object>
+                                </unit>
+                            </xsl:if>
+                        </_object>
+                    </xsl:for-each>
+                </_array>
+            </dimension>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template name="mods2la:typeOfResource">
