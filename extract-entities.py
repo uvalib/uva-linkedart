@@ -1,6 +1,6 @@
 """
 Author: Ethan Gruber
-Date: June 2026
+Date: October 2026
 Function: Read authority fields from list of MARC records to reconcile to URIs
 """
 

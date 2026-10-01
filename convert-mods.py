@@ -1,37 +1,38 @@
 """
 Author: Ethan Gruber
-Date: September 2026
-Function: Iterate through CSV with two columns (catalog_key and pid) to request MARC XML from API to convert to modsign2map
+Date: October 2026
+Function: Read a MODS file or directory of MODS files and apply the XSLT transformation to embed concept URIs,
+    then transform the enriched MODS into Linked Art JSON-LD and RDF/XML and Turtle
 """
 
-import csv, re, os, requests, subprocess, math, urllib.parse, time, glob
-from xml.etree import ElementTree as ET
+import sys, os, requests, subprocess, math, urllib.parse, time, glob, argparse
+from pathlib import Path
 from rdflib import Graph, plugin
 from rdflib.serializer import Serializer
 
 SAXON_PATH = "../saxon/SaxonHE12-4J/saxon-he-12.4.jar"
-ROWS = 100
 
-def transform_marcxml():
+def transform_mods(dir=None, file=None):
     
-    print("Transforming MARC to MODS")
+    print("Embedding URIs in MODS")
     
-    marcfile = "marc.xml"
-    modsfile = "mods.xml"
-
-    #convert MARC XML to MODS
-    #cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/MARC21slim2MODS3-7.xsl -s:marc/{marcfile} -o:mods/{modsfile}"
-    #result = subprocess.call(cmd, shell=True, text=True)
+    if dir:
+        path = dir
+        print(f"Combining MODS files in {dir} and adding PID, if missing")
+        
+    elif file:
+        path = file        
     
     #re-transform MODS to embed entity URIs and other minor normalization
-    #cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/embed_uris_in_mods.xsl -s:mods/{modsfile} -o:mods/{modsfile}"
+    #cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/embed_uris_in_mods.xsl -s:{path} -o:{path}"
     #result = subprocess.call(cmd, shell=True, text=True)
 
     print("Transforming MODS to Linked Art JSON-LD")
     
     #transform to Linked Art JSON-LD and RDF/XML
-    cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:mods/{modsfile} -o:json/objects.json"
-    result = subprocess.call(cmd, shell=True, text=True)
+    #cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:{path} -o:json/objects.json"
+    #result = subprocess.call(cmd, shell=True, text=True)
+    
     """
     print("Transforming MODS to Linked Art CIDOC-CRM RDF/XML")
     
@@ -44,99 +45,40 @@ def transform_marcxml():
     graph.serialize(destination="rdf/objects.ttl", format='text/turtle')
     """
 
-def download_marcxml(ckey_param, batch):
-    url = "https://ils.lib.virginia.edu/uhtbin/getMarc?ckey=" + ckey_param + "&type=xml"
-    
-    filename = "{:04d}".format(batch)
-    
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open("marc/" + filename + ".xml", 'wb') as file:
-            file.write(response.content)
-    else:
-        print('Failed to download file.')
-        
-def cleanup():        
-    #delete XML files
-    for filename in os.listdir('marc'):
-        if filename.endswith('.xml'):
-            file_path = os.path.join('marc', filename)
-            os.remove(file_path)
 
-#combine MARC XML files into one file for transformatino
-def combine_xml_files():
-    
-    print("Combining MARC batches into single MARC XML file")
-    
-    xml_files = glob.glob("marc/*.xml")
-    
-    combined = ET.Element('collection', attrib={"xmlns":"http://www.loc.gov/MARC21/slim"})
-    ET.indent(combined, space="\t", level=0)
-    
-    for xml_file in xml_files:
-        data = ET.parse(xml_file).getroot()
-        
-        if data.tag == 'collection':            
-            #append all MARC records into the root marc:collection element
-            for record in data.findall('.//{http://www.loc.gov/MARC21/slim}record'):
-                combined.append(record)
-        else:
-            combined.append(data)
-    
-    xml_data = ET.tostring(combined)
-    with open("marc/marc.xml", "wb") as f:
-        f.write(xml_data)
         
 def main():
-    ckeys = []
     
-    #id = "u5711721"
+    #accept input arguments in order to determine the file or directory transformation process
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--file", help="MODS file to process")
+    parser.add_argument("-d", "--dir", help="Process a directory of MODS files")
+    args = parser.parse_args()
     
-    #create xml folder if it doesn't exist
-    if not os.path.isdir("marc"):
-        os.makedirs("marc")
-    if not os.path.isdir("json"):
-        os.makedirs("json")
-    if not os.path.isdir("mods"):
-        os.makedirs("mods")
-        
-    cleanup()
-    
-    #enable testing on a single ckey
-    if 'id' in locals():
-        download_marcxml(id, batch=0)
+    if args.file and args.dir:
+        sys.exit("Only one of file or dir arguments is acceptable")
     else:
-        #read ckey column into list
-        with open('dpla_sirsi.csv', newline='') as file:
-            reader = csv.reader(file, delimiter=',', quotechar='"')
-            header = next(reader)
-            for row in reader:
-                ckey = row[1]
-                if ckey not in ckeys:
-                    ckeys.append(ckey)
+        #create necessary folders
+        if not os.path.isdir("json"):
+            os.makedirs("json")
+        if not os.path.isdir("rdf"):
+            os.makedirs("rdf")
         
-        #iterate through ckeys 100 at a time
-        num = len(ckeys)
-        page = 0 #start page at 0 for the beginning
-        while (page * ROWS) < num:
-            start = page * ROWS
-            end = (page + 1) * ROWS
-            
-            print("Page", str(page + 1), "of", str(math.ceil(num / ROWS)))
-            
-            ckey_param = ','.join(ckeys[start:end])
-            
-            #download_marcxml(ckey_param, batch=page + 1)
-            
-            page = page + 1
+        if args.file:
+            if os.path.exists(args.file):
+                transform_mods(file=args.file)
+            else:
+                sys.exit("File not found")
+        elif args.dir:
+            if os.path.exists(args.dir):
+                transform_mods(dir=args.dir)
+            else:
+                sys.exit("Directory not found")
+        else:
+            sys.exit("File or dir not set")
     
-    #combine all MARC XML into one file
-    #combine_xml_files()
-    
-    #transform batch of MARC XML into MODS and continue workflow
-    transform_marcxml()
-    
-    cleanup()
+    #enrich and transform MODS into Linked Open Datas
+    #transform_mods()
     
     
 
