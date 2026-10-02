@@ -4,16 +4,14 @@ Date: October 2026
 Function: Read authority fields from list of MARC records to reconcile to URIs
 """
 
-import csv, re, os, requests, subprocess, math, urllib, json, uuid, time, yaml
+import csv, re, os, requests, subprocess, math, urllib, json, uuid, time, yaml, argparse
 import xml.etree.ElementTree as ET
 from itertools import count
 
 #local functions
 from apilookups import get_marc_country, lookup_loc, lookup_getty, lookup_geonames
 
-PROCESS = ['genres']
-SAXON_PATH = "../saxon/SaxonHE12-4J/saxon-he-12.4.jar"
-ROWS = 100
+PROCESS = ['subjects']
 
 with open('config.yaml', 'r') as file:
     config = yaml.safe_load(file)
@@ -27,7 +25,7 @@ relators = {}
 marcCountries = {}
 name_concordance = []
 
-def process_marcxml(ckey):
+def extract_entities(file=None, dir=None):
     global names
     global name_concordance
     global subjects
@@ -35,21 +33,8 @@ def process_marcxml(ckey):
     global places
     global relators
     global marcCountries
-    
-    #first get MARC XML from API
-    url = "https://ils.lib.virginia.edu/uhtbin/getMarc?ckey=" + ckey + "&type=xml"    
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open('marc.xml', 'wb') as file:
-            file.write(response.content)
-    else:
-        print('Failed to download file.')
-    
-    #transform into MODS with official LOC stylesheet for enhanced normalization
-    cmd = 'java -jar ' + SAXON_PATH + ' -xsl:marc-to-mods/MARC21slim2MODS3-7.xsl -s:marc.xml -o:mods.xml'
-    result = subprocess.call(cmd, shell=True, text=True)
    
-    tree = ET.parse('mods.xml')
+    tree = ET.parse(file)
     root = tree.getroot()
     
     namespaces = {'mods': 'http://www.loc.gov/mods/v3'}
@@ -238,13 +223,6 @@ def process_marcxml(ckey):
                     places[id] = tuple
                     time.sleep(1)
 
-def cleanup():        
-    #delete XML files
-    if os.path.exists('mods.xml'):
-        os.remove('mods.xml')
-    if os.path.exists('marc.xml'):
-        os.remove('marc.xml')
-
 def main():
     global names
     global subjects
@@ -252,32 +230,27 @@ def main():
     global relators
     global places
     
-    cleanup()
+    #accept input arguments in order to determine the file or directory transformation process
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", "--file", help="MODS file to process")
+    parser.add_argument("-d", "--dir", help="Process a directory of MODS files")
+    args = parser.parse_args()
     
-    #read ckey column into list
-    with open('dpla_sirsi.csv', newline='') as file:
-        reader = csv.reader(file, delimiter=',', quotechar='"')
-        header = next(reader)
-        for row in reader:
-            ckey = row[1]
-            if ckey not in ckeys:
-                ckeys.append(ckey)
-                
-    
-    #iterate through ckeys 1000 at a time
-    num = len(ckeys)
-    page = 0
-    while (page * ROWS) < num:
-        start = page * ROWS
-        end = (page + 1) * ROWS
-        
-        print("Page", str(page + 1), "of", str(math.ceil(num / ROWS)))
-        
-        ckey_param = ','.join(ckeys[start:end])
-        
-        process_marcxml(ckey_param)
-        
-        page = page + 1
+    if args.file and args.dir:
+        sys.exit("Only one of file or dir arguments is acceptable")
+    else:        
+        if args.file:
+            if os.path.exists(args.file):
+                extract_entities(file=args.file)
+            else:
+                sys.exit("File not found")
+        elif args.dir:
+            if os.path.exists(args.dir):
+                extract_entities(dir=args.dir)
+            else:
+                sys.exit("Directory not found")
+        else:
+            sys.exit("File or dir not set")
     
     #lookup names if activated
     if 'names' in PROCESS:
@@ -342,8 +315,7 @@ def main():
                 if tuple is not None:        
                     writer.writerow((key, tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5]))
     
-    print("Process completed. Writing CSV files and removing XML.")
-    cleanup()
+    print("Process completed. Writing CSV files.")
     
 if __name__=="__main__":
     main()
