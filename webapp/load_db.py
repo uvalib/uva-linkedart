@@ -35,7 +35,7 @@ def create_tables():
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             
-            tables = ['cpf', 'genres', 'relators', 'subjects']
+            tables = ['cpf', 'genres', 'relators', 'subjects', 'materials']
             
             #create table if it doesn't exist
             for table in tables:
@@ -83,7 +83,7 @@ def file_valid(filename):
     return os.path.isfile(filename)
         
 def table_valid(table):
-    if table == 'subjects' or table == 'cpf' or table == 'genres' or table == 'places' or table == 'relators':
+    if table == 'subjects' or table == 'cpf' or table == 'genres' or table == 'places' or table == 'relators' or table == 'materials':
         return True
     else:
         return False
@@ -92,7 +92,7 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="Filename, including directory path and .csv extension")
-    parser.add_argument("-t", "--table", help="Table name to upload into: 'cpf', 'genres', 'relators', 'places', 'subjects'")
+    parser.add_argument("-t", "--table", help="Table name to upload into: 'cpf', 'genres', 'relators', 'places', 'subjects', 'materials'")
     args = parser.parse_args()
     
     #validate arguments

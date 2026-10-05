@@ -29,6 +29,7 @@ def lookup_loc(term, scheme, rdftype, subdivision):
     schemes = {"lcnaf": "scheme:http://id.loc.gov/authorities/names", 
                "lcsh": "scheme:http://id.loc.gov/authorities/subjects", 
                "lcgft": "scheme:http://id.loc.gov/authorities/genreForms",
+               "lctgm": "scheme:http://id.loc.gov/authorities/graphicMaterials",
                "relators": "scheme:http://id.loc.gov/vocabulary/relators", 
                "lcsh_lcnaf": "scheme:http://id.loc.gov/authorities/names OR scheme:http://id.loc.gov/authorities/subjects"}
     
@@ -37,7 +38,7 @@ def lookup_loc(term, scheme, rdftype, subdivision):
     else:
         url = "http://id.loc.gov/search/?q=" + urllib.parse.quote('"' + term + '"') + "&q=" + schemes[scheme] + "&q=" + rdftype + "&format=atom-xml"
     
-    print("Looking up", term)
+    print(f"Querying {term} in Library of Congress")
     
     headers = {"User-Agent": "EntityNormalization/UVALibrary"}
     
@@ -61,7 +62,7 @@ def lookup_loc(term, scheme, rdftype, subdivision):
     return tuple
 
 def lookup_getty(term):
-    print("Querying", term)
+    print(f"Querying {term} in Getty AAT")
     
     url = "https://services.getty.edu/vocab/reconcile/"
     
@@ -83,7 +84,7 @@ def lookup_getty(term):
 def lookup_geonames(query, featureClass):
     geonames_key = config["geonames_key"]
     
-    print("Querying", query)
+    print(f"Querying {query} in Geonames")
     
     if featureClass is None:
         url = "http://api.geonames.org/searchJSON?formatted=true&q=" + urllib.parse.quote(query) + "&maxRows=10&lang=en&username=" + geonames_key
@@ -117,6 +118,9 @@ def lookup_geonames(query, featureClass):
             tuple = (query, obj['name'], uri, countryName, adminName, obj['fcl'])
         
             return tuple
+        
+def lookup_wikidata(term):
+    print(f"Querying {term} in Wikidata")
     
 def test_geographic():
     xml = """

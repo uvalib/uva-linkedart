@@ -31,43 +31,8 @@
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
                 
-                <xsl:variable name="term">
-                    <xsl:choose>
-                        <xsl:when test="mods:namePart[@type = 'given'] and mods:namePart[@type = 'family']">
-                            <xsl:value-of select="mods:namePart[@type = 'family']"/>
-                            
-                            <!-- insert comma separator between last and first name, if applicable -->
-                            <xsl:choose>
-                                <xsl:when test="ends-with(mods:namePart[@type = 'family'], ',')">
-                                    <xsl:text> </xsl:text>
-                                </xsl:when>
-                                <xsl:otherwise>
-                                    <xsl:text>, </xsl:text>
-                                </xsl:otherwise>
-                            </xsl:choose>
-                            
-                            <xsl:value-of select="mods:namePart[@type = 'given']"/>
-                            
-                            <!-- insert a comma between last name and date if applicable -->
-                            <xsl:if test="mods:namePart[@type = 'date']">
-                                <xsl:choose>
-                                    <xsl:when test="ends-with(mods:namePart[@type = 'given'], ',')">
-                                        <xsl:text> </xsl:text>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:text>, </xsl:text>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                                
-                                <xsl:value-of select="mods:namePart[@type = 'date']"/>
-                            </xsl:if>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="string-join(mods:namePart, ' ')"/>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:variable>
-                
+                <!-- the lookup key as defined in extract-entities.py is nameParts joined by single whitespace -->
+                <xsl:variable name="term" select="string-join(mods:namePart, ' ')"/>
 
                 <xsl:variable name="api-response" as="node()">
                     <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/cpf?term=', encode-for-uri($term))))"/>
