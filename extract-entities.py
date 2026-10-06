@@ -4,7 +4,7 @@ Date: October 2026
 Function: Read authority fields from list of MARC records to reconcile to URIs
 """
 
-import csv, re, os, requests, subprocess, math, urllib, json, uuid, time, yaml, argparse
+import sys, csv, re, os, urllib, uuid, time, yaml, argparse
 import xml.etree.ElementTree as ET
 from itertools import count
 
@@ -54,6 +54,8 @@ def extract_entities(record):
     global materials
     global techniques
     global marcCountries
+    
+    global provenance
     
     namespaces = {'mods': 'http://www.loc.gov/mods/v3'}
     
@@ -135,7 +137,7 @@ def extract_entities(record):
                         
             else:
                 #look up any subject that isn't @authority = 'lcsh' in Wikidata
-                print(f"TODO: Wikidata lookup")
+                #print(f"TODO: Wikidata lookup")
     
     if 'relators' in PROCESS:
         for relator in record.findall('.//mods:roleTerm', namespaces):
@@ -320,7 +322,8 @@ def write_csv():
     global places
     global cpf
     global materials
-    global techniques
+    global techniques      
+    global provenance
     
     #write a csv file for each concept type defined in the PROCESS constant
     if 'names' in PROCESS:
@@ -368,6 +371,7 @@ def write_csv():
             for key, tuple in subjects.items():
                 if tuple is not None:        
                     writer.writerow((key, tuple[0], tuple[1], tuple[2]))
+                
     if 'genres' in PROCESS:
         with open('genres.csv', 'w', newline='', encoding="utf-8") as file:
             writer = csv.writer(file)
