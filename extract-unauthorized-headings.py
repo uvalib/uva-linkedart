@@ -44,6 +44,9 @@ def main():
                         print("Removing:", term)
                         subject.remove(part)      
                         updated = True
+                    elif term.strip() = "":
+                        subject.remove(part)      
+                        updated = True
                     
                     position += 1
                     
