@@ -13,7 +13,9 @@ def main():
     
     un_headings = []
     
-    path = Path(r"C:\Users\ewg4x\projects\tracksys-mods\temp")
+    #C:\Users\ewg4x\projects\tracksys-mods\temp
+    
+    path = Path(r"/usr/local/projects/tracksys-mods")
     xml_files = glob.glob(os.path.join(path, "*.xml"))
     
     #for each MODS file in the folder, look for terms that are not in subject[@authority = 'lcsh']
@@ -27,7 +29,11 @@ def main():
                 
         namespaces = {'mods': 'http://www.loc.gov/mods/v3'}
         
-        collection = root.find("mods:relatedItem[@displayLabel = 'Part of']/mods:titleInfo/mods:title", namespaces).text
+        collection = root.find("mods:relatedItem[@displayLabel = 'Part of']", namespaces)
+        if collection is not None:
+            collectionTitle = collection.find("mods:titleInfo/mods:title", namespaces).text
+        else:
+            collectionTitle = ""
         
         for subject in root.findall('mods:subject', namespaces):
             if subject.get('authority') is None:
@@ -36,7 +42,7 @@ def main():
                     term = part.text
                     
                     #Jackson Davis records use a category qualifier in topic[2]
-                    if "Jackson Davis" in collection and position == 2:
+                    if "Jackson Davis" in collectionTitle and position == 2:
                         print("Removing:", term)
                         subject.remove(part)      
                         updated = True
@@ -44,7 +50,7 @@ def main():
                         print("Removing:", term)
                         subject.remove(part)      
                         updated = True
-                    elif term.strip() = "":
+                    elif term.strip() == "":
                         subject.remove(part)      
                         updated = True
                     

@@ -7,6 +7,7 @@ Function: Functions for looking terms up in various LOD vocabulary systems, such
 import requests, urllib, json, yaml
 import xml.etree.ElementTree as ET
 from joblib._multiprocessing_helpers import name
+from difflib import SequenceMatcher
 
 with open('config.yaml', 'r') as file:
     config = yaml.safe_load(file)
@@ -29,7 +30,7 @@ def lookup_loc(term, scheme, rdftype, subdivision):
     schemes = {"lcnaf": "scheme:http://id.loc.gov/authorities/names", 
                "lcsh": "scheme:http://id.loc.gov/authorities/subjects", 
                "lcgft": "scheme:http://id.loc.gov/authorities/genreForms",
-               "lctgm": "scheme:http://id.loc.gov/authorities/graphicMaterials",
+               "lctgm": "scheme:http://id.loc.gov/vocabulary/graphicMaterials",
                "relators": "scheme:http://id.loc.gov/vocabulary/relators", 
                "lcsh_lcnaf": "scheme:http://id.loc.gov/authorities/names OR scheme:http://id.loc.gov/authorities/subjects"}
     
@@ -47,17 +48,27 @@ def lookup_loc(term, scheme, rdftype, subdivision):
     
     namespaces = {'atom': 'http://www.w3.org/2005/Atom'}
     
-    entry = root.find('.//atom:entry', namespaces)
+    tuple = (term, '', '')
     
-    tuple = ()
-    
-    if entry is not None:    
-        title = entry.find('atom:title', namespaces).text  
-        link = entry.find('atom:link', namespaces).get('href')
+    #skip string matching on relators due to abbreviations
+    if scheme == "relators":
+        entry = root.find('.//atom:entry', namespaces)
+        if entry is not None:
+            title = entry.find('atom:title', namespaces).text  
+            link = entry.find('atom:link', namespaces).get('href')
             
-        tuple = (term, title, link)                
+            tuple = (term, title, link)
     else:
-        tuple = (term, '', '')
+        threshold = 0.8
+        for entry in root.findall('.//atom:entry', namespaces):
+            if entry is not None:    
+                title = entry.find('atom:title', namespaces).text
+                link = entry.find('atom:link', namespaces).get('href')
+                    
+                sim = SequenceMatcher(a=term, b=title).ratio()    
+                if sim >= threshold:
+                    tuple = (term, title, link)                      
+                    return tuple
         
     return tuple
 

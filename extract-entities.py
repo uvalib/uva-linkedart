@@ -136,8 +136,24 @@ def extract_entities(record):
                     del term
                         
             else:
-                #look up any subject that isn't @authority = 'lcsh' in Wikidata
-                #print(f"TODO: Wikidata lookup")
+                for part in subject:
+                    term = part.text
+                    
+                    id = str(uuid.uuid3(uuid.NAMESPACE_URL, "topic:" + term))
+                    if id not in subjects:                    
+                        #look up any subject that isn't @authority = 'lcsh' in LC first. If no response, then query Wikidata
+                        tuple = lookup_loc(term=term, scheme='lcsh_lcnaf', rdftype='rdftype:Topic OR rdftype:Name OR rdftype:Geographic', subdivision="-memberOf:http://id.loc.gov/authorities/subjects/collection_GeographicSubdivisions")
+                        
+                        #if there is a label extracted from LC, then add the term to the subject dict
+                        if len(tuple[1]) > 0:
+                            subjects[id] = tuple
+                            time.sleep(1)
+                        else:
+                            #Query Wikidata
+                            print(f"No match for {term} in Library of Congress")
+                            print(tuple)
+                            
+                    del term
     
     if 'relators' in PROCESS:
         for relator in record.findall('.//mods:roleTerm', namespaces):
