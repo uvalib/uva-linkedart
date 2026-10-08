@@ -4,14 +4,17 @@ Date: October 2026
 Function: Read authority fields from list of MARC records to reconcile to URIs
 """
 
-import sys, csv, re, os, urllib, uuid, time, yaml, argparse
+import sys, csv, re, os, urllib, uuid, time, yaml, glob, argparse
 import xml.etree.ElementTree as ET
+from pathlib import Path
 from itertools import count
 
 #local functions
-from apilookups import get_marc_country, lookup_loc, lookup_getty, lookup_geonames
+from apilookups import get_marc_country, lookup_loc, lookup_getty, lookup_geonames, lookup_wikidata
 
 PROCESS = ['names', 'subjects', 'genres', 'relators', 'places', 'materials', 'techniques']
+
+namespaces = {'mods': 'http://www.loc.gov/mods/v3'}
 
 with open('config.yaml', 'r') as file:
     config = yaml.safe_load(file)
@@ -29,19 +32,21 @@ marcCountries = {}
 #simpler lists or dicts for writing to text/CSV for further evaluation; no external lookups
 provenance = []
 
-#evaluate the MODS file to determin whether it is a combined modsCollection or a standalone record
-def parse_mods(file=None, dir=None):
-   
+#evaluate the MODS file to determine whether it is a combined modsCollection or a standalone record
+def parse_mods(file):
+    
+    print(f"Processing {file}")
+           
     tree = ET.parse(file)
     root = tree.getroot()
     
-    namespaces = {'mods': 'http://www.loc.gov/mods/v3'}
-    
     if root.tag == "{http://www.loc.gov/mods/v3}mods":
         extract_entities(root)
-    else:
+    elif root.tag == "{http://www.loc.gov/mods/v3}modsCollection":
         for record in root.findall('.//mods:mods', namespaces):
             extract_entities(record)
+    else:
+        print(f"{file} is not MODS")        
     
 #extract entities from mods:mods    
 def extract_entities(record):
@@ -56,8 +61,6 @@ def extract_entities(record):
     global marcCountries
     
     global provenance
-    
-    namespaces = {'mods': 'http://www.loc.gov/mods/v3'}
     
     #only process entity-record relationship for names
     if 'names' in PROCESS:        
@@ -137,21 +140,22 @@ def extract_entities(record):
                         
             else:
                 for part in subject:
-                    term = part.text
+                    term = part.text.strip()
                     
-                    id = str(uuid.uuid3(uuid.NAMESPACE_URL, "topic:" + term))
-                    if id not in subjects:                    
-                        #look up any subject that isn't @authority = 'lcsh' in LC first. If no response, then query Wikidata
-                        tuple = lookup_loc(term=term, scheme='lcsh_lcnaf', rdftype='rdftype:Topic OR rdftype:Name OR rdftype:Geographic', subdivision="-memberOf:http://id.loc.gov/authorities/subjects/collection_GeographicSubdivisions")
-                        
-                        #if there is a label extracted from LC, then add the term to the subject dict
-                        if len(tuple[1]) > 0:
-                            subjects[id] = tuple
-                            time.sleep(1)
-                        else:
-                            #Query Wikidata
-                            print(f"No match for {term} in Library of Congress")
-                            print(tuple)
+                    if len(term) > 0:
+                        id = str(uuid.uuid3(uuid.NAMESPACE_URL, "topic:" + term))
+                        if id not in subjects:                    
+                            #look up any subject that isn't @authority = 'lcsh' in LC first. If no response, then query Wikidata
+                            tuple = lookup_loc(term=term, scheme='lcsh_lcnaf', rdftype='rdftype:Topic OR rdftype:Name OR rdftype:Geographic', subdivision="-memberOf:http://id.loc.gov/authorities/subjects/collection_GeographicSubdivisions")
+                            
+                            #if there is a label extracted from LC, then add the term to the subject dict
+                            if len(tuple[1]) > 0:
+                                subjects[id] = tuple
+                                time.sleep(1)
+                            else:
+                                #Query Wikidata
+                                tuple = lookup_wikidata(term=term)
+                                subjects[id] = tuple
                             
                     del term
     
@@ -197,39 +201,40 @@ def extract_entities(record):
                          
     if 'places' in PROCESS:
         
-        if record.find("mods:relatedItem[@type = 'original']", namespaces) is not None:
-            originInfo = record.find("mods:relatedItem[@type = 'original']", namespaces)
+        if record.find("mods:relatedItem[@type = 'original']/mods:originInfo", namespaces) is not None:
+            originInfo = record.find("mods:relatedItem[@type = 'original']/mods:originInfo", namespaces)
         else:
             originInfo = record.find("mods:originInfo", namespaces)
         
-        #look up the marc country code in LOC in order to use the preferred label as a search term for Geonames
-        for place in originInfo.findall('mods:place/mods:placeTerm', namespaces):                
-            if place.get('type') == 'code' and place.get('authority') == 'marccountry':
-                marcCountry = place.text
-                #only look up the MARC country code once
-                if marcCountry not in marcCountries:
-                    marcCountries[marcCountry] = get_marc_country(marcCountry)                    
-            elif place.get('type') == 'text':
-                term = place.text
-            
-        if "marcCountry" in locals() and "term" in locals():    
-            #ignore unknown place
-            if marcCountry != 'xx':
-                query = term + ', ' + marcCountries[marcCountry]["prefLabel"]
-                id = str(uuid.uuid3(uuid.NAMESPACE_URL, marcCountry + ":" + term))
+        if originInfo is not None:
+            #look up the marc country code in LOC in order to use the preferred label as a search term for Geonames
+            for place in originInfo.findall('mods:place/mods:placeTerm', namespaces):                
+                if place.get('type') == 'code' and place.get('authority') == 'marccountry':
+                    marcCountry = place.text
+                    #only look up the MARC country code once
+                    if marcCountry not in marcCountries:
+                        marcCountries[marcCountry] = get_marc_country(marcCountry)                    
+                elif place.get('type') == 'text':
+                    term = place.text
                 
+            if "marcCountry" in locals() and "term" in locals():    
+                #ignore unknown place
+                if marcCountry != 'xx':
+                    query = term + ', ' + marcCountries[marcCountry]["prefLabel"]
+                    id = str(uuid.uuid3(uuid.NAMESPACE_URL, marcCountry + ":" + term))
+                    
+                    if id not in places:                        
+                        tuple = lookup_geonames(query, featureClass=None) 
+                        places[id] = tuple
+                        time.sleep(1)
+            elif "term" in locals():
+                query = term
+                id = str(uuid.uuid3(uuid.NAMESPACE_URL, term))
+                    
                 if id not in places:                        
                     tuple = lookup_geonames(query, featureClass=None) 
                     places[id] = tuple
                     time.sleep(1)
-        elif "term" in locals():
-            query = term
-            id = str(uuid.uuid3(uuid.NAMESPACE_URL, term))
-                
-            if id not in places:                        
-                tuple = lookup_geonames(query, featureClass=None) 
-                places[id] = tuple
-                time.sleep(1)
         
         #next, look for geographic subjects
         for geo in record.findall('mods:subject/mods:hierarchicalGeographic', namespaces):
@@ -303,32 +308,34 @@ def extract_entities(record):
             physDesc = record.find("mods:relatedItem[@type = 'original']/mods:physicalDescription", namespaces)
         else:
             physDesc = record.find("mods:physicalDescription", namespaces)
-            
-        for material in physDesc.findall("mods:form[@type = 'material']", namespaces):
-            term = material.text   
-            
-            id = str(uuid.uuid3(uuid.NAMESPACE_URL, term))
-            if id not in materials:
-                tuple = lookup_getty(term=term)
-                materials[id] = tuple
-                time.sleep(1) 
-            del term
+        
+        if physDesc is not None:    
+            for material in physDesc.findall("mods:form[@type = 'material']", namespaces):
+                term = material.text   
+                
+                id = str(uuid.uuid3(uuid.NAMESPACE_URL, term))
+                if id not in materials:
+                    tuple = lookup_getty(term=term)
+                    materials[id] = tuple
+                    time.sleep(1) 
+                del term
                 
     if 'techniques' in PROCESS:
         if record.find("mods:relatedItem[@type = 'original']", namespaces) is not None:
             physDesc = record.find("mods:relatedItem[@type = 'original']/mods:physicalDescription", namespaces)
         else:
             physDesc = record.find("mods:physicalDescription", namespaces)
-            
-        for technique in physDesc.findall("mods:form[@type = 'technique']", namespaces):
-            term = technique.text   
-            
-            id = str(uuid.uuid3(uuid.NAMESPACE_URL, term))
-            if id not in techniques:
-                tuple = lookup_getty(term=term)
-                techniques[id] = tuple
-                time.sleep(1)                 
-            del term
+        
+        if physDesc is not None:    
+            for technique in physDesc.findall("mods:form[@type = 'technique']", namespaces):
+                term = technique.text   
+                
+                id = str(uuid.uuid3(uuid.NAMESPACE_URL, term))
+                if id not in techniques:
+                    tuple = lookup_getty(term=term)
+                    techniques[id] = tuple
+                    time.sleep(1)                 
+                del term
                             
 
 def write_csv():
@@ -425,7 +432,13 @@ def main():
                 sys.exit("File not found")
         elif args.dir:
             if os.path.exists(args.dir):
-                parse_mods(dir=args.dir)
+                path = Path(args.dir)
+                xml_files = glob.glob(os.path.join(path, "*.xml"))
+                if len(xml_files) > 0:
+                    for xml_file in xml_files:
+                        parse_mods(file=xml_file)
+                else:
+                    sys.exit("No XML files found in directory")
             else:
                 sys.exit("Directory not found")
         else:

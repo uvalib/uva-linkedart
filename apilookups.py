@@ -133,6 +133,23 @@ def lookup_geonames(query, featureClass):
 def lookup_wikidata(term):
     print(f"Querying {term} in Wikidata")
     
+    url = "https://wikidata-reconciliation.wmcloud.org/en/api"
+    
+    headers = {"User-Agent": "EntityNormalization/UVALibrary"}
+    
+    response = requests.get(url + "?queries=" + '{"q0": {"query":"' + urllib.parse.quote(term) + '", "type": "Q35120", "limit": 10}}', headers=headers)
+    
+    data = response.json()
+    
+    if "q0" in data:
+        for result in data["q0"]["result"]:
+            if result["score"] >= 80:
+                tuple = (term, result["name"], "http://www.wikidata.org/entity/" + result["id"])
+        
+                return tuple
+        
+    return (term, '', '')
+    
 def test_geographic():
     xml = """
     <mods xmlns="http://www.loc.gov/mods/v3">
