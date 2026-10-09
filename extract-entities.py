@@ -12,7 +12,8 @@ from itertools import count
 #local functions
 from apilookups import get_marc_country, lookup_loc, lookup_getty, lookup_geonames, lookup_wikidata
 
-PROCESS = ['names', 'subjects', 'genres', 'relators', 'places', 'materials', 'techniques']
+#available processes: ['names', 'subjects', 'genres', 'relators', 'places', 'materials', 'techniques']
+PROCESS = ['places']
 
 namespaces = {'mods': 'http://www.loc.gov/mods/v3'}
 

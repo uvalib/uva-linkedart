@@ -1,0 +1,10 @@
+ID,Literal Value,Preferred Label,URI
+42882f50-ddd9-3f09-9b65-881e797d39ed,photographer,photographer,http://id.loc.gov/vocabulary/relators/pht
+29aedd2c-3b2c-3a8e-bd8e-3a94659856c5,pht,photographer,http://id.loc.gov/vocabulary/relators/pht
+3322c32c-263a-3690-a6d9-00cd333c3fe7,art,artist,http://id.loc.gov/vocabulary/relators/art
+71e5b8a8-4698-32fd-8f5a-1bbe93ed494d,Artist,artist,http://id.loc.gov/vocabulary/relators/art
+9370b63a-947c-3998-b4f5-543d5fdfbee9,Photographer,photographer,http://id.loc.gov/vocabulary/relators/pht
+932e5e1c-b959-3879-88f9-cb3e382f63d6,Manufacturer,manufacturer,http://id.loc.gov/vocabulary/relators/mfr
+5205599f-429d-38e4-8e6b-27d2bee81849,mfr,manufacturer,http://id.loc.gov/vocabulary/relators/mfr
+063f988e-d4b6-3e90-9beb-246c4380f53a,artist,artist,http://id.loc.gov/vocabulary/relators/art
+8be31f4f-4f62-372d-b72e-df0a6bbafc03,egr,engraver,http://id.loc.gov/vocabulary/relators/egr
