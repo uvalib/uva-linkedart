@@ -1,6 +1,6 @@
 """
 Author: Ethan Gruber
-Date: July 2026
+Date: October 2026
 Function: Generate RDF for concepts connected to Linked Art/CIDOC-CRM objects
 """
 
@@ -1038,8 +1038,8 @@ def main():
     if args.table:
         table = args.table
         
-        #load place types from CSV when processing the places table
-        if table == 'places':
+        #load place types from CSV when processing the places table, as well as subjects table, as Geonames URIs may be used as subjects or LCNAF places may link to Geonames via Wikidata
+        if table == 'places' or table == 'subjects':
             with open('geonames_feature_codes.csv', 'r') as file:
                 reader = csv.DictReader(file)
                 place_types = list(reader)

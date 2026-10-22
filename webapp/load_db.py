@@ -17,6 +17,7 @@ def create_tables():
         term text NOT NULL, 
         preferred_label text, 
         uri text
+        type text
     );
     """
     
@@ -60,7 +61,7 @@ def insert_into_db(table, row):
         if table == 'places':
             cursor.execute("INSERT INTO " + table + "(id, term, preferred_label, uri, countryName, adminName, fcl) VALUES(?, ?, ?, ?, ?, ?, ?)", data)
         else:
-            cursor.execute("INSERT INTO " + table + "(id, term, preferred_label, uri) VALUES(?, ?, ?, ?)", data)
+            cursor.execute("INSERT INTO " + table + "(id, term, preferred_label, uri, type) VALUES(?, ?, ?, ?, ?)", data)
             
         conn.commit()
         
