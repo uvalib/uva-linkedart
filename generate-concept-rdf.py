@@ -1080,7 +1080,7 @@ def main():
         os.makedirs("rdf")
     
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--table", help="Table name to extract entities from: 'cpf', 'genres', 'relators', 'places', 'subjects'")
+    parser.add_argument("-t", "--table", help="Table name to extract entities from: 'cpf', 'genres', 'relators', 'places', 'subjects', 'materials'")
     parser.add_argument("-i", "--id", help="ID (UUID) of row to test RDF generation to stdout (not written to file)")
     args = parser.parse_args()
     
