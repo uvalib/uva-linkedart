@@ -37,13 +37,15 @@ def query_table(table: str, id: Union[str, None] = None, term: Union[str, None] 
         if id:
             cur.execute('SELECT id,preferred_label,uri FROM ' + table + ' WHERE id =?', (id,))
         elif term:
-            cur.execute('SELECT id,preferred_label,uri FROM ' + table + ' WHERE term =?', (term,))
+            cur.execute('SELECT id,preferred_label,uri,type FROM ' + table + ' WHERE term =?', (term,))
     
         row = cur.fetchone()
         if row:
             object = {"label": row[1]}
             if row[2]:
                 object["uri"] = row[2]
+            if row[3]:
+                object["type"] = row[3]                
             output.append(object)
         conn.close()
         
