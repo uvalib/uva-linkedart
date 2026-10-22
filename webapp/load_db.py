@@ -1,6 +1,6 @@
 """
 Author: Ethan Gruber
-Date modified: July 2026
+Date modified: October 2026
 Function: Load CSV files into appropriate SQLite table for the entity normalization webapp
 """
 
@@ -16,7 +16,7 @@ def create_tables():
         id text PRIMARY KEY,
         term text NOT NULL, 
         preferred_label text, 
-        uri text
+        uri text,
         type text
     );
     """

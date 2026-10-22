@@ -19,17 +19,23 @@ place_type_uris = []
 #this is for loading concordances from CSV
 #wd_metadata = {}
 
-def extract_table(table):
+def extract_table(table, id = None):
     
-    sql = """SELECT DISTINCT uri, preferred_label
-    FROM TABLE
-    """
     connect = sqlite3.connect(DATABASE)
     cursor = connect.cursor()
     
-    #fetch bibs
-    cursor.execute(sql.replace("TABLE", table))
-    rows = cursor.fetchall()
+    if id is not None:
+        sql = """SELECT DISTINCT uri, preferred_label, type
+        FROM TABLE WHERE id = "ID"
+        """
+        cursor.execute(sql.replace("TABLE", table).replace("ID", id))
+        rows = cursor.fetchall()
+    else:
+        sql = """SELECT DISTINCT uri, preferred_label, type
+        FROM TABLE
+        """
+        cursor.execute(sql.replace("TABLE", table))
+        rows = cursor.fetchall()
     
     process_rows(table, rows)
     
@@ -38,8 +44,8 @@ def extract_table(table):
         print("Generating metadata for geographic feature types")
         generate_feature_types(place_types)
     
-    generate_rdf(table, entities)
-
+    generate_rdf(table, entities, id)
+    
 #process all the rows in the SQLite table into a data dictionary with properties to be mapped into RDF in a subsequent function
 def process_rows(table, rows):
     global entities
@@ -49,13 +55,31 @@ def process_rows(table, rows):
     for concept in rows:
         if len(concept[0]) > 0:
             uri = concept[0]
-            prefLabel = concept[1]
+            prefLabel = concept[1]            
+            depth = 0
             
             print(f"Processing {i + 1} of {len(rows)}, {uri}: {prefLabel}")
             
             #only create unique RDF for a concept; the same URI may be used for small variations of strings
-            if uri not in entities:
-                process_concept(table, uri, prefLabel)
+            if uri not in entities:                
+                process_concept(table, depth, uri, prefLabel)
+                
+                #set type of concept metadata for subjects that use Wikidata URIs, since they cannot easily be extracted
+                if table == "subjects" and "wikidata.org" in uri:
+                    type = concept[2]
+                    
+                    match type:
+                        case "CorporateName":
+                            entities[uri]["type"] = "crm:E74_Group"
+                        case "FamilyName":
+                            entities[uri]["type"] = "crm:E74_Group"
+                        case "PersonalName":
+                            entities[uri]["type"] = "crm:E21_Person"
+                        case "Geographic":
+                            entities[uri]["type"] = "crm:E53_Place"
+                        case _:
+                            entities[uri]["type"] = "crm:E55_Type"
+                        
                 
                 i += 1
     
@@ -75,42 +99,43 @@ def process_rows(table, rows):
         metadata["matches"] = ["http://www.wikidata.org/entity/Q6581072"]
         entities[female] = metadata
     
-    #reprocess prefLabels for places after all place hierarchies have been labeled. Turn place names into AACR2 compatible strings    
-    if table == 'places':
+    #reprocess prefLabels for Geonames-derived places after all place hierarchies have been labeled. Turn place names into AACR2 compatible strings    
+    if table == 'places' or table == 'subjects':
         for uri, metadata in entities.items():
-            name = metadata["geo:name"]
-            
-            #countries
-            if "A.PCL" in metadata["geo:fcode"]:
-                metadata["prefLabel"] = name
-            elif metadata["geo:fcode"] == "A.ADM1":
-                metadata["prefLabel"] = name
-            else:
-                #some places, like large regions, oceans, etc. will not have a parent country
-                if "geo:parentCountry" in metadata:
-                    #evaluate U.S. or Canada to extract the state
-                    if  metadata["geo:parentCountry"] == "https://sws.geonames.org/6252001/" or metadata["geo:parentCountry"] == "https://sws.geonames.org/6251999/":
-                        if "geo:ADM1" in metadata:
-                            parentURI = metadata["geo:ADM1"]
-                            parentMetadata = entities[parentURI]
-                            abbr = abbreviate_adm1(name=parentMetadata["geo:name"])
-                            
-                            metadata["prefLabel"] = f"{name} ({abbr})"   
+            if "geonames.org" in uri:
+                name = metadata["geo:name"]
+                
+                #countries
+                if "A.PCL" in metadata["geo:fcode"]:
+                    metadata["prefLabel"] = name
+                elif metadata["geo:fcode"] == "A.ADM1":
+                    metadata["prefLabel"] = name
+                else:
+                    #some places, like large regions, oceans, etc. will not have a parent country
+                    if "geo:parentCountry" in metadata:
+                        #evaluate U.S. or Canada to extract the state
+                        if  metadata["geo:parentCountry"] == "https://sws.geonames.org/6252001/" or metadata["geo:parentCountry"] == "https://sws.geonames.org/6251999/":
+                            if "geo:ADM1" in metadata:
+                                parentURI = metadata["geo:ADM1"]
+                                parentMetadata = entities[parentURI]
+                                abbr = abbreviate_adm1(name=parentMetadata["geo:name"])
+                                
+                                metadata["prefLabel"] = f"{name} ({abbr})"   
+                            else:
+                                parentMetadata = entities[metadata["geo:parentCountry"]]
+                                countryName = parentMetadata["geo:name"]
+                                
+                                metadata["prefLabel"] = f"{name} ({countryName})"                 
                         else:
                             parentMetadata = entities[metadata["geo:parentCountry"]]
                             countryName = parentMetadata["geo:name"]
                             
-                            metadata["prefLabel"] = f"{name} ({countryName})"                 
+                            metadata["prefLabel"] = f"{name} ({countryName})"
                     else:
-                        parentMetadata = entities[metadata["geo:parentCountry"]]
-                        countryName = parentMetadata["geo:name"]
-                        
-                        metadata["prefLabel"] = f"{name} ({countryName})"
-                else:
-                    metadata["prefLabel"] = name
+                        metadata["prefLabel"] = name
     
 #this will perform web service query actions on the URI, dependent upon the table
-def process_concept(table, uri, prefLabel):
+def process_concept(table, depth, uri, prefLabel):
     global entities
     global place_type_uris
     
@@ -126,6 +151,8 @@ def process_concept(table, uri, prefLabel):
         namespace = 'lcsh'
     elif 'id.loc.gov/authorities/genreForms/' in uri:
         namespace = 'lcgft'
+    elif 'id.loc.gov/vocabulary/graphicMaterials/' in uri:
+        namespace = 'lctgm'
     elif 'id.loc.gov/vocabulary/relators/' in uri:
         namespace = 'relators'
     elif 'vocab.getty.edu/aat/' in uri:
@@ -156,7 +183,7 @@ def process_concept(table, uri, prefLabel):
         #AAT URI for 'role'
         metadata["classified_as"] = "http://vocab.getty.edu/aat/300435108"
         metadata.update(lc_data)
-    elif namespace == 'lcsh' or namespace == 'lcgft':
+    elif namespace == 'lcsh' or namespace == 'lcgft' or namespace == 'lctgm':
         lc_data = query_lc(uri)
         metadata["prefLabel"] = lc_data["lc:prefLabel"]
         #add "subject headings" type
@@ -190,13 +217,23 @@ def process_concept(table, uri, prefLabel):
     entities[uri] = metadata
     time.sleep(1)
     
-    #if there is a broader concept URI in the concept, then iterate through parents if they are not in entities already
-    if "broader" in metadata:
-        #broader is an array to accommodate multiple skos:broader for subject terms
-        for broader in metadata["broader"]:
-            if broader not in entities:
-                print("Querying broader concept of", uri, ":", broader)
-                process_concept(table, broader, prefLabel=None)    
+    #if there is a broader concept URI in the concept, then iterate through parents if they are not in entities already. Only go 3 levels deep
+    if depth < 3:
+        if "broader" in metadata:
+            #broader is an array to accommodate multiple skos:broader for subject terms
+            for broader in metadata["broader"]:
+                if broader not in entities:
+                    print("Querying broader concept of", uri, ":", broader)
+                    depth += 1
+                    process_concept(table, depth, broader, prefLabel=None)    
+    
+    #look for a Geonames URI in matches and generate the hierarchical structure to integrate LC NAF places with Geonames
+    if "matches" in metadata:
+        for matching_uri in metadata["matches"]:
+            if "geonames.org" in matching_uri:
+                if matching_uri not in entities:
+                    print(f"Querying matching concept {matching_uri}")
+                    process_concept(table, depth, matching_uri, prefLabel=None)
                 
     #if "matches" in metadata:
     #    for matching_uri in metadata["matches"]:
@@ -535,6 +572,7 @@ def query_geonames(uri):
     
     #evaluate triples
     for s, p, o in entity:
+        #hopefully toponymName gets added to RDF
         if p == gn.name:
             metadata["geo:name"] = str(o)
         if p == geo.lat:
@@ -577,6 +615,7 @@ def query_geonames(uri):
 
 #Query Wikidata SPARQL endpoint to extract matching URIs in other schemes and supplemental metadata  
 def query_wikidata(uri):
+    
     #evaluate the namespace of the URI to determine which SPARQL query to submit to Wikidata
     if 'wikidata.org' in uri:
         id = uri
@@ -592,6 +631,8 @@ def query_wikidata(uri):
             namespace = 'lcsh'
         elif 'id.loc.gov/authorities/genreForms/' in uri:
             namespace = 'lcgft'
+        elif 'id.loc.gov/vocabulary/graphicMaterials/' in uri:
+            namespace = 'lctgm'
         elif 'id.loc.gov/vocabulary/relators/' in uri:
             id = f"relators/{id}"
             namespace = 'relators'
@@ -622,6 +663,17 @@ def query_wikidata(uri):
           ?entity wdt:P4953 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
+          OPTIONAL {?entity wdt:P244 ?lcsh}
+        }}
+        """
+    elif namespace == 'lctgm':        
+        sparql_query = """
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT * WHERE {
+        SERVICE <https://qlever.dev/api/wikidata> {
+          ?entity wdt:P5160 "ID".
+          OPTIONAL {?entity wdt:P1014 ?aat}
+          OPTIONAL {?entity wdt:P4953 ?lcgft}
           OPTIONAL {?entity wdt:P244 ?lcsh}
         }}
         """
@@ -685,6 +737,7 @@ def query_wikidata(uri):
           OPTIONAL {?entity wdt:P1566 ?geonames}
           OPTIONAL {?entity wdt:P1667 ?tgn}
           OPTIONAL {?entity wdt:P2163 ?fast}
+          OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P21 ?sexorgender}
           OPTIONAL {?entity wdt:P569 ?birth}
           OPTIONAL {?entity wdt:P570 ?death}
@@ -745,11 +798,10 @@ def query_wikidata(uri):
                     if exactMatch not in matches:
                         matches.append(exactMatch)
         elif namespace == 'lcnaf' or namespace == 'lcsh' or namespace == 'wikidata':
-            for row in results:                
-                if str(row.entity) not in matches:
-                    #do not insert the same URI into the matching array for a Wikidata entity
-                    if 'namespace' != 'wikidata':
-                        matches.append(str(row.entity))
+            for row in results:     
+                # suppress the Wikidata entity URI if it is the same as the URI passed           
+                if str(row.entity) != uri:
+                    matches.append(str(row.entity)) 
                 if row.viaf:
                     exactMatch = "http://viaf.org/viaf/" + row.viaf
                     if exactMatch not in matches:
@@ -791,12 +843,6 @@ def query_wikidata(uri):
                 if namespace == 'lcsh':                    
                     if row.coords:
                         metadata["wd:coords"] = str(row.coords)
-                
-                if namespace == 'wikidata':        
-                    if str(row.type) == "http://www.wikidata.org/entity/Q5":
-                        metadata["type"] = "crm:E21_Person"
-                    else:
-                        metadata["type"] = "crm:E74_Group"
                                                 
                 #other metadata
                 if row.birth:
@@ -841,7 +887,7 @@ def query_wikidata(uri):
     metadata["matches"] = matches             
     return metadata
 
-def generate_rdf(table, entities):
+def generate_rdf(table, entities, id = None):
     print("Generating RDF graph")
     
     g = Graph()
@@ -990,9 +1036,12 @@ def generate_rdf(table, entities):
                 else:
                     g.add((subject, SKOS.broader, object))
     
-    filename = f"rdf/{table}.ttl"
-    g.serialize(format="turtle", destination=filename)
-    #print(g.serialize(format="turtle"))
+    if id is not None:
+        print(g.serialize(format="turtle"))
+    else:
+        filename = f"rdf/{table}.ttl"
+        g.serialize(format="turtle", destination=filename)
+        #print(g.serialize(format="turtle"))
         
 
 def load_entities_csv(table):
@@ -1032,6 +1081,7 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--table", help="Table name to extract entities from: 'cpf', 'genres', 'relators', 'places', 'subjects'")
+    parser.add_argument("-i", "--id", help="ID (UUID) of row to test RDF generation to stdout (not written to file)")
     args = parser.parse_args()
     
     #validate arguments
@@ -1044,7 +1094,11 @@ def main():
                 reader = csv.DictReader(file)
                 place_types = list(reader)
         
-        extract_table(table)
+        if args.id:        
+            extract_table(table, id = args.id)
+        else:
+            extract_table(table)
+            
     else:
         print("Table must be set")
         
