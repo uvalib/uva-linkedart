@@ -25,16 +25,19 @@ def extract_table(table, id = None):
     cursor = connect.cursor()
     
     if id is not None:
-        sql = """SELECT DISTINCT uri, preferred_label, type
-        FROM TABLE WHERE id = "ID"
-        """
-        cursor.execute(sql.replace("TABLE", table).replace("ID", id))
+        if table == "places":
+            sql = f"SELECT DISTINCT uri, preferred_label FROM {table} WHERE id = \"{id}\""
+        else:
+            sql = f"SELECT DISTINCT uri, preferred_label, type FROM {table} WHERE id = \"{id}\""
+            
+        cursor.execute(sql)
         rows = cursor.fetchall()
     else:
-        sql = """SELECT DISTINCT uri, preferred_label, type
-        FROM TABLE
-        """
-        cursor.execute(sql.replace("TABLE", table))
+        if table == "places":
+            sql = f"SELECT DISTINCT uri, preferred_label FROM {table}"
+        else:
+            sql = f"SELECT DISTINCT uri, preferred_label, type FROM {table}"
+        cursor.execute(sql)
         rows = cursor.fetchall()
     
     process_rows(table, rows)
@@ -127,10 +130,12 @@ def process_rows(table, rows):
                                 
                                 metadata["prefLabel"] = f"{name} ({countryName})"                 
                         else:
-                            parentMetadata = entities[metadata["geo:parentCountry"]]
-                            countryName = parentMetadata["geo:name"]
-                            
-                            metadata["prefLabel"] = f"{name} ({countryName})"
+                            parent_uri = metadata["geo:parentCountry"]
+                            if parent_uri in entities:
+                                parentMetadata = entities[metadata["geo:parentCountry"]]
+                                countryName = parentMetadata["geo:name"]
+                                
+                                metadata["prefLabel"] = f"{name} ({countryName})"
                     else:
                         metadata["prefLabel"] = name
     

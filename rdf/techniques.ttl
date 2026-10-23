@@ -1,0 +1,12 @@
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix la: <https://linked.art/ns/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<http://vocab.getty.edu/aat/300054225> a crm:E55_Type ;
+    rdfs:label "photography (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "photography (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm007722>,
+        <http://www.wikidata.org/entity/Q11633> .
+

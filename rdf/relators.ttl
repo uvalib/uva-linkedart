@@ -1,0 +1,682 @@
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix la: <https://linked.art/ns/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://id.loc.gov/vocabulary/relators/arr> a crm:E55_Type ;
+    rdfs:label "arranger"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "arranger" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh99011240>,
+        <http://vocab.getty.edu/aat/300025667>,
+        <http://www.wikidata.org/entity/Q1643514> .
+
+<http://id.loc.gov/vocabulary/relators/art> a crm:E55_Type ;
+    rdfs:label "artist"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "artist" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85008276>,
+        <http://vocab.getty.edu/aat/300168455>,
+        <http://www.wikidata.org/entity/Q483501> .
+
+<http://id.loc.gov/vocabulary/relators/asn> a crm:E55_Type ;
+    rdfs:label "associated name"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "associated name" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> .
+
+<http://id.loc.gov/vocabulary/relators/att> a crm:E55_Type ;
+    rdfs:label "attributed name"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "attributed name" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> .
+
+<http://id.loc.gov/vocabulary/relators/bnd> a crm:E55_Type ;
+    rdfs:label "binder"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "binder" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85015702>,
+        <http://vocab.getty.edu/aat/300025704>,
+        <http://www.wikidata.org/entity/Q1413170> .
+
+<http://id.loc.gov/vocabulary/relators/bsl> a crm:E55_Type ;
+    rdfs:label "bookseller"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bookseller" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://vocab.getty.edu/aat/300025244>,
+        <http://www.wikidata.org/entity/Q998550> .
+
+<http://id.loc.gov/vocabulary/relators/cmp> a crm:E55_Type ;
+    rdfs:label "composer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "composer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85029386>,
+        <http://vocab.getty.edu/aat/300025671>,
+        <http://www.wikidata.org/entity/Q36834> .
+
+<http://id.loc.gov/vocabulary/relators/crp> a crm:E55_Type ;
+    rdfs:label "correspondent"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "correspondent" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q3589290> .
+
+<http://id.loc.gov/vocabulary/relators/ctg> a crm:E55_Type ;
+    rdfs:label "cartographer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cartographer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85020514>,
+        <http://vocab.getty.edu/aat/300025593>,
+        <http://www.wikidata.org/entity/Q1734662> .
+
+<http://id.loc.gov/vocabulary/relators/dfd> a crm:E55_Type ;
+    rdfs:label "defendant"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "defendant" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q159394> .
+
+<http://id.loc.gov/vocabulary/relators/dnr> a crm:E55_Type ;
+    rdfs:label "donor"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "donor" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    skos:broader <http://id.loc.gov/vocabulary/relators/fmo> ;
+    la:equivalent <http://vocab.getty.edu/aat/300025240>,
+        <http://www.wikidata.org/entity/Q1968442> .
+
+<http://id.loc.gov/vocabulary/relators/dte> a crm:E55_Type ;
+    rdfs:label "dedicatee"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "dedicatee" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://vocab.getty.edu/aat/300121765>,
+        <http://www.wikidata.org/entity/Q28008298> .
+
+<http://id.loc.gov/vocabulary/relators/edt> a crm:E55_Type ;
+    rdfs:label "editor"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "editor" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85040976>,
+        <http://vocab.getty.edu/aat/300025526>,
+        <http://www.wikidata.org/entity/Q1607826> .
+
+<http://id.loc.gov/vocabulary/relators/egr> a crm:E55_Type ;
+    rdfs:label "engraver"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "engraver" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q329439> .
+
+<http://id.loc.gov/vocabulary/relators/elt> a crm:E55_Type ;
+    rdfs:label "electrotyper"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "electrotyper" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> .
+
+<http://id.loc.gov/vocabulary/relators/ill> a crm:E55_Type ;
+    rdfs:label "illustrator"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "illustrator" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85064419>,
+        <http://vocab.getty.edu/aat/300025123>,
+        <http://www.wikidata.org/entity/Q644687> .
+
+<http://id.loc.gov/vocabulary/relators/lbt> a crm:E55_Type ;
+    rdfs:label "librettist"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "librettist" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    skos:broader <http://id.loc.gov/vocabulary/relators/aut> ;
+    la:equivalent <http://vocab.getty.edu/aat/300025674>,
+        <http://www.wikidata.org/entity/Q8178443> .
+
+<http://id.loc.gov/vocabulary/relators/ltg> a crm:E55_Type ;
+    rdfs:label "lithographer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "lithographer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85077596>,
+        <http://vocab.getty.edu/aat/300025175>,
+        <http://www.wikidata.org/entity/Q16947657> .
+
+<http://id.loc.gov/vocabulary/relators/lyr> a crm:E55_Type ;
+    rdfs:label "lyricist"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "lyricist" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    skos:broader <http://id.loc.gov/vocabulary/relators/aut> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85079181>,
+        <http://id.loc.gov/vocabulary/graphicMaterials/tgm006148>,
+        <http://vocab.getty.edu/aat/300025675>,
+        <http://www.wikidata.org/entity/Q822146> .
+
+<http://id.loc.gov/vocabulary/relators/mfr> a crm:E55_Type ;
+    rdfs:label "manufacturer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "manufacturer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    skos:broader <http://id.loc.gov/vocabulary/relators/prv> ;
+    la:equivalent <http://vocab.getty.edu/aat/300025230>,
+        <http://www.wikidata.org/entity/Q42855995> .
+
+<http://id.loc.gov/vocabulary/relators/pbl> a crm:E55_Type ;
+    rdfs:label "publisher"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "publisher" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    skos:broader <http://id.loc.gov/vocabulary/relators/prv> ;
+    la:equivalent <http://vocab.getty.edu/aat/300386627>,
+        <http://www.wikidata.org/entity/Q2085381> .
+
+<http://id.loc.gov/vocabulary/relators/pht> a crm:E55_Type ;
+    rdfs:label "photographer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "photographer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85101179>,
+        <http://vocab.getty.edu/aat/300025687>,
+        <http://www.wikidata.org/entity/Q33231> .
+
+<http://id.loc.gov/vocabulary/relators/prf> a crm:E55_Type ;
+    rdfs:label "performer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "performer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://vocab.getty.edu/aat/300068931>,
+        <http://www.wikidata.org/entity/Q713200> .
+
+<http://id.loc.gov/vocabulary/relators/prt> a crm:E55_Type ;
+    rdfs:label "printer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "printer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85106741>,
+        <http://id.loc.gov/vocabulary/graphicMaterials/tgm008226>,
+        <http://vocab.getty.edu/aat/300025732>,
+        <http://www.wikidata.org/entity/Q175151> .
+
+<http://id.loc.gov/vocabulary/relators/ptf> a crm:E55_Type ;
+    rdfs:label "plaintiff"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "plaintiff" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q468489> .
+
+<http://id.loc.gov/vocabulary/relators/rcp> a crm:E55_Type ;
+    rdfs:label "addressee"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "addressee" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q28008314> .
+
+<http://id.loc.gov/vocabulary/relators/rpt> a crm:E55_Type ;
+    rdfs:label "reporter"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "reporter" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85112929>,
+        <http://vocab.getty.edu/aat/300025508>,
+        <http://www.wikidata.org/entity/Q42909> .
+
+<http://id.loc.gov/vocabulary/relators/srv> a crm:E55_Type ;
+    rdfs:label "surveyor"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "surveyor" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85130869>,
+        <http://id.loc.gov/vocabulary/graphicMaterials/tgm010432>,
+        <http://vocab.getty.edu/aat/300025100>,
+        <http://www.wikidata.org/entity/Q294126> .
+
+<http://id.loc.gov/vocabulary/relators/str> a crm:E55_Type ;
+    rdfs:label "stereotyper"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "stereotyper" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q56612096> .
+
+<http://id.loc.gov/vocabulary/relators/trc> a crm:E55_Type ;
+    rdfs:label "transcriber"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "transcriber" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q54855620> .
+
+<http://id.loc.gov/vocabulary/relators/trl> a crm:E55_Type ;
+    rdfs:label "translator"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "translator" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85136974>,
+        <http://id.loc.gov/authorities/subjects/sh92003411>,
+        <http://vocab.getty.edu/aat/300025601>,
+        <http://www.wikidata.org/entity/Q333634> .
+
+<http://id.loc.gov/vocabulary/relators/tyg> a crm:E55_Type ;
+    rdfs:label "typographer"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "typographer" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh99001381>,
+        <http://vocab.getty.edu/aat/300025745>,
+        <http://www.wikidata.org/entity/Q1229025> .
+
+<http://id.loc.gov/vocabulary/relators/wde> a crm:E55_Type ;
+    rdfs:label "wood engraver"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "wood engraver" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://vocab.getty.edu/aat/300025256>,
+        <http://www.wikidata.org/entity/Q1840507> .
+
+<http://vocab.getty.edu/aat/300026877> a crm:E55_Type ;
+    rdfs:label "correspondence"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "correspondence" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300026031> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1784733> .
+
+<http://vocab.getty.edu/aat/300053163> a crm:E55_Type ;
+    rdfs:label "cartography (discipline)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cartography (discipline)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300054462> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm006258>,
+        <http://www.wikidata.org/entity/Q42515> .
+
+<http://vocab.getty.edu/aat/300053225> a crm:E55_Type ;
+    rdfs:label "engraving (printing process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "engraving (printing process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300199636> ;
+    la:equivalent <http://www.wikidata.org/entity/Q139106> .
+
+<http://vocab.getty.edu/aat/300053271> a crm:E55_Type ;
+    rdfs:label "lithography"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "lithography" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300199637> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mproduction/litho>,
+        <http://www.wikidata.org/entity/Q133036> .
+
+<http://vocab.getty.edu/aat/300053303> a crm:E55_Type ;
+    rdfs:label "wood engraving (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "wood engraving (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300199639> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1259197> .
+
+<http://vocab.getty.edu/aat/300053319> a crm:E55_Type ;
+    rdfs:label "printing (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "printing (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://id.loc.gov/vocabulary/mproduction/print>,
+        <http://id.loc.gov/vocabulary/preservation/eventType/prt>,
+        <http://www.wikidata.org/entity/Q11034> .
+
+<http://vocab.getty.edu/aat/300053592> a crm:E55_Type ;
+    rdfs:label "bookbinding (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bookbinding (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300234771> ;
+    la:equivalent <http://www.wikidata.org/entity/Q240471> .
+
+<http://vocab.getty.edu/aat/300054154> a crm:E55_Type ;
+    rdfs:label "visual arts (discipline)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "visual arts (discipline)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300175240>,
+        <http://vocab.getty.edu/aat/300387360> ;
+    la:equivalent <http://www.wikidata.org/entity/Q36649> .
+
+<http://vocab.getty.edu/aat/300054200> a crm:E55_Type ;
+    rdfs:label "illustration (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "illustration (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300264849> ;
+    la:equivalent <http://www.wikidata.org/entity/Q21550668> .
+
+<http://vocab.getty.edu/aat/300054225> a crm:E55_Type ;
+    rdfs:label "photography (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "photography (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm007722>,
+        <http://www.wikidata.org/entity/Q11633> .
+
+<http://vocab.getty.edu/aat/300054686> a crm:E55_Type ;
+    rdfs:label "publishing"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "publishing" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300075493> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm008394>,
+        <http://id.loc.gov/vocabulary/rbmscv/cv00050>,
+        <http://www.wikidata.org/entity/Q3972943> .
+
+<http://vocab.getty.edu/aat/300054691> a crm:E55_Type ;
+    rdfs:label "surveying (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "surveying (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q816425> .
+
+<http://vocab.getty.edu/aat/300054700> a crm:E55_Type ;
+    rdfs:label "editing"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "editing" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300075493> ;
+    la:equivalent <http://www.wikidata.org/entity/Q194105> .
+
+<http://vocab.getty.edu/aat/300056110> a crm:E55_Type ;
+    rdfs:label "authorship"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "authorship" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300056108> ;
+    la:equivalent <http://www.wikidata.org/entity/Q17621676> .
+
+<http://vocab.getty.edu/aat/300069831> a crm:E55_Type ;
+    rdfs:label "translation (function)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "translation (function)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300075493> ;
+    la:equivalent <http://www.wikidata.org/entity/Q7553> .
+
+<http://vocab.getty.edu/aat/300137552> a crm:E55_Type ;
+    rdfs:label "reporting"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "reporting" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300132471> .
+
+<http://vocab.getty.edu/aat/300195853> a crm:E55_Type ;
+    rdfs:label "typography"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "typography" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q159964> .
+
+<http://vocab.getty.edu/aat/300234668> a crm:E55_Type ;
+    rdfs:label "electrotyping (platemaking)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "electrotyping (platemaking)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300234667> .
+
+<http://vocab.getty.edu/aat/300234669> a crm:E55_Type ;
+    rdfs:label "stereotyping (platemaking)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "stereotyping (platemaking)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300234667> ;
+    la:equivalent <http://www.wikidata.org/entity/Q291202>,
+        <http://www.wikidata.org/entity/Q3502292> .
+
+<http://vocab.getty.edu/aat/300264557> a crm:E55_Type ;
+    rdfs:label "bookselling"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bookselling" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300078131> ;
+    la:equivalent <http://www.wikidata.org/entity/Q998426> .
+
+<http://vocab.getty.edu/aat/300440752> a crm:E55_Type ;
+    rdfs:label "transcribing (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "transcribing (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300054698> .
+
+<http://id.loc.gov/vocabulary/relators/fmo> a crm:E55_Type ;
+    rdfs:label "former owner"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "former owner" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> .
+
+<http://vocab.getty.edu/aat/300026031> a crm:E55_Type ;
+    rdfs:label "document genres"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "document genres" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300220751> ;
+    la:equivalent <http://www.wikidata.org/entity/Q25499317> .
+
+<http://vocab.getty.edu/aat/300054136> a crm:E55_Type ;
+    rdfs:label "humanities"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "humanities" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300054135> ;
+    la:equivalent <http://www.wikidata.org/entity/Q80083> .
+
+<http://vocab.getty.edu/aat/300054343> a crm:E55_Type ;
+    rdfs:label "business (commercial function)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "business (commercial function)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300138088> ;
+    la:equivalent <http://www.wikidata.org/entity/Q19862406> .
+
+<http://vocab.getty.edu/aat/300054462> a crm:E55_Type ;
+    rdfs:label "science (modern discipline)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "science (modern discipline)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300054135> ;
+    la:equivalent <http://www.wikidata.org/entity/Q336> .
+
+<http://vocab.getty.edu/aat/300054698> a crm:E55_Type ;
+    rdfs:label "writing (processes)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "writing (processes)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300132471>,
+        <http://vocab.getty.edu/aat/300263371> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1468902> .
+
+<http://vocab.getty.edu/aat/300056108> a crm:E55_Type ;
+    rdfs:label "concepts relating to the creative process"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "concepts relating to the creative process" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300168394> .
+
+<http://vocab.getty.edu/aat/300078131> a crm:E55_Type ;
+    rdfs:label "selling"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "selling" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300054343>,
+        <http://vocab.getty.edu/aat/300138088> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm009380>,
+        <http://www.wikidata.org/entity/Q194189> .
+
+<http://vocab.getty.edu/aat/300168394> a crm:E55_Type ;
+    rdfs:label "artistic concepts"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "artistic concepts" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q63539947> .
+
+<http://vocab.getty.edu/aat/300175240> a crm:E55_Type ;
+    rdfs:label "arts (broad discipline)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "arts (broad discipline)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300054136> ;
+    la:equivalent <http://www.wikidata.org/entity/Q2018526> .
+
+<http://vocab.getty.edu/aat/300199636> a crm:E55_Type ;
+    rdfs:label "intaglio printing processes"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "intaglio printing processes" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300199635> .
+
+<http://vocab.getty.edu/aat/300199637> a crm:E55_Type ;
+    rdfs:label "planographic printing processes"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "planographic printing processes" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300199635> ;
+    la:equivalent <http://www.wikidata.org/entity/Q2875163> .
+
+<http://vocab.getty.edu/aat/300199639> a crm:E55_Type ;
+    rdfs:label "relief printing processes"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "relief printing processes" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300199635> .
+
+<http://vocab.getty.edu/aat/300200511> a crm:E55_Type ;
+    rdfs:label "printing preparation processes"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "printing preparation processes" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] .
+
+<http://vocab.getty.edu/aat/300220751> a crm:E55_Type ;
+    rdfs:label "information forms (objects)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "information forms (objects)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300132471> .
+
+<http://vocab.getty.edu/aat/300234771> a crm:E55_Type ;
+    rdfs:label "bookbinding and bookbinding processes and techniques"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bookbinding and bookbinding processes and techniques" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] .
+
+<http://vocab.getty.edu/aat/300263371> a crm:E55_Type ;
+    rdfs:label "language-related concepts"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "language-related concepts" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] .
+
+<http://vocab.getty.edu/aat/300264849> a crm:E55_Type ;
+    rdfs:label "graphic arts"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "graphic arts" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q911059> .
+
+<http://vocab.getty.edu/aat/300387360> a crm:E55_Type ;
+    rdfs:label "visual culture"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "visual culture" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q861716> .
+
+<http://id.loc.gov/vocabulary/relators/aut> a crm:E55_Type ;
+    rdfs:label "author"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "author" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> ;
+    la:equivalent <http://id.loc.gov/authorities/subjects/sh85009793>,
+        <http://www.wikidata.org/entity/Q482980> .
+
+<http://id.loc.gov/vocabulary/relators/prv> a crm:E55_Type ;
+    rdfs:label "provider"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "provider" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    crm:P2_has_type <http://vocab.getty.edu/aat/300435108> .
+
+<http://vocab.getty.edu/aat/300054135> a crm:E55_Type ;
+    rdfs:label "disciplines (concept)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "disciplines (concept)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q4671303> .
+
+<http://vocab.getty.edu/aat/300234667> a crm:E55_Type ;
+    rdfs:label "platemaking"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "platemaking" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300200511> .
+
+<http://vocab.getty.edu/aat/300075493> a crm:E55_Type ;
+    rdfs:label "information handling functions"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "information handling functions" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300138088> ;
+    la:equivalent <http://www.wikidata.org/entity/Q99194088> .
+
+<http://vocab.getty.edu/aat/300132471> a crm:E55_Type ;
+    rdfs:label "communication functions"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "communication functions" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300138088> .
+
+<http://vocab.getty.edu/aat/300199635> a crm:E55_Type ;
+    rdfs:label "printing processes"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "printing processes" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q4361974> .
+
+<http://vocab.getty.edu/aat/300138088> a crm:E55_Type ;
+    rdfs:label "functions (activities)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "functions (activities)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] .
+

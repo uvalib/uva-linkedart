@@ -1,0 +1,962 @@
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix la: <https://linked.art/ns/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+<http://vocab.getty.edu/aat/300010463> a crm:E55_Type ;
+    rdfs:label "brick (clay material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "brick (clay material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010439> ;
+    la:equivalent <http://www.wikidata.org/entity/Q40089> .
+
+<http://vocab.getty.edu/aat/300010662> a crm:E55_Type ;
+    rdfs:label "porcelain (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "porcelain (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300235507> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/por>,
+        <http://www.wikidata.org/entity/Q130693> .
+
+<http://vocab.getty.edu/aat/300010797> a crm:E55_Type ;
+    rdfs:label "glass (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "glass (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010360> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/gls>,
+        <http://www.wikidata.org/entity/Q11469> .
+
+<http://vocab.getty.edu/aat/300010920> a crm:E55_Type ;
+    rdfs:label "stainless steel"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "stainless steel" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010918> ;
+    la:equivalent <http://www.wikidata.org/entity/Q172587> .
+
+<http://vocab.getty.edu/aat/300010946> a crm:E55_Type ;
+    rdfs:label "brass (alloy)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "brass (alloy)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010942> ;
+    la:equivalent <http://www.wikidata.org/entity/Q39782> .
+
+<http://vocab.getty.edu/aat/300010957> a crm:E55_Type ;
+    rdfs:label "bronze (metal)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bronze (metal)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010942> ;
+    la:equivalent <http://www.wikidata.org/entity/Q34095> .
+
+<http://vocab.getty.edu/aat/300011002> a crm:E55_Type ;
+    rdfs:label "iron (metal)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "iron (metal)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010900>,
+        <http://vocab.getty.edu/aat/300246929> ;
+    la:equivalent <http://www.wikidata.org/entity/Q677> .
+
+<http://vocab.getty.edu/aat/300011004> a crm:E55_Type ;
+    rdfs:label "cast iron"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cast iron" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010904> ;
+    la:equivalent <http://www.wikidata.org/entity/Q483269> .
+
+<http://vocab.getty.edu/aat/300011020> a crm:E55_Type ;
+    rdfs:label "copper (metal)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "copper (metal)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011014>,
+        <http://vocab.getty.edu/aat/300246929> ;
+    la:equivalent <http://www.wikidata.org/entity/Q753> .
+
+<http://vocab.getty.edu/aat/300011021> a crm:E55_Type ;
+    rdfs:label "gold (metal)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "gold (metal)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011014>,
+        <http://vocab.getty.edu/aat/300011054>,
+        <http://vocab.getty.edu/aat/300246929> ;
+    la:equivalent <http://www.wikidata.org/entity/Q897> .
+
+<http://vocab.getty.edu/aat/300011026> a crm:E55_Type ;
+    rdfs:label "mercury"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "mercury" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011014>,
+        <http://vocab.getty.edu/aat/300246929> ;
+    la:equivalent <http://www.wikidata.org/entity/Q925> .
+
+<http://vocab.getty.edu/aat/300011063> a crm:E55_Type ;
+    rdfs:label "wire"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "wire" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010900> ;
+    la:equivalent <http://www.wikidata.org/entity/Q551997> .
+
+<http://vocab.getty.edu/aat/300011176> a crm:E55_Type ;
+    rdfs:label "stone (worked rock)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "stone (worked rock)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011692>,
+        <http://vocab.getty.edu/aat/300185712> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/sto>,
+        <http://www.wikidata.org/entity/Q22731> .
+
+<http://vocab.getty.edu/aat/300011443> a crm:E55_Type ;
+    rdfs:label "marble (rock)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "marble (rock)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011437> ;
+    la:equivalent <http://www.wikidata.org/entity/Q40861> .
+
+<http://vocab.getty.edu/aat/300011822> a crm:E55_Type ;
+    rdfs:label "bristle (hair material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bristle (hair material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011814> ;
+    la:equivalent <http://www.wikidata.org/entity/Q894231> .
+
+<http://vocab.getty.edu/aat/300011826> a crm:E55_Type ;
+    rdfs:label "horn (animal material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "horn (animal material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300192973> ;
+    la:equivalent <http://www.wikidata.org/entity/Q29838373> .
+
+<http://vocab.getty.edu/aat/300011837> a crm:E55_Type ;
+    rdfs:label "tortoise shell"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "tortoise shell" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300192973> ;
+    la:equivalent <http://www.wikidata.org/entity/Q2141546> .
+
+<http://vocab.getty.edu/aat/300011845> a crm:E55_Type ;
+    rdfs:label "leather"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "leather" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300193287> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/lea>,
+        <http://www.wikidata.org/entity/Q286> .
+
+<http://vocab.getty.edu/aat/300011854> a crm:E55_Type ;
+    rdfs:label "sponge (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "sponge (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300265629> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1210980> .
+
+<http://vocab.getty.edu/aat/300011857> a crm:E55_Type ;
+    rdfs:label "ivory (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "ivory (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300191881> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/ivo>,
+        <http://www.wikidata.org/entity/Q82001> .
+
+<http://vocab.getty.edu/aat/300011862> a crm:E55_Type ;
+    rdfs:label "cork (bark)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cork (bark)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011860> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm002566>,
+        <http://www.wikidata.org/entity/Q49444> .
+
+<http://vocab.getty.edu/aat/300012055> a crm:E55_Type ;
+    rdfs:label "ebony (wood)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "ebony (wood)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011916> ;
+    la:equivalent <http://www.wikidata.org/entity/Q156005> .
+
+<http://vocab.getty.edu/aat/300012941> a crm:E55_Type ;
+    rdfs:label "rubber (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "rubber (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300012882> ;
+    la:equivalent <http://www.wikidata.org/entity/Q131877> .
+
+<http://vocab.getty.edu/aat/300014072> a crm:E55_Type ;
+    rdfs:label "silk (silkworm material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "silk (silkworm material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300191700>,
+        <http://vocab.getty.edu/aat/300192962> ;
+    la:equivalent <http://www.wikidata.org/entity/Q37681> .
+
+<http://vocab.getty.edu/aat/300014078> a crm:E55_Type ;
+    rdfs:label "canvas (textile material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "canvas (textile material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300231565> ;
+    la:equivalent <http://www.wikidata.org/entity/Q12321255> .
+
+<http://vocab.getty.edu/aat/300014083> a crm:E55_Type ;
+    rdfs:label "gauze"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "gauze" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300231565> ;
+    la:equivalent <http://www.wikidata.org/entity/Q618710> .
+
+<http://vocab.getty.edu/aat/300014224> a crm:E55_Type ;
+    rdfs:label "cardboard"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cardboard" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300162474> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/crd>,
+        <http://www.wikidata.org/entity/Q389782> .
+
+<http://vocab.getty.edu/aat/300014249> a crm:E55_Type ;
+    rdfs:label "string (fiber product)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "string (fiber product)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014247> ;
+    la:equivalent <http://www.wikidata.org/entity/Q11064354> .
+
+<http://vocab.getty.edu/aat/300014250> a crm:E55_Type ;
+    rdfs:label "thread"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "thread" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014247>,
+        <http://vocab.getty.edu/aat/300231565> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1391831> .
+
+<http://vocab.getty.edu/aat/300014462> a crm:E55_Type ;
+    rdfs:label "nylon"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "nylon" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014469> ;
+    la:equivalent <http://www.wikidata.org/entity/Q177941> .
+
+<http://vocab.getty.edu/aat/300014922> a crm:E55_Type ;
+    rdfs:label "plaster (composite coating)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "plaster (composite coating)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014907> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/plt>,
+        <http://www.wikidata.org/entity/Q274988> .
+
+<http://vocab.getty.edu/aat/300015224> a crm:E55_Type ;
+    rdfs:label "alcohol (general)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "alcohol (general)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300111664>,
+        <http://vocab.getty.edu/aat/300379624> ;
+    la:equivalent <http://www.wikidata.org/entity/Q156> .
+
+<http://vocab.getty.edu/aat/300053816> a crm:E55_Type ;
+    rdfs:label "spray painting"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "spray painting" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300161986> ;
+    la:equivalent <http://www.wikidata.org/entity/Q2066608> .
+
+<http://vocab.getty.edu/aat/300133711> a crm:E55_Type ;
+    rdfs:label "velvet (fabric weave)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "velvet (fabric weave)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300227932> ;
+    la:equivalent <http://www.wikidata.org/entity/Q243519> .
+
+<http://vocab.getty.edu/aat/300133748> a crm:E55_Type ;
+    rdfs:label "tin (metal)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "tin (metal)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011014>,
+        <http://vocab.getty.edu/aat/300246929> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1096> .
+
+<http://vocab.getty.edu/aat/300147678> a crm:E55_Type ;
+    rdfs:label "enamel paint"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "enamel paint" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300015029> ;
+    la:equivalent <http://www.wikidata.org/entity/Q2386424> .
+
+<http://vocab.getty.edu/aat/300160106> a crm:E55_Type ;
+    rdfs:label "foil (metal by form)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "foil (metal by form)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010900> ;
+    la:equivalent <http://www.wikidata.org/entity/Q251473> .
+
+<http://vocab.getty.edu/aat/300162391> a crm:E55_Type ;
+    rdfs:label "cloth"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cloth" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300231565> ;
+    la:equivalent <http://www.wikidata.org/entity/Q5849500> .
+
+<http://vocab.getty.edu/aat/300183632> a crm:E55_Type ;
+    rdfs:label "baked enamel"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "baked enamel" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014910> .
+
+<http://vocab.getty.edu/aat/300183670> a crm:E55_Type ;
+    rdfs:label "cotton (fiber)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cotton (fiber)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014031> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm002614>,
+        <http://www.wikidata.org/entity/Q11457> .
+
+<http://vocab.getty.edu/aat/300189223> a crm:E55_Type ;
+    rdfs:label "waxed paper"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "waxed paper" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014109> ;
+    la:equivalent <http://www.wikidata.org/entity/Q297216> .
+
+<http://vocab.getty.edu/aat/300203448> a crm:E55_Type ;
+    rdfs:label "corks (stoppers)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "corks (stoppers)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300045717> ;
+    la:equivalent <http://www.wikidata.org/entity/Q111425525> .
+
+<http://vocab.getty.edu/aat/300234006> a crm:E55_Type ;
+    rdfs:label "beads (pierced objects)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "beads (pierced objects)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300191086> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1053956> .
+
+<http://vocab.getty.edu/aat/300242137> a crm:E55_Type ;
+    rdfs:label "fine silver"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "fine silver" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011029> .
+
+<http://vocab.getty.edu/aat/300248126> a crm:E55_Type ;
+    rdfs:label "cellophane"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cellophane" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011792> ;
+    la:equivalent <http://www.wikidata.org/entity/Q193841> .
+
+<http://vocab.getty.edu/aat/300262564> a crm:E55_Type ;
+    rdfs:label "shell (plant material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "shell (plant material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300124117> .
+
+<http://vocab.getty.edu/aat/300310136> a crm:E55_Type ;
+    rdfs:label "adhesive tape"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "adhesive tape" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014685> ;
+    la:equivalent <http://www.wikidata.org/entity/Q320441> .
+
+<http://vocab.getty.edu/aat/300310470> a crm:E55_Type ;
+    rdfs:label "Insecta (class)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "Insecta (class)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300310468> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm005414>,
+        <http://www.wikidata.org/entity/Q1390> .
+
+<http://vocab.getty.edu/aat/300378952> a crm:E55_Type ;
+    rdfs:label "pewterware"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "pewterware" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300015336> .
+
+<http://vocab.getty.edu/aat/300404880> a crm:E55_Type ;
+    rdfs:label "medicines (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "medicines (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> .
+
+<http://vocab.getty.edu/aat/300010917> a crm:E55_Type ;
+    rdfs:label "alloy steel"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "alloy steel" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300133751> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1070521> .
+
+<http://vocab.getty.edu/aat/300010918> a crm:E55_Type ;
+    rdfs:label "chrome steel"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "chrome steel" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010917> ;
+    la:equivalent <http://www.wikidata.org/entity/Q4501558> .
+
+<http://vocab.getty.edu/aat/300011029> a crm:E55_Type ;
+    rdfs:label "silver (metal)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "silver (metal)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011014>,
+        <http://vocab.getty.edu/aat/300011054>,
+        <http://vocab.getty.edu/aat/300246929> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1090> .
+
+<http://vocab.getty.edu/aat/300011437> a crm:E55_Type ;
+    rdfs:label "metamorphic rock"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "metamorphic rock" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011692> ;
+    la:equivalent <http://www.wikidata.org/entity/Q47069> .
+
+<http://vocab.getty.edu/aat/300011798> a crm:E55_Type ;
+    rdfs:label "bone (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bone (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300206572> ;
+    la:equivalent <http://www.wikidata.org/entity/Q111444518> .
+
+<http://vocab.getty.edu/aat/300011814> a crm:E55_Type ;
+    rdfs:label "hair (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "hair (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300192973> .
+
+<http://vocab.getty.edu/aat/300011860> a crm:E55_Type ;
+    rdfs:label "bark (plant material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "bark (plant material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300124117> ;
+    la:equivalent <http://www.wikidata.org/entity/Q184453> .
+
+<http://vocab.getty.edu/aat/300011914> a crm:E55_Type ;
+    rdfs:label "wood (plant material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "wood (plant material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300124117> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm012189>,
+        <http://id.loc.gov/vocabulary/mmaterial/wod>,
+        <http://www.wikidata.org/entity/Q287> .
+
+<http://vocab.getty.edu/aat/300011916> a crm:E55_Type ;
+    rdfs:label "hardwood"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "hardwood" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011914> ;
+    la:equivalent <http://www.wikidata.org/entity/Q2266509> .
+
+<http://vocab.getty.edu/aat/300012882> a crm:E55_Type ;
+    rdfs:label "resin (organic material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "resin (organic material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011792> ;
+    la:equivalent <http://www.wikidata.org/entity/Q145205> .
+
+<http://vocab.getty.edu/aat/300014024> a crm:E55_Type ;
+    rdfs:label "fiber"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "fiber" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm003939>,
+        <http://www.wikidata.org/entity/Q161> .
+
+<http://vocab.getty.edu/aat/300014027> a crm:E55_Type ;
+    rdfs:label "natural fiber"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "natural fiber" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014024> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1192049> .
+
+<http://vocab.getty.edu/aat/300014031> a crm:E55_Type ;
+    rdfs:label "plant fiber"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "plant fiber" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014027>,
+        <http://vocab.getty.edu/aat/300124117> ;
+    la:equivalent <http://www.wikidata.org/entity/Q20026824> .
+
+<http://vocab.getty.edu/aat/300014415> a crm:E55_Type ;
+    rdfs:label "thermoplastic"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "thermoplastic" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014570> ;
+    la:equivalent <http://www.wikidata.org/entity/Q380677> .
+
+<http://vocab.getty.edu/aat/300014469> a crm:E55_Type ;
+    rdfs:label "polyamide"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "polyamide" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014415> ;
+    la:equivalent <http://www.wikidata.org/entity/Q145273> .
+
+<http://vocab.getty.edu/aat/300014570> a crm:E55_Type ;
+    rdfs:label "plastic (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "plastic (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011792> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm007888>,
+        <http://id.loc.gov/vocabulary/mmaterial/pla>,
+        <http://www.wikidata.org/entity/Q11474> .
+
+<http://vocab.getty.edu/aat/300014685> a crm:E55_Type ;
+    rdfs:label "tape (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "tape (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://www.wikidata.org/entity/Q55238861> .
+
+<http://vocab.getty.edu/aat/300014910> a crm:E55_Type ;
+    rdfs:label "enamel (fused coating)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "enamel (fused coating)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014907> .
+
+<http://vocab.getty.edu/aat/300015029> a crm:E55_Type ;
+    rdfs:label "paint (coating)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "paint (coating)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014907> ;
+    la:equivalent <http://www.wikidata.org/entity/Q174219> .
+
+<http://vocab.getty.edu/aat/300015217> a crm:E55_Type ;
+    rdfs:label "solvent"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "solvent" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://www.wikidata.org/entity/Q146505> .
+
+<http://vocab.getty.edu/aat/300015336> a crm:E55_Type ;
+    rdfs:label "metalwork (visual works)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "metalwork (visual works)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300185712>,
+        <http://vocab.getty.edu/aat/300191086> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm006480>,
+        <http://www.wikidata.org/entity/Q29382731> .
+
+<http://vocab.getty.edu/aat/300045717> a crm:E55_Type ;
+    rdfs:label "stoppers (container components)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "stoppers (container components)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300203437> .
+
+<http://vocab.getty.edu/aat/300053772> a crm:E55_Type ;
+    rdfs:label "coating (process)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "coating (process)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q54834134> .
+
+<http://vocab.getty.edu/aat/300111664> a crm:E55_Type ;
+    rdfs:label "oxygenated solvent"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "oxygenated solvent" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300015217> .
+
+<http://vocab.getty.edu/aat/300133751> a crm:E55_Type ;
+    rdfs:label "steel (alloy)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "steel (alloy)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010904> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm010116>,
+        <http://www.wikidata.org/entity/Q11427> .
+
+<http://vocab.getty.edu/aat/300161986> a crm:E55_Type ;
+    rdfs:label "painting (coating)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "painting (coating)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300053772> ;
+    la:equivalent <http://www.wikidata.org/entity/Q3374341> .
+
+<http://vocab.getty.edu/aat/300162474> a crm:E55_Type ;
+    rdfs:label "pasteboard (paper)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "pasteboard (paper)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300014109> ;
+    la:equivalent <http://www.wikidata.org/entity/Q99888913> .
+
+<http://vocab.getty.edu/aat/300191700> a crm:E55_Type ;
+    rdfs:label "None"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "None" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011793> ;
+    la:equivalent <http://www.wikidata.org/entity/Q2740926> .
+
+<http://vocab.getty.edu/aat/300191881> a crm:E55_Type ;
+    rdfs:label "dentin (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "dentin (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011798>,
+        <http://vocab.getty.edu/aat/300264237> ;
+    la:equivalent <http://www.wikidata.org/entity/Q189637> .
+
+<http://vocab.getty.edu/aat/300192962> a crm:E55_Type ;
+    rdfs:label "fibroinous material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "fibroinous material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011793> .
+
+<http://vocab.getty.edu/aat/300193287> a crm:E55_Type ;
+    rdfs:label "processed animal material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "processed animal material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011793> .
+
+<http://vocab.getty.edu/aat/300197199> a crm:E55_Type ;
+    rdfs:label "container components"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "container components" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300197197>,
+        <http://vocab.getty.edu/aat/300241583> ;
+    la:equivalent <http://www.wikidata.org/entity/Q63250353> .
+
+<http://vocab.getty.edu/aat/300203437> a crm:E55_Type ;
+    rdfs:label "closures (container components)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "closures (container components)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300197199> ;
+    la:equivalent <http://www.wikidata.org/entity/Q5135523> .
+
+<http://vocab.getty.edu/aat/300206572> a crm:E55_Type ;
+    rdfs:label "combination inorganic/organic animal material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "combination inorganic/organic animal material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300206579> .
+
+<http://vocab.getty.edu/aat/300206579> a crm:E55_Type ;
+    rdfs:label "combination inorganic/organic material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "combination inorganic/organic material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> .
+
+<http://vocab.getty.edu/aat/300227872> a crm:E55_Type ;
+    rdfs:label "pile weave (textile)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "pile weave (textile)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300231565> ;
+    la:equivalent <http://www.wikidata.org/entity/Q7193857> .
+
+<http://vocab.getty.edu/aat/300227932> a crm:E55_Type ;
+    rdfs:label "warp pile weave"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "warp pile weave" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300227872> ;
+    la:equivalent <http://www.wikidata.org/entity/Q47460105> .
+
+<http://vocab.getty.edu/aat/300235507> a crm:E55_Type ;
+    rdfs:label "ceramic (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "ceramic (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010439> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/cer>,
+        <http://www.wikidata.org/entity/Q45621> .
+
+<http://vocab.getty.edu/aat/300246922> a crm:E55_Type ;
+    rdfs:label "compounds (materials)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "compounds (materials)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://www.wikidata.org/entity/Q181790> .
+
+<http://vocab.getty.edu/aat/300249707> a crm:E55_Type ;
+    rdfs:label "Mandibulata (clade)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "Mandibulata (clade)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300265687> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1633496> .
+
+<http://vocab.getty.edu/aat/300264237> a crm:E55_Type ;
+    rdfs:label "material components"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "material components" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358>,
+        <http://vocab.getty.edu/aat/300241583> .
+
+<http://vocab.getty.edu/aat/300265630> a crm:E55_Type ;
+    rdfs:label "biological components"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "biological components" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300241583> ;
+    la:equivalent <http://www.wikidata.org/entity/Q28845870> .
+
+<http://vocab.getty.edu/aat/300310468> a crm:E55_Type ;
+    rdfs:label "Hexapoda (subphylum)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "Hexapoda (subphylum)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300249707>,
+        <http://vocab.getty.edu/aat/300265687> ;
+    la:equivalent <http://www.wikidata.org/entity/Q105146> .
+
+<http://vocab.getty.edu/aat/300379624> a crm:E55_Type ;
+    rdfs:label "organic compounds"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "organic compounds" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300246922> ;
+    la:equivalent <http://www.wikidata.org/entity/Q174211> .
+
+<http://vocab.getty.edu/aat/300010439> a crm:E55_Type ;
+    rdfs:label "clay"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "clay" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010360> ;
+    la:equivalent <http://id.loc.gov/vocabulary/graphicMaterials/tgm002142>,
+        <http://www.wikidata.org/entity/Q42302> .
+
+<http://vocab.getty.edu/aat/300010904> a crm:E55_Type ;
+    rdfs:label "iron alloy"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "iron alloy" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010900> ;
+    la:equivalent <http://www.wikidata.org/entity/Q907347> .
+
+<http://vocab.getty.edu/aat/300010942> a crm:E55_Type ;
+    rdfs:label "copper alloy"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "copper alloy" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011014> ;
+    la:equivalent <http://www.wikidata.org/entity/Q518350> .
+
+<http://vocab.getty.edu/aat/300011054> a crm:E55_Type ;
+    rdfs:label "precious metal"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "precious metal" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010900> ;
+    la:equivalent <http://www.wikidata.org/entity/Q271449> .
+
+<http://vocab.getty.edu/aat/300011692> a crm:E55_Type ;
+    rdfs:label "rock (inorganic material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "rock (inorganic material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010360> ;
+    la:equivalent <http://www.wikidata.org/entity/Q8063> .
+
+<http://vocab.getty.edu/aat/300014109> a crm:E55_Type ;
+    rdfs:label "paper (fiber product)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "paper (fiber product)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/pap>,
+        <http://www.wikidata.org/entity/Q11472> .
+
+<http://vocab.getty.edu/aat/300014247> a crm:E55_Type ;
+    rdfs:label "cord (fiber product)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "cord (fiber product)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://www.wikidata.org/entity/Q111726451> .
+
+<http://vocab.getty.edu/aat/300185712> a crm:E55_Type ;
+    rdfs:label "object genres (object classifications)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "object genres (object classifications)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q111360549> .
+
+<http://vocab.getty.edu/aat/300191086> a crm:E55_Type ;
+    rdfs:label "visual works (works)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "visual works (works)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q4502142> .
+
+<http://vocab.getty.edu/aat/300265687> a crm:E55_Type ;
+    rdfs:label "Arthropoda (phylum)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "Arthropoda (phylum)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300249395> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1360> .
+
+<http://vocab.getty.edu/aat/300011792> a crm:E55_Type ;
+    rdfs:label "organic material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "organic material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358>,
+        <http://vocab.getty.edu/aat/300265630> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1783121> .
+
+<http://vocab.getty.edu/aat/300014907> a crm:E55_Type ;
+    rdfs:label "coating (material)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "coating (material)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1570182> .
+
+<http://vocab.getty.edu/aat/300192973> a crm:E55_Type ;
+    rdfs:label "keratinous material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "keratinous material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300011793> .
+
+<http://vocab.getty.edu/aat/300241583> a crm:E55_Type ;
+    rdfs:label "components (objects parts)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "components (objects parts)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300241507> ;
+    la:equivalent <http://www.wikidata.org/entity/Q1310239> .
+
+<http://vocab.getty.edu/aat/300265629> a crm:E55_Type ;
+    rdfs:label "biological material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "biological material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://www.wikidata.org/entity/Q28969293> .
+
+<http://vocab.getty.edu/aat/300010360> a crm:E55_Type ;
+    rdfs:label "inorganic material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "inorganic material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> .
+
+<http://vocab.getty.edu/aat/300011793> a crm:E55_Type ;
+    rdfs:label "animal material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "animal material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300265629> ;
+    la:equivalent <http://www.wikidata.org/entity/Q141445883> .
+
+<http://vocab.getty.edu/aat/300124117> a crm:E55_Type ;
+    rdfs:label "plant material"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "plant material" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300265629> ;
+    la:equivalent <http://www.wikidata.org/entity/Q28969364> .
+
+<http://vocab.getty.edu/aat/300231565> a crm:E55_Type ;
+    rdfs:label "textile materials"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "textile materials" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/tex>,
+        <http://www.wikidata.org/entity/Q28823> .
+
+<http://vocab.getty.edu/aat/300010900> a crm:E55_Type ;
+    rdfs:label "metal"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "metal" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010360> ;
+    la:equivalent <http://id.loc.gov/vocabulary/mmaterial/mtl>,
+        <http://www.wikidata.org/entity/Q11426> .
+
+<http://vocab.getty.edu/aat/300011014> a crm:E55_Type ;
+    rdfs:label "nonferrous metal"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "nonferrous metal" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010900> ;
+    la:equivalent <http://www.wikidata.org/entity/Q5679431> .
+
+<http://vocab.getty.edu/aat/300246929> a crm:E55_Type ;
+    rdfs:label "elements (chemical substances)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "elements (chemical substances)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    skos:broader <http://vocab.getty.edu/aat/300010358> ;
+    la:equivalent <http://www.wikidata.org/entity/Q11344> .
+
+<http://vocab.getty.edu/aat/300010358> a crm:E55_Type ;
+    rdfs:label "materials (substances)"@en ;
+    crm:P1_is_identified_by [ a crm:E33_E41_Linguistic_Appellation ;
+            crm:P190_has_symbolic_content "materials (substances)" ;
+            crm:P2_has_type <http://vocab.getty.edu/aat/300404670> ] ;
+    la:equivalent <http://www.wikidata.org/entity/Q214609> .
+
