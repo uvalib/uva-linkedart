@@ -7,6 +7,8 @@ Function: Load CSV files into appropriate SQLite table for the entity normalizat
 import argparse, sqlite3, sys, os, csv, uuid
 import xml.etree.ElementTree as ET
 
+tables = ['cpf', 'genres',  'materials', 'places', 'relators', 'subjects', 'techniques']
+
 DATABASE = 'entities.db'
 
 #create SQLite tables if they don't exist
@@ -34,15 +36,16 @@ def create_tables():
     """  
     try:
         with sqlite3.connect(DATABASE) as conn:
-            cursor = conn.cursor()
-            
-            tables = ['cpf', 'genres', 'relators', 'subjects', 'materials', 'techniques']
+            cursor = conn.cursor()            
             
             #create table if it doesn't exist
             for table in tables:
-                sql = create_other.replace('TABLE_NAME', table)
-                cursor.execute(sql)   
-            cursor.execute(create_places)
+                if table == "places":                    
+                    cursor.execute(create_places)
+                else:
+                    sql = create_other.replace('TABLE_NAME', table)
+                    cursor.execute(sql)   
+            
             conn.commit()
     
     except sqlite3.OperationalError as e:
@@ -84,7 +87,8 @@ def file_valid(filename):
     return os.path.isfile(filename)
         
 def table_valid(table):
-    if table == 'subjects' or table == 'cpf' or table == 'genres' or table == 'places' or table == 'relators' or table == 'materials' or table == 'techniques':
+    
+    if table in tables:
         return True
     else:
         return False
@@ -93,7 +97,7 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="Filename, including directory path and .csv extension")
-    parser.add_argument("-t", "--table", help="Table name to upload into: 'cpf', 'genres', 'relators', 'places', 'subjects', 'materials', 'techniques'")
+    parser.add_argument("-t", "--table", help="Table name to upload into: 'cpf', 'genres', 'materials', 'places', 'relators',  'subjects', 'techniques'")
     args = parser.parse_args()
     
     #validate arguments
