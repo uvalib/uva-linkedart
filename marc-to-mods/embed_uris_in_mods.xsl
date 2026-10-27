@@ -58,6 +58,96 @@
     </xsl:template>
 
     <!-- subjects -->
+    <xsl:template match="mods:subject[not(@authority)]">
+        <xsl:choose>
+            <xsl:when test="$resolver-on = true()">
+                
+                <!-- construct topics in variables so that the authority can be set on the mods:subject -->
+                <xsl:variable name="topics" as="node()">
+                    <topics>
+                        <xsl:for-each select="*">
+                            <xsl:variable name="term" select="normalize-space(.)"/>
+                            <xsl:variable name="api-response" as="node()">
+                                <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/subjects?term=', encode-for-uri($term))))"/>
+                            </xsl:variable>
+                            
+                            <xsl:choose>
+                                <xsl:when test="$api-response//xpf:string[@key = 'type']">                                    
+                                    <xsl:choose>
+                                        <xsl:when test="$api-response//xpf:string[@key = 'type'] = 'PersonalName' or $api-response//xpf:string[@key = 'type'] = 'CorporateName' or $api-response//xpf:string[@key = 'type'] = 'FamilyName'">
+                                            <name type="{lower-case(substring-before($api-response//xpf:string[@key = 'type'], 'Name'))}">
+                                                <xsl:if test="$api-response//xpf:string[@key = 'uri']">
+                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
+                                                    <xsl:if test="$api-response//xpf:string[@key = 'uri' and contains(., 'id.loc.gov')]">
+                                                        <xsl:attribute name="authority">lcnaf</xsl:attribute>
+                                                    </xsl:if>
+                                                </xsl:if>
+                                                <namePart>
+                                                    <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
+                                                </namePart>
+                                            </name>
+                                        </xsl:when>
+                                        <xsl:when test="$api-response//xpf:string[@key = 'type'] = 'Geographic'">
+                                            <geographic>
+                                                <xsl:if test="$api-response//xpf:string[@key = 'uri']">
+                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
+                                                    <xsl:if test="$api-response//xpf:string[@key = 'uri' and contains(., 'id.loc.gov')]">
+                                                        <xsl:attribute name="authority">lcnaf</xsl:attribute>
+                                                    </xsl:if>
+                                                </xsl:if>
+                                                
+                                                <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
+                                            </geographic>
+                                        </xsl:when>
+                                        <xsl:when test="$api-response//xpf:string[@key = 'type'] = 'GenreForm'">
+                                            <genre>
+                                                <xsl:if test="$api-response//xpf:string[@key = 'uri']">
+                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>                                                    
+                                                </xsl:if>                                                
+                                                <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
+                                            </genre>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <topic>
+                                                <xsl:if test="$api-response//xpf:string[@key = 'uri']">
+                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>                                                    
+                                                </xsl:if>                                                
+                                                <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
+                                            </topic>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:copy-of select="self::node()"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            
+                            
+                            
+                        </xsl:for-each>
+                    </topics>
+                    
+                </xsl:variable>
+                
+                <subject>
+                    <xsl:if test="$topics//*[contains(@valueURI, 'id.loc.gov')]">
+                        <xsl:attribute name="authority">lcsh</xsl:attribute>                         
+                    </xsl:if>
+                    
+                    
+                    <xsl:copy-of select="$topics/*"/>
+                </subject>
+                
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates select="@* | node()"/>
+                </xsl:copy>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+    </xsl:template>
+    
     <xsl:template match="mods:subject[@authority = 'lcsh']">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
@@ -125,9 +215,17 @@
                         <xsl:choose>
                             <xsl:when test="not($marcCountry = 'xx')">
                                 <xsl:variable name="term"> 
-                                    <xsl:value-of select="."/>
-                                    <xsl:text>, </xsl:text>
-                                    <xsl:value-of select="$marcCountries//*[skos:notation = $marcCountry]/skos:prefLabel[@xml:lang = 'en']"/>                        
+                                    <xsl:choose>
+                                        <!-- if the term IS a country, then only query the country -->
+                                        <xsl:when test=". = $marcCountries//*[skos:notation = $marcCountry]/skos:prefLabel[@xml:lang = 'en']">
+                                            <xsl:value-of select="."/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="."/>
+                                            <xsl:text>, </xsl:text>
+                                            <xsl:value-of select="$marcCountries//*[skos:notation = $marcCountry]/skos:prefLabel[@xml:lang = 'en']"/>                        
+                                        </xsl:otherwise>
+                                    </xsl:choose>                      
                                 </xsl:variable>
                                 
                                 <xsl:variable name="api-response" as="node()">

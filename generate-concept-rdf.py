@@ -10,6 +10,10 @@ from rdflib import Graph, URIRef, Literal, Namespace, BNode
 from rdflib.namespace import RDF, XSD, SKOS, RDFS, DCTERMS
 
 DATABASE = 'webapp/entities.db'
+WIKIDATA_ENDPOINT = "https://qlever.dev/wikidata"
+
+#wikidata: https://query.wikidata.org/sparql
+#qlever: https://qlever.dev/wikidata
 
 entities = {}
 
@@ -106,7 +110,7 @@ def process_rows(table, rows):
     if table == 'places' or table == 'subjects':
         for uri, metadata in entities.items():
             if "geonames.org" in uri:
-                name = metadata["geo:name"]
+                name = metadata["geo:toponymName"]
                 
                 #countries
                 if "A.PCL" in metadata["geo:fcode"]:
@@ -222,15 +226,21 @@ def process_concept(table, depth, uri, prefLabel):
     entities[uri] = metadata
     time.sleep(1)
     
-    #if there is a broader concept URI in the concept, then iterate through parents if they are not in entities already. Only go 3 levels deep
-    if depth < 3:
-        if "broader" in metadata:
-            #broader is an array to accommodate multiple skos:broader for subject terms
-            for broader in metadata["broader"]:
-                if broader not in entities:
-                    print("Querying broader concept of", uri, ":", broader)
+    #if there is a broader concept URI in the concept, then iterate through parents if they are not in entities already. Only go 3 levels deep for any non-Geonames URI
+    if "broader" in metadata:
+        #broader is an array to accommodate multiple skos:broader for subject terms
+        for broader in metadata["broader"]:
+            if broader not in entities:
+                
+                if "geonames.org" in broader:
+                    print("Querying broader concept of", uri, ":", broader)                    
+                    process_concept(table, depth, broader, prefLabel=None)
                     depth += 1
-                    process_concept(table, depth, broader, prefLabel=None)    
+                else:
+                    if depth < 3:
+                        print("Querying broader concept of", uri, ":", broader)                    
+                        process_concept(table, depth, broader, prefLabel=None)
+                        depth += 1
     
     #look for a Geonames URI in matches and generate the hierarchical structure to integrate LC NAF places with Geonames
     if "matches" in metadata:
@@ -653,7 +663,7 @@ def query_wikidata(uri):
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <https://qlever.dev/api/wikidata> {
+        SERVICE <ENDPOINT> {
           ?entity wdt:P1014 "ID".
           OPTIONAL {?entity wdt:P4953 ?lcgft}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
@@ -664,7 +674,7 @@ def query_wikidata(uri):
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <https://qlever.dev/api/wikidata> {
+        SERVICE <ENDPOINT> {
           ?entity wdt:P4953 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
@@ -675,7 +685,7 @@ def query_wikidata(uri):
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <https://qlever.dev/api/wikidata> {
+        SERVICE <ENDPOINT> {
           ?entity wdt:P5160 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P4953 ?lcgft}
@@ -684,9 +694,9 @@ def query_wikidata(uri):
         """
     elif namespace == 'relators':        
         sparql_query = """
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        PREFIX wdt: <ENDPOINT>
         SELECT * WHERE {
-        SERVICE <https://qlever.dev/api/wikidata> {
+        SERVICE <ENDPOINT> {
           ?entity wdt:P4801 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
@@ -697,7 +707,7 @@ def query_wikidata(uri):
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <https://qlever.dev/api/wikidata> {
+        SERVICE <ENDPOINT> {
           ?entity wdt:P244 "ID".
           OPTIONAL {?entity wdt:P214 ?viaf}
           OPTIONAL {?entity wdt:P245 ?ulan}
@@ -719,7 +729,7 @@ def query_wikidata(uri):
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <https://qlever.dev/api/wikidata> {
+        SERVICE <ENDPOINT> {
           ?entity wdt:P1566 "ID".
             OPTIONAL {?entity wdt:P1667 ?tgn}
             OPTIONAL {?entity wdt:P244 ?lcnaf}
@@ -732,7 +742,7 @@ def query_wikidata(uri):
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <https://qlever.dev/api/wikidata> {
+        SERVICE <ENDPOINT> {
           BIND (<ID> as ?entity)
           OPTIONAL {?entity wdt:P214 ?viaf}
           OPTIONAL {?entity wdt:P245 ?ulan}
@@ -754,7 +764,7 @@ def query_wikidata(uri):
         g = Graph()
         wdt = Namespace('http://www.wikidata.org/prop/direct/')
         g.bind('wdt', wdt)
-        results = g.query(sparql_query.replace("ID", id))
+        results = g.query(sparql_query.replace("ID", id).replace("ENDPOINT", WIKIDATA_ENDPOINT))
     except urllib.error.HTTPError as e:
         print(e.reason)
     else:

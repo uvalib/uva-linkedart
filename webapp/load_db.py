@@ -31,7 +31,8 @@ def create_tables():
         uri text,
         countryName text,
         adminName text,
-        fcl text
+        fcl text,
+        type text
     );
     """  
     try:

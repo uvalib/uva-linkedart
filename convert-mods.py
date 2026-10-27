@@ -16,23 +16,24 @@ MODS_SCHEMA = "http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/m
 
 def transform_mods(output: str, dir=None, file=None):
     #if a directory is provided, then combine all MODS files into one MODS file for transformation
-    if dir:
-        path = dir
-        combine_xml_files(dir, output)    
-        
+    if dir:        
+        if os.path.exists(f"mods/{output}.xml"):
+            print(f"Combined file {output}.xml exists already. Proceeding with transformations.")
+        else:            
+            combine_xml_files(dir, output)
     elif file:
         path = file        
     
     print("Embedding URIs in MODS")
     
     #re-transform MODS to embed entity URIs and other minor normalization
-    #cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/embed_uris_in_mods.xsl -s:{path} -o:{path}"
-    #result = subprocess.call(cmd, shell=True, text=True)
+    cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/embed_uris_in_mods.xsl -s:{path} -o:{path}"
+    result = subprocess.call(cmd, shell=True, text=True)
 
     print("Transforming MODS to Linked Art JSON-LD")
     
     #transform to Linked Art JSON-LD and RDF/XML
-    #cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:mods{output}.xml -o:json/{output}.json"
+    #cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:mods/{output}.xml -o:json/{output}.json"
     #result = subprocess.call(cmd, shell=True, text=True)
     
     """
@@ -58,6 +59,7 @@ def combine_xml_files(dir, output):
     ET.indent(combined, space="\t", level=0)
     
     for xml_file in xml_files:
+        #print(f"Adding {xml_file}")
         data = ET.parse(xml_file).getroot()
         
         if data.tag == 'modsCollection':            
@@ -70,18 +72,22 @@ def combine_xml_files(dir, output):
             pid = path.name.replace(".xml", "").replace("_", ":")
             
             recordInfo = data.find("./{http://www.loc.gov/mods/v3}recordInfo")
-            contains_pid = False
             
-            #evaluate whether the PID has already been inserted into the MODS record
-            for recordIdentifier in recordInfo.findall("./{http://www.loc.gov/mods/v3}recordIdentifier"):
-                if recordIdentifier.get("source") == "PID":
-                    contains_pid = True
-            
-            #insert PID into recordInfo subelement
-            if contains_pid == False:
-                ET.SubElement(recordInfo, "recordIdentifier", source="PID").text = pid
-            
-            combined.append(data)
+            if recordInfo is not None:            
+                contains_pid = False
+                
+                #evaluate whether the PID has already been inserted into the MODS record
+                for recordIdentifier in recordInfo.findall("./{http://www.loc.gov/mods/v3}recordIdentifier"):
+                    if recordIdentifier.get("source") == "PID":
+                        contains_pid = True
+                
+                #insert PID into recordInfo subelement
+                if contains_pid == False:
+                    ET.SubElement(recordInfo, "recordIdentifier", source="PID").text = pid
+                
+                combined.append(data)
+            else:
+                print(f"Warning: {xml_file} has no recordInfo")
     
     xml_data = ET.tostring(combined)
     with open(f"mods/{output}.xml", "wb") as f:
