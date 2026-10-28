@@ -207,14 +207,15 @@
             
             <!-- subjects -->
             <xsl:if
-                test="mods:subject[@authority = 'lcsh' and child::*[@valueURI]] or mods:subject[@authority = 'lcsh' and @valueURI][mods:topic] or mods:subject[mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]] or mods:subject[@authority = 'tgn']/descendant::*[@valueURI]">
+                test="mods:subject[child::*[@valueURI]] or mods:subject[@authority = 'lcsh' and @valueURI][mods:topic] or mods:subject[mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]] or mods:subject[@authority = 'tgn']/descendant::*[@valueURI]">
                 
-                <xsl:variable name="subject_property" select="if ($information_object = 'VisualItem') then 'represents' else 'about'"/>
+                <!-- to stay on the safe side all subjects about 'about' a VisualItem or LinguisticObject, rather than try to infer people are depictions 'represents' -->
+                <xsl:variable name="subject_property">about</xsl:variable>
                 
                 <xsl:element name="{$subject_property}">
                     <_array>
                         <!-- a mods:subject with child level URIs will have individually addressable parts -->
-                        <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and child::*[@valueURI]]"/>
+                        <xsl:apply-templates select="mods:subject[child::*[@valueURI]]"/>
                         <!-- subjects that have top-level URIs with a single topic -->
                         <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and @valueURI][mods:topic]"/>
                         <!-- TGN hierarchical geographic: structure like LCSH -->                      
@@ -548,7 +549,7 @@
         </_object>
     </xsl:template>
 
-    <xsl:template match="mods:subject[@authority = 'lcsh' and child::*[@valueURI]]">
+    <xsl:template match="mods:subject[child::*[@valueURI]]">
         <_object>
             <type>Type</type>
             <_label>

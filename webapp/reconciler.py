@@ -28,26 +28,43 @@ def encode_string(string: Union[str, None] = None):
             "string": string}
 
 @app.get("/query/{table}")
-def query_table(table: str, id: Union[str, None] = None, term: Union[str, None] = None):
+def query_table(table: str, id: Union[str, None] = None, term: Union[str, None] = None, title: Union[str, None] = None):
     if id or term:
         output = []
         conn = sqlite3.connect(DATABASE)        
         cur = conn.cursor()
         
-        if id:
-            cur.execute('SELECT id,preferred_label,uri FROM ' + table + ' WHERE id =?', (id,))
-        elif term:
-            cur.execute('SELECT id,preferred_label,uri,type FROM ' + table + ' WHERE term =?', (term,))
-    
-        row = cur.fetchone()
-        if row:
-            object = {"label": row[1]}
-            if row[2]:
-                object["uri"] = row[2]
-            if row[3]:
-                object["type"] = row[3]                
-            output.append(object)
-        conn.close()
+        if table == "collections":
+            if title:
+                cur.execute('SELECT id,title,accnum,uri,physLoc,entity_uri FROM ' + table + ' WHERE title =?', (title))
+                row = cur.fetchone()
+                if row:
+                    object = {"id": row[0], "title": row[1]}
+                    if row[2]:
+                        object["accnum"] = row[2]
+                    if row[3]:
+                        object["uri"] = row[3]               
+                    if row[4]:
+                        object["physLoc"] = row[4]     
+                    if row[5]:
+                        object["entity_uri"] = row[5]             
+                    output.append(object)
+                conn.close()
+        else:
+            if id:
+                cur.execute('SELECT id,preferred_label,uri FROM ' + table + ' WHERE id =?', (id,))
+            elif term:
+                cur.execute('SELECT id,preferred_label,uri,type FROM ' + table + ' WHERE term =?', (term,))
+        
+            row = cur.fetchone()
+            if row:
+                object = {"label": row[1]}
+                if row[2]:
+                    object["uri"] = row[2]
+                if row[3]:
+                    object["type"] = row[3]                
+                output.append(object)
+            conn.close()
         
         return output
     else:

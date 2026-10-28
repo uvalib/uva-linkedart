@@ -21,8 +21,11 @@ def transform_mods(output: str, dir=None, file=None):
             print(f"Combined file {output}.xml exists already. Proceeding with transformations.")
         else:            
             combine_xml_files(dir, output)
+            
+        path = f"mods/{output}.xml"
     elif file:
-        path = file        
+        path = file
+        output = Path(file).stem
     
     print("Embedding URIs in MODS")
     
@@ -33,8 +36,8 @@ def transform_mods(output: str, dir=None, file=None):
     print("Transforming MODS to Linked Art JSON-LD")
     
     #transform to Linked Art JSON-LD and RDF/XML
-    #cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:mods/{output}.xml -o:json/{output}.json"
-    #result = subprocess.call(cmd, shell=True, text=True)
+    cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:{path} -o:json/{output}.json"
+    result = subprocess.call(cmd, shell=True, text=True)
     
     """
     print("Transforming MODS to Linked Art CIDOC-CRM RDF/XML")

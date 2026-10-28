@@ -7,7 +7,7 @@ Function: Load CSV files into appropriate SQLite table for the entity normalizat
 import argparse, sqlite3, sys, os, csv, uuid
 import xml.etree.ElementTree as ET
 
-tables = ['cpf', 'genres',  'materials', 'places', 'relators', 'subjects', 'techniques']
+tables = ['collections', 'cpf', 'genres',  'materials', 'places', 'relators', 'subjects', 'techniques']
 
 DATABASE = 'entities.db'
 
@@ -20,6 +20,16 @@ def create_tables():
         preferred_label text, 
         uri text,
         type text
+    );
+    """
+    create_collections = """
+    CREATE TABLE IF NOT EXISTS TABLE_NAME (
+        id text PRIMARY KEY,
+        title text NOT NULL, 
+        accnum text,
+        uri text,
+        physLoc text,
+        entity_uri text
     );
     """
     
@@ -43,6 +53,8 @@ def create_tables():
             for table in tables:
                 if table == "places":                    
                     cursor.execute(create_places)
+                if table == "collections":
+                    cursor.execute(create_collections)
                 else:
                     sql = create_other.replace('TABLE_NAME', table)
                     cursor.execute(sql)   
@@ -64,6 +76,8 @@ def insert_into_db(table, row):
         
         if table == 'places':
             cursor.execute("INSERT INTO " + table + "(id, term, preferred_label, uri, countryName, adminName, fcl) VALUES(?, ?, ?, ?, ?, ?, ?)", data)
+        elif table == "collections":
+            cursor.execute("INSERT INTO " + table + "(id, title, accnum, uri, physLoc, entity_uri) VALUES(?, ?, ?, ?, ?, ?)", data)
         else:
             cursor.execute("INSERT INTO " + table + "(id, term, preferred_label, uri, type) VALUES(?, ?, ?, ?, ?)", data)
             
@@ -98,7 +112,7 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", help="Filename, including directory path and .csv extension")
-    parser.add_argument("-t", "--table", help="Table name to upload into: 'cpf', 'genres', 'materials', 'places', 'relators',  'subjects', 'techniques'")
+    parser.add_argument("-t", "--table", help="Table name to upload into: 'collections', 'cpf', 'genres', 'materials', 'places', 'relators',  'subjects', 'techniques'")
     args = parser.parse_args()
     
     #validate arguments

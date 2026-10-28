@@ -439,6 +439,7 @@
                 </xsl:when>                                
             </xsl:choose>
             
+            <xsl:apply-templates select="@*"/>
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
