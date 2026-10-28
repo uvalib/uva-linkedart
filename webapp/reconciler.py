@@ -18,7 +18,7 @@ router = APIRouter()
 
 @app.get("/")
 def read_root():
-    return {"API": "Pass 'id' or 'term' request parameter to /query/{table} path for JSON response"}
+    return {"API": "Pass 'id', 'term', or 'title' request parameter to /query/{table} path for JSON response"}
 
 @app.get("/encode")
 def encode_string(string: Union[str, None] = None):
@@ -29,14 +29,14 @@ def encode_string(string: Union[str, None] = None):
 
 @app.get("/query/{table}")
 def query_table(table: str, id: Union[str, None] = None, term: Union[str, None] = None, title: Union[str, None] = None):
-    if id or term:
+    if id or term or title:
         output = []
         conn = sqlite3.connect(DATABASE)        
         cur = conn.cursor()
         
         if table == "collections":
             if title:
-                cur.execute('SELECT id,title,accnum,uri,physLoc,entity_uri FROM ' + table + ' WHERE title =?', (title))
+                cur.execute('SELECT id,title,accnum,uri,physLoc,entity_uri FROM ' + table + ' WHERE title =?', (title,))
                 row = cur.fetchone()
                 if row:
                     object = {"id": row[0], "title": row[1]}
@@ -68,7 +68,7 @@ def query_table(table: str, id: Union[str, None] = None, term: Union[str, None] 
         
         return output
     else:
-        return {"error": "'id' or 'term' parameter undefined"}  
+        return {"error": "'id', 'term', or 'title' parameter undefined"}  
 
 @app.get("/parse")
 def parse_date(date: Union[str, None] = None):

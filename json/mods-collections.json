@@ -1,0 +1,326 @@
+[
+    {
+        "@context": "https://linked.art/ns/v1/linked-art.json",
+        "id": "https://search.lib.virginia.edu/collection/24268a20-7073-30ef-bcf0-56029284c47e",
+        "_label": "University of Virginia Medical Artifacts Collection",
+        "identified_by": [
+            {
+                "type": "Name",
+                "content": "University of Virginia Medical Artifacts Collection",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ],
+        "used_for": [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": "http://id.loc.gov/authorities/names/n2001126740",
+                        "type": "Group",
+                        "_label": "Historical Collections & Services, Claude Moore Health Sciences Library, Charlottesville, Va."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "@context": "https://linked.art/ns/v1/linked-art.json",
+        "id": "https://search.lib.virginia.edu/collection/49975d19-e166-33c4-8f24-b9bf01632b6a",
+        "_label": "Frances Benjamin Johnston Photographs",
+        "identified_by": [
+            {
+                "type": "Name",
+                "content": "Frances Benjamin Johnston Photographs",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ],
+        "used_for": [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": "http://id.loc.gov/authorities/names/no95003741",
+                        "type": "Group",
+                        "_label": "Fiske Kimball Fine Arts Library, University of Virginia Libraries, Charlottesville, Va."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "@context": "https://linked.art/ns/v1/linked-art.json",
+        "id": "https://search.lib.virginia.edu/collection/6b32ad6f-1bfe-3d30-8d04-51acadd9f3dc",
+        "_label": "University of Virginia Printing Services photograph file",
+        "identified_by": [
+            {
+                "type": "Name",
+                "content": "University of Virginia Printing Services photograph file",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            },
+            {
+                "type": "Identifier",
+                "content": "RG-5/7/2.821",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300312355",
+                        "_label": "accession numbers",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ],
+        "used_for": [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": "http://id.loc.gov/authorities/names/nr2002025275",
+                        "type": "Group",
+                        "_label": "Special Collections, University of Virginia Library, Charlottesville, Va."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "@context": "https://linked.art/ns/v1/linked-art.json",
+        "id": "https://search.lib.virginia.edu/collection/c4cac4e2-84ec-32c2-82f6-d371beca3a3e",
+        "_label": "Cecil Lang Collection of Vanity Fair Illustrations",
+        "identified_by": [
+            {
+                "type": "Name",
+                "content": "Cecil Lang Collection of Vanity Fair Illustrations",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            },
+            {
+                "type": "Identifier",
+                "content": "MSS 12175",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300312355",
+                        "_label": "accession numbers",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ],
+        "used_for": [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": "http://id.loc.gov/authorities/names/nr2002025275",
+                        "type": "Group",
+                        "_label": "Special Collections, University of Virginia Library, Charlottesville, Va."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "@context": "https://linked.art/ns/v1/linked-art.json",
+        "id": "https://search.lib.virginia.edu/collection/d6bf6b41-7980-35e5-8881-03f751936e0a",
+        "_label": "Jackson Davis Collection of African American Photographs",
+        "identified_by": [
+            {
+                "type": "Name",
+                "content": "Jackson Davis Collection of African American Photographs",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            },
+            {
+                "type": "Identifier",
+                "content": "MSS 3072, 3072-a",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300312355",
+                        "_label": "accession numbers",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ],
+        "used_for": [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": "http://id.loc.gov/authorities/names/nr2002025275",
+                        "type": "Group",
+                        "_label": "Special Collections, University of Virginia Library, Charlottesville, Va."
+                    }
+                ]
+            }
+        ],
+        "equivalent": [
+            "http://search.lib.virginia.edu/catalog/u2884151"
+        ]
+    },
+    {
+        "@context": "https://linked.art/ns/v1/linked-art.json",
+        "id": "https://search.lib.virginia.edu/collection/eb24c86a-ec01-3226-acb0-983c65b6aa28",
+        "_label": "University of Virginia Visual History Collection",
+        "identified_by": [
+            {
+                "type": "Name",
+                "content": "University of Virginia Visual History Collection",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            },
+            {
+                "type": "Identifier",
+                "content": "RG-30/1/10.011",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300312355",
+                        "_label": "accession numbers",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ],
+        "used_for": [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": "http://id.loc.gov/authorities/names/nr2002025275",
+                        "type": "Group",
+                        "_label": "Special Collections, University of Virginia Library, Charlottesville, Va."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "@context": "https://linked.art/ns/v1/linked-art.json",
+        "id": "https://search.lib.virginia.edu/collection/f646840b-e94f-3c6d-a069-0a996cd37ba7",
+        "_label": "Holsinger Studio Collection",
+        "identified_by": [
+            {
+                "type": "Name",
+                "content": "Holsinger Studio Collection",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            },
+            {
+                "type": "Identifier",
+                "content": "MSS 9862",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300312355",
+                        "_label": "accession numbers",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ],
+        "used_for": [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": "http://id.loc.gov/authorities/names/nr2002025275",
+                        "type": "Group",
+                        "_label": "Special Collections, University of Virginia Library, Charlottesville, Va."
+                    }
+                ]
+            }
+        ]
+    }
+]

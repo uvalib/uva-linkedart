@@ -4,7 +4,7 @@ Date: October 2026
 Function: Generate RDF for concepts connected to Linked Art/CIDOC-CRM objects
 """
 
-import sqlite3, argparse, time, csv, os
+import sqlite3, argparse, time, csv, os, json
 from edtf import parse_edtf, struct_time_to_date
 from rdflib import Graph, URIRef, Literal, Namespace, BNode
 from rdflib.namespace import RDF, XSD, SKOS, RDFS, DCTERMS
@@ -31,6 +31,8 @@ def extract_table(table, id = None):
     if id is not None:
         if table == "places":
             sql = f"SELECT DISTINCT uri, preferred_label FROM {table} WHERE id = \"{id}\""
+        elif table == "collections":
+            sql = f"SELECT DISTINCT id, title, accnum, uri, physLoc, entity_uri FROM {table} WHERE id = \"{id}\""
         else:
             sql = f"SELECT DISTINCT uri, preferred_label, type FROM {table} WHERE id = \"{id}\""
             
@@ -39,21 +41,104 @@ def extract_table(table, id = None):
     else:
         if table == "places":
             sql = f"SELECT DISTINCT uri, preferred_label FROM {table}"
+        elif table == "collections":
+            sql = f"SELECT DISTINCT id, title, accnum, uri, physLoc, entity_uri FROM {table}"
         else:
             sql = f"SELECT DISTINCT uri, preferred_label, type FROM {table}"
         cursor.execute(sql)
         rows = cursor.fetchall()
     
-    process_rows(table, rows)
+    #if generating collections (la:Set), then output simple Linked Art JSON-LD and/or RDF only from metadata stored in the rows
+    if table == "collections":
+        generate_collections_json(rows)
+    else:    
+        process_rows(table, rows)
+        
+        #create concepts for place types linked to Geonames feature codes
+        if table == 'places':
+            print("Generating metadata for geographic feature types")
+            generate_feature_types(place_types)
+        
+        generate_rdf(table, entities, id)
+
+#-----------------
+# GENERATE LINKED ART JSON-LD FOR COLLECTIONS (SETS)
+#-----------------
+def generate_collections_json(rows):
+    output = []
     
-    #create concepts for place types linked to Geonames feature codes
-    if table == 'places':
-        print("Generating metadata for geographic feature types")
-        generate_feature_types(place_types)
+    for row in rows:
+        collection = {"@context": "https://linked.art/ns/v1/linked-art.json", 
+                      "id": "https://search.lib.virginia.edu/collection/" + row[0],
+                      "_label": row[1]}
+        
+        collection["identified_by"] = [
+            {
+                "type": "Name",
+                "content": row[1],
+                "classified_as": [
+                    {   
+                        "id": "http://vocab.getty.edu/aat/300404670",
+                        "_label": "preferred forms",
+                        "type": "Type"
+                    }
+                ]
+            }
+        ]
+        
+        #insert accession number into "identified_by" if applicable
+        if row[2]:
+            accession = {
+                "type": "Identifier",
+                "content": row[2],
+                "classified_as": [
+                    {   
+                        "id": "http://vocab.getty.edu/aat/300312355",
+                        "_label": "accession numbers",
+                        "type": "Type"
+                    }
+                ]
+            }
+            
+            collection["identified_by"].append(accession)
+        
+        #curation activity carried out by Group (library)
+        collection["used_for"] = [
+            {
+                "type": "Activity",
+                "_label": "curation",
+                "classified_as": [
+                    {
+                        "id": "http://vocab.getty.edu/aat/300054277",
+                        "type": "Type",
+                        "_label": "curating"
+                    }
+                ],
+                "carried_out_by": [
+                    {
+                        "id": row[5],
+                        "type": "Group",
+                        "_label": row[4]                        
+                    }
+                ]
+            }
+        ]
+            
+        #Virgo or other URI        
+        if row[3]:
+            collection["equivalent"] = [row[3]]
+     
+        output.append(collection)
+            
+    json_str = json.dumps(output, indent=4)
+    print("Writing json/mods-collections.json")
+    with open("json/mods-collections.json", "w") as f:
+        f.write(json_str)
     
-    generate_rdf(table, entities, id)
-    
+#-----------------
 #process all the rows in the SQLite table into a data dictionary with properties to be mapped into RDF in a subsequent function
+#-----------------
+
 def process_rows(table, rows):
     global entities
     

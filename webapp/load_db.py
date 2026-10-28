@@ -23,7 +23,7 @@ def create_tables():
     );
     """
     create_collections = """
-    CREATE TABLE IF NOT EXISTS TABLE_NAME (
+    CREATE TABLE IF NOT EXISTS collections (
         id text PRIMARY KEY,
         title text NOT NULL, 
         accnum text,
@@ -31,8 +31,7 @@ def create_tables():
         physLoc text,
         entity_uri text
     );
-    """
-    
+    """    
     create_places = """
     CREATE TABLE IF NOT EXISTS places (
         id text PRIMARY KEY,

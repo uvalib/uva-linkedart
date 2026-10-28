@@ -156,10 +156,10 @@
             </xsl:if>
 
             <!-- collection -->
-            <xsl:if test="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of'][mods:location/mods:url]">
+            <xsl:if test="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of']">
                 <member_of>
                     <_array>
-                        <xsl:apply-templates select="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of'][mods:location/mods:url]"/>
+                        <xsl:apply-templates select="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of']"/>
                     </_array>
                 </member_of>
             </xsl:if>
@@ -615,16 +615,33 @@
     </xsl:template>
 
     <!-- la:Set (collection) -->
-    <xsl:template match="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of'][mods:location/mods:url]">
-        <_object>
-            <id>
-                <xsl:value-of select="mods:location/mods:url"/>
-            </id>
-            <type>Set</type>
-            <_label>
-                <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
-            </_label>
-        </_object>
+    <xsl:template match="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of']">
+        
+        <xsl:if test="mods:titleInfo/mods:title">
+            <xsl:variable name="title" select="mods:titleInfo/mods:title"/>
+            
+            <xsl:if test="$resolver-on = true()">
+                <xsl:variable name="api-response" as="node()">
+                    <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/collections?title=', encode-for-uri($title))))"/>
+                </xsl:variable>
+                
+                <xsl:if test="$api-response//xpf:string[@key = 'id']">
+                    
+                    <_object>
+                        <id>
+                            <!-- generate a fake URI just for linking to la:Sets -->
+                            <xsl:value-of select="concat('https://search.lib.virginia.edu/collection/', $api-response//xpf:string[@key = 'id'])"/>
+                        </id>
+                        <type>Set</type>
+                        <_label>
+                            <xsl:value-of select="$title"/>
+                        </_label>
+                    </_object>                    
+                </xsl:if>
+            </xsl:if>
+        </xsl:if>
+        
+        
     </xsl:template>
 
     <xsl:template match="mods:extent" mode="statement">
@@ -958,77 +975,82 @@
         
         <xsl:variable name="pieces" select="tokenize($extent, ' ')"/>
         
-        <xsl:variable name="values" as="node()">
-            <values>
-                <xsl:for-each select="$pieces">
-                    <xsl:if test=". castable as xs:decimal">
-                        <value>
-                            <xsl:value-of select="."/>
-                        </value>
-                    </xsl:if>
-                </xsl:for-each>
-            </values>
-        </xsl:variable>
-        
-        <xsl:if test="count($values/value) &gt; 0">
-            <dimension>
-                <_array>
-                    <xsl:for-each select="$values/value">
-                        <_object>
-                            <type>Dimension</type>
-                            <value><xsl:value-of select="."/></value>
-                            <classified_as>
-                                <_array>
-                                    <_object>
-                                        <type>Type</type>
-                                        <xsl:choose>
-                                            <xsl:when test="position() = 1">
-                                                <id>https://vocab.getty.edu/aat/300055644</id>
-                                                <_label>Height</_label>
-                                            </xsl:when>
-                                            <xsl:when test="position() = 2">
-                                                <id>https://vocab.getty.edu/aat/300055647</id>
-                                                <_label>Width</_label>
-                                            </xsl:when>
-                                            <xsl:when test="position() = 3">
-                                                <id>https://vocab.getty.edu/aat/300072633</id>
-                                                <_label>Depth</_label>
-                                            </xsl:when>
-                                        </xsl:choose>
-                                    </_object>
-                                </_array>
-                            </classified_as>
-                            
-                            <xsl:if test="contains($extent, 'in') or contains($extent, 'cm') or contains($extent, 'centimeter') or contains($extent, 'mm') or contains($extent, 'millimeter') or contains($extent, 'feet') or contains($extent, 'ft')">
-                                <unit>
-                                    <_object>
-                                        <type>MeasurementUnit</type>
-                                        <xsl:choose>
-                                            <xsl:when test="contains($extent, 'in')">
-                                                <id>https://vocab.getty.edu/aat/300379100</id>
-                                                <_label>inches</_label>
-                                            </xsl:when>
-                                            <xsl:when test="contains($extent, 'feet') or contains($extent, 'ft')">
-                                                <id>https://vocab.getty.edu/aat/300379101</id>
-                                                <_label>feet</_label>
-                                            </xsl:when>
-                                            <xsl:when test="contains($extent, 'mm') or contains($extent, 'millimeter')">
-                                                <id>https://vocab.getty.edu/aat/300379097</id>
-                                                <_label>millimeters</_label>
-                                            </xsl:when>
-                                            <xsl:when test="contains($extent, 'cm') or contains($extent, 'centimeter')">
-                                                <id>https://vocab.getty.edu/aat/300379098</id>
-                                                <_label>centimeters</_label>
-                                            </xsl:when>                                            
-                                        </xsl:choose>
-                                    </_object>
-                                </unit>
-                            </xsl:if>
-                        </_object>
+        <!-- check to see if $pieces[2] is 'x' or 'X' -->        
+        <xsl:if test="$pieces[2] = 'x' or $pieces[2] = 'X'">
+            <xsl:variable name="values" as="node()">
+                <values>
+                    <xsl:for-each select="$pieces">
+                        <xsl:if test=". castable as xs:decimal">
+                            <value>
+                                <xsl:value-of select="."/>
+                            </value>
+                        </xsl:if>
                     </xsl:for-each>
-                </_array>
-            </dimension>
+                </values>
+            </xsl:variable>
+            
+            <xsl:if test="count($values/value) &gt; 0">
+                <dimension>
+                    <_array>
+                        <xsl:for-each select="$values/value">
+                            <_object>
+                                <type>Dimension</type>
+                                <value><xsl:value-of select="."/></value>
+                                <classified_as>
+                                    <_array>
+                                        <_object>
+                                            <type>Type</type>
+                                            <xsl:choose>
+                                                <xsl:when test="position() = 1">
+                                                    <id>https://vocab.getty.edu/aat/300055644</id>
+                                                    <_label>Height</_label>
+                                                </xsl:when>
+                                                <xsl:when test="position() = 2">
+                                                    <id>https://vocab.getty.edu/aat/300055647</id>
+                                                    <_label>Width</_label>
+                                                </xsl:when>
+                                                <xsl:when test="position() = 3">
+                                                    <id>https://vocab.getty.edu/aat/300072633</id>
+                                                    <_label>Depth</_label>
+                                                </xsl:when>
+                                            </xsl:choose>
+                                        </_object>
+                                    </_array>
+                                </classified_as>
+                                
+                                <xsl:if test="contains($extent, 'in') or contains($extent, 'cm') or contains($extent, 'centimeter') or contains($extent, 'mm') or contains($extent, 'millimeter') or contains($extent, 'feet') or contains($extent, 'ft')">
+                                    <unit>
+                                        <_object>
+                                            <type>MeasurementUnit</type>
+                                            <xsl:choose>
+                                                <xsl:when test="contains($extent, 'in')">
+                                                    <id>https://vocab.getty.edu/aat/300379100</id>
+                                                    <_label>inches</_label>
+                                                </xsl:when>
+                                                <xsl:when test="contains($extent, 'feet') or contains($extent, 'ft')">
+                                                    <id>https://vocab.getty.edu/aat/300379101</id>
+                                                    <_label>feet</_label>
+                                                </xsl:when>
+                                                <xsl:when test="contains($extent, 'mm') or contains($extent, 'millimeter')">
+                                                    <id>https://vocab.getty.edu/aat/300379097</id>
+                                                    <_label>millimeters</_label>
+                                                </xsl:when>
+                                                <xsl:when test="contains($extent, 'cm') or contains($extent, 'centimeter')">
+                                                    <id>https://vocab.getty.edu/aat/300379098</id>
+                                                    <_label>centimeters</_label>
+                                                </xsl:when>                                            
+                                            </xsl:choose>
+                                        </_object>
+                                    </unit>
+                                </xsl:if>
+                            </_object>
+                        </xsl:for-each>
+                    </_array>
+                </dimension>
+            </xsl:if>
         </xsl:if>
+        
+        
     </xsl:template>
     
     <xsl:template name="mods2la:typeOfResource">
