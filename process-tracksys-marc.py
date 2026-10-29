@@ -6,28 +6,25 @@ Function: Read CSV file of Sirsi ckeys and PIDs to extract MARC XML records from
     by convert-mods.py to embed concept URIs and tranform into Linked Art JSON-LD and CIDOC-CRM RDF/XML
 """
 
-import csv, re, os, requests, subprocess, math, urllib.parse, time, glob
+import csv, re, os, requests, subprocess, math, urllib.parse, time, glob, argparse
 from xml.etree import ElementTree as ET
 
-SAXON_PATH = "../saxon/SaxonHE12-4J/saxon-he-12.4.jar"
+SAXON_PATH = "../saxon/SaxonHE12-10J/saxon-he-12.10.jar"
 ROWS = 100
 
 #transform MARC XML into MODS from the LC XSLT stylesheet
-def transform_marcxml():
+def transform_marcxml(output):
     
     print("Transforming MARC to MODS")
-    
-    marcfile = "marc.xml"
-    modsfile = "mods.xml"
 
     #convert MARC XML to MODS
-    cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/MARC21slim2MODS3-7.xsl -s:marc/{marcfile} -o:mods/{modsfile}"
+    cmd = f"java -jar {SAXON_PATH} -xsl:marc-to-mods/MARC21slim2MODS3-7.xsl -s:marc/{output}.xml -o:mods/{output}.xml"
     result = subprocess.call(cmd, shell=True, text=True)
     
     print("Transformation complete")
 
 #combine MARC XML files into one file for transformatino
-def combine_xml_files():
+def combine_xml_files(output):
     
     print("Combining MARC batches into single MARC XML file")
     
@@ -47,7 +44,7 @@ def combine_xml_files():
             combined.append(data)
     
     xml_data = ET.tostring(combined)
-    with open("marc/marc.xml", "wb") as f:
+    with open(f"marc/{output}.xml", "wb") as f:
         f.write(xml_data)
 
 def download_marcxml(ckey_param, batch):
@@ -113,7 +110,7 @@ def main():
             page = page + 1
     
     #combine all MARC XML into one file
-    combine_xml_files()
+    combine_xml_files(args.output)
     
     #transform batch of MARC XML into MODS
     transform_marcxml(args.output)

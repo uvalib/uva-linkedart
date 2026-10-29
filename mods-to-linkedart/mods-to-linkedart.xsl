@@ -1158,10 +1158,10 @@
     <xsl:function name="mods2la:generateTitle">
         <xsl:param name="titleInfo"/>
 
-        <xsl:value-of select="$titleInfo/mods:title"/>
+        <xsl:value-of select="normalize-space($titleInfo/mods:title)"/>
         <xsl:if test="$titleInfo/mods:subTitle">
             <xsl:text>: </xsl:text>
-            <xsl:value-of select="$titleInfo/mods:subTitle"/>
+            <xsl:value-of select="normalize-space($titleInfo/mods:subTitle)"/>
         </xsl:if>
     </xsl:function>
 

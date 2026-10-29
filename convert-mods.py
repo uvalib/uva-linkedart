@@ -11,7 +11,7 @@ from pathlib import Path
 from rdflib import Graph, plugin
 from rdflib.serializer import Serializer
 
-SAXON_PATH = "../saxon/SaxonHE12-4J/saxon-he-12.4.jar"
+SAXON_PATH = "../saxon/SaxonHE12-10J/saxon-he-12.10.jar"
 MODS_SCHEMA = "http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
 
 def transform_mods(output: str, dir=None, file=None):
