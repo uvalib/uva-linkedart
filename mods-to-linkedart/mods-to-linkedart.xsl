@@ -207,7 +207,7 @@
             
             <!-- subjects -->
             <xsl:if
-                test="mods:subject[child::*[@valueURI]] or mods:subject[@authority = 'lcsh' and @valueURI][mods:topic] or mods:subject[mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]] or mods:subject[@authority = 'tgn']/descendant::*[@valueURI]">
+                test="mods:subject[child::*[@valueURI]] or mods:subject[@authority = 'lcsh' and @valueURI][mods:topic] or mods:subject[mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]]">
                 
                 <!-- to stay on the safe side all subjects about 'about' a VisualItem or LinguisticObject, rather than try to infer people are depictions 'represents' -->
                 <xsl:variable name="subject_property">about</xsl:variable>
@@ -221,8 +221,8 @@
                         <!-- TGN hierarchical geographic: structure like LCSH -->                      
                         
                         <!-- Geonames subject places -->
-                        <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')]"/>
-                        <xsl:apply-templates select="mods:subject[@authority = 'tgn']/descendant::*[@valueURI]"/>
+                        <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')][last()]"/>
+                        <!--<xsl:apply-templates select="mods:subject[@authority = 'tgn']/descendant::*[@valueURI]"/>-->
                     </_array>
                 </xsl:element>     
                 
@@ -354,7 +354,7 @@
         <_object>
             <type>LinguisticObject</type>
             <content>
-                <xsl:value-of select="."/>
+                <xsl:value-of select="normalize-space(.)"/>
             </content>
             <classified_as>
                 <_array>
@@ -550,36 +550,46 @@
     </xsl:template>
 
     <xsl:template match="mods:subject[child::*[@valueURI]]">
-        <_object>
-            <type>Type</type>
-            <_label>
-                <xsl:for-each select="*">
-                    <xsl:choose>
-                        <xsl:when test="self::mods:name">
-                            <xsl:value-of select="string-join(mods:namePart, ' ')"/>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="normalize-space(.)"/>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                    <xsl:if test="not(position() = last())">
-                        <xsl:text>--</xsl:text>
-                    </xsl:if>
-                </xsl:for-each>
-            </_label>
-            <xsl:if test="*[@valueURI]">
-                <created_by>
-                    <_object>
-                        <type>Creation</type>
-                        <influenced_by>
-                            <_array>
-                                <xsl:apply-templates select="*[@valueURI]" mode="subject"/>
-                            </_array>
-                        </influenced_by>
-                    </_object>
-                </created_by>
-            </xsl:if>
-        </_object>
+        
+        <xsl:choose>
+            <xsl:when test="count(*) = 1">
+                <xsl:apply-templates select="*[@valueURI]" mode="subject"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <_object>
+                    <type>Type</type>
+                    <_label>
+                        <xsl:for-each select="*">
+                            <xsl:choose>
+                                <xsl:when test="self::mods:name">
+                                    <xsl:value-of select="string-join(mods:namePart, ' ')"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="normalize-space(.)"/>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                            <xsl:if test="not(position() = last())">
+                                <xsl:text>--</xsl:text>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </_label>
+                    
+                    <!-- create complex node for more than one topic, otherwise display single URI directly -->
+                    <created_by>
+                        <_object>
+                            <type>Creation</type>
+                            <influenced_by>
+                                <_array>
+                                    <xsl:apply-templates select="*[@valueURI]" mode="subject"/>
+                                </_array>
+                            </influenced_by>
+                        </_object>
+                    </created_by>
+                </_object>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+        
     </xsl:template>
 
     <xsl:template match="*" mode="subject">
@@ -587,7 +597,18 @@
             <id>
                 <xsl:value-of select="@valueURI"/>
             </id>
-            <type>Type</type>
+            <type>
+                <xsl:choose>
+                    <xsl:when test="self::mods:name">
+                        <xsl:choose>
+                            <xsl:when test="@type = 'personal'">Person</xsl:when>
+                            <xsl:otherwise>Group</xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:when test="self::mods:geographic">Place</xsl:when>
+                    <xsl:otherwise>Type</xsl:otherwise>
+                </xsl:choose>
+            </type>
             <_label>
                 <xsl:choose>
                     <xsl:when test="self::mods:name">
@@ -855,7 +876,14 @@
                                     <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
                                         <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
                                         
-                                        <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                        <xsl:choose>
+                                            <xsl:when test="string($roles//role[@marcrelator = $uri]/@property)">
+                                                <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:text>carried_out_by</xsl:text>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:text>carried_out_by</xsl:text>

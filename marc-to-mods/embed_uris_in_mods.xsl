@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns="http://www.loc.gov/mods/v3" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:xpf="http://www.w3.org/2005/xpath-functions" xmlns:mods="http://www.loc.gov/mods/v3"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-    exclude-result-prefixes="#all" version="3.0">
+    xmlns:mods2la="https://linked.art/ns/v1/linked-art.json" xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:xpf="http://www.w3.org/2005/xpath-functions"
+    xmlns:mods="http://www.loc.gov/mods/v3" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#" exclude-result-prefixes="#all" version="3.0">
 
     <xsl:output method="xml" encoding="UTF-8" indent="true"/>
 
@@ -15,7 +15,7 @@
     <xsl:variable name="marcCountries" as="node()">
         <xsl:copy-of select="document('countries.skosrdf.xml')"/>
     </xsl:variable>
-    
+
     <xsl:variable name="roles" as="node()*">
         <xsl:copy-of select="document('../mods-to-linkedart/roles.xml')"/>
     </xsl:variable>
@@ -26,11 +26,14 @@
         </xsl:copy>
     </xsl:template>
 
+    <!-- remove authorityURI; superfluous -->
+    <xsl:template match="@authorityURI"/>
+
     <!-- names -->
     <xsl:template match="mods:name[@type]">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
-                
+
                 <!-- the lookup key as defined in extract-entities.py is nameParts joined by single whitespace -->
                 <xsl:variable name="term" select="string-join(mods:namePart, ' ')"/>
 
@@ -61,7 +64,7 @@
     <xsl:template match="mods:subject[not(@authority)]">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
-                
+
                 <!-- construct topics in variables so that the authority can be set on the mods:subject -->
                 <xsl:variable name="topics" as="node()">
                     <topics>
@@ -70,11 +73,12 @@
                             <xsl:variable name="api-response" as="node()">
                                 <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/subjects?term=', encode-for-uri($term))))"/>
                             </xsl:variable>
-                            
+
                             <xsl:choose>
-                                <xsl:when test="$api-response//xpf:string[@key = 'type']">                                    
+                                <xsl:when test="$api-response//xpf:string[@key = 'type']">
                                     <xsl:choose>
-                                        <xsl:when test="$api-response//xpf:string[@key = 'type'] = 'PersonalName' or $api-response//xpf:string[@key = 'type'] = 'CorporateName' or $api-response//xpf:string[@key = 'type'] = 'FamilyName'">
+                                        <xsl:when
+                                            test="$api-response//xpf:string[@key = 'type'] = 'PersonalName' or $api-response//xpf:string[@key = 'type'] = 'CorporateName' or $api-response//xpf:string[@key = 'type'] = 'FamilyName'">
                                             <name type="{lower-case(substring-before($api-response//xpf:string[@key = 'type'], 'Name'))}">
                                                 <xsl:if test="$api-response//xpf:string[@key = 'uri']">
                                                     <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
@@ -95,23 +99,23 @@
                                                         <xsl:attribute name="authority">lcnaf</xsl:attribute>
                                                     </xsl:if>
                                                 </xsl:if>
-                                                
+
                                                 <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
                                             </geographic>
                                         </xsl:when>
                                         <xsl:when test="$api-response//xpf:string[@key = 'type'] = 'GenreForm'">
                                             <genre>
                                                 <xsl:if test="$api-response//xpf:string[@key = 'uri']">
-                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>                                                    
-                                                </xsl:if>                                                
+                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
+                                                </xsl:if>
                                                 <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
                                             </genre>
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <topic>
                                                 <xsl:if test="$api-response//xpf:string[@key = 'uri']">
-                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>                                                    
-                                                </xsl:if>                                                
+                                                    <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
+                                                </xsl:if>
                                                 <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
                                             </topic>
                                         </xsl:otherwise>
@@ -121,23 +125,23 @@
                                     <xsl:copy-of select="self::node()"/>
                                 </xsl:otherwise>
                             </xsl:choose>
-                            
-                            
-                            
+
+
+
                         </xsl:for-each>
                     </topics>
-                    
+
                 </xsl:variable>
-                
+
                 <subject>
-                    <xsl:if test="$topics//*[contains(@valueURI, 'id.loc.gov')]">
-                        <xsl:attribute name="authority">lcsh</xsl:attribute>                         
+                    <xsl:if test="$topics//*[contains(@valueURI, 'http://id.loc.gov/authorities/subjects')]">
+                        <xsl:attribute name="authority">lcsh</xsl:attribute>
                     </xsl:if>
-                    
-                    
+
+
                     <xsl:copy-of select="$topics/*"/>
                 </subject>
-                
+
             </xsl:when>
             <xsl:otherwise>
                 <xsl:copy>
@@ -145,9 +149,9 @@
                 </xsl:copy>
             </xsl:otherwise>
         </xsl:choose>
-        
+
     </xsl:template>
-    
+
     <xsl:template match="mods:subject[@authority = 'lcsh']">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
@@ -164,36 +168,40 @@
     </xsl:template>
 
     <xsl:template match="*" mode="lcsh">
-        <xsl:variable name="term" select="if (name() = 'name') then string-join(mods:namePart, ' ') else ."/>
-        
+        <xsl:variable name="term" select="
+                if (name() = 'name') then
+                    string-join(mods:namePart, ' ')
+                else
+                    ."/>
+
         <xsl:variable name="api-response" as="node()">
             <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/subjects?term=', encode-for-uri($term))))"/>
         </xsl:variable>
-        
+
         <xsl:choose>
             <xsl:when test="name() = 'name' or name() = 'titleInfo'">
                 <xsl:element name="{name()}">
                     <xsl:apply-templates select="@*[not(name() = 'valueURI')]"/>
-                    
+
                     <xsl:if test="$api-response//xpf:string[@key = 'uri']">
                         <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
                     </xsl:if>
-                    
+
                     <xsl:apply-templates select="*"/>
                 </xsl:element>
             </xsl:when>
-            <xsl:otherwise>                
+            <xsl:otherwise>
                 <xsl:element name="{name()}">
                     <!-- don't insert valueURI into mods:namePart -->
                     <xsl:if test="$api-response//xpf:string[@key = 'uri'] and not(parent::mods:name)">
                         <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
                     </xsl:if>
-                    
+
                     <xsl:value-of select="."/>
                 </xsl:element>
             </xsl:otherwise>
         </xsl:choose>
-        
+
     </xsl:template>
 
     <!-- strip duplicate titles -->
@@ -205,16 +213,16 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="mods:originInfo/mods:place/mods:placeTerm[@type = 'text']">
+    <xsl:template match="mods:originInfo/mods:place/mods:placeTerm[@type = 'text']|mods:relatedItem[@type = 'original']/mods:originInfo/mods:place/mods:placeTerm[@type = 'text']">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
                 <xsl:choose>
                     <xsl:when test="ancestor::mods:originInfo/mods:place/mods:placeTerm[@type = 'code' and @authority = 'marccountry']">
                         <xsl:variable name="marcCountry" select="ancestor::mods:originInfo/mods:place/mods:placeTerm[@type = 'code' and @authority = 'marccountry']"/>
-                        
+
                         <xsl:choose>
                             <xsl:when test="not($marcCountry = 'xx')">
-                                <xsl:variable name="term"> 
+                                <xsl:variable name="term">
                                     <xsl:choose>
                                         <!-- if the term IS a country, then only query the country -->
                                         <xsl:when test=". = $marcCountries//*[skos:notation = $marcCountry]/skos:prefLabel[@xml:lang = 'en']">
@@ -223,21 +231,21 @@
                                         <xsl:otherwise>
                                             <xsl:value-of select="."/>
                                             <xsl:text>, </xsl:text>
-                                            <xsl:value-of select="$marcCountries//*[skos:notation = $marcCountry]/skos:prefLabel[@xml:lang = 'en']"/>                        
+                                            <xsl:value-of select="$marcCountries//*[skos:notation = $marcCountry]/skos:prefLabel[@xml:lang = 'en']"/>
                                         </xsl:otherwise>
-                                    </xsl:choose>                      
+                                    </xsl:choose>
                                 </xsl:variable>
-                                
+
                                 <xsl:variable name="api-response" as="node()">
                                     <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/places?term=', encode-for-uri($term))))"/>
                                 </xsl:variable>
-                                
+
                                 <xsl:element name="{name()}">
                                     <xsl:attribute name="type">text</xsl:attribute>
                                     <xsl:if test="$api-response//xpf:string[@key = 'uri']">
                                         <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
                                     </xsl:if>
-                                    
+
                                     <xsl:value-of select="."/>
                                 </xsl:element>
                             </xsl:when>
@@ -245,11 +253,24 @@
                                 <xsl:copy-of select="self::node()"/>
                             </xsl:otherwise>
                         </xsl:choose>
-                        
-                        
+
+
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:copy-of select="self::node()"/>
+                        <xsl:variable name="term" select="."/>
+                        
+                        <xsl:variable name="api-response" as="node()">
+                            <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/places?term=', encode-for-uri($term))))"/>
+                        </xsl:variable>
+                        
+                        <xsl:element name="{name()}">
+                            <xsl:attribute name="type">text</xsl:attribute>
+                            <xsl:if test="$api-response//xpf:string[@key = 'uri']">
+                                <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
+                            </xsl:if>
+                            
+                            <xsl:value-of select="."/>
+                        </xsl:element>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:when>
@@ -258,23 +279,23 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template match="mods:subject/mods:hierarchicalGeographic">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
                 <xsl:element name="hierarchicalGeographic" namespace="http://www.loc.gov/mods/v3">
-                    
+
                     <xsl:variable name="term">
                         <xsl:choose>
                             <xsl:when test="count(*) &gt; 1">
                                 <xsl:variable name="last" as="node()">
                                     <xsl:copy-of select="*[last()]"/>
                                 </xsl:variable>
-                                
+
                                 <xsl:variable name="pen" as="node()">
                                     <xsl:copy-of select="*[last() - 1]"/>
-                                </xsl:variable>  
-                                
+                                </xsl:variable>
+
                                 <xsl:choose>
                                     <xsl:when test="$last/name() = 'city'">
                                         <xsl:choose>
@@ -287,24 +308,25 @@
                                                 <xsl:value-of select="$last"/>
                                             </xsl:otherwise>
                                         </xsl:choose>
-                                        
+
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:value-of select="."/>
                                     </xsl:otherwise>
                                 </xsl:choose>
-                                
-                                
+
+
                             </xsl:when>
                             <xsl:when test="count(*) = 1">
                                 <xsl:value-of select="child::*/text()"/>
                             </xsl:when>
                         </xsl:choose>
                     </xsl:variable>
-                    
-                    <xsl:copy-of select="*[not(position() = last())]"/>
-                    
-                    <xsl:apply-templates select="*[position() = last()]" mode="geo-hier">
+
+                    <!-- perform lookup on all places, but only the lowest-order place will be exposed in Linked Art -->
+                    <!--<xsl:copy-of select="*[not(position() = last())]"/>-->
+
+                    <xsl:apply-templates select="*" mode="geo-hier">
                         <xsl:with-param name="term" select="$term"/>
                     </xsl:apply-templates>
                 </xsl:element>
@@ -314,7 +336,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template match="mods:subject/mods:geographic">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
@@ -327,30 +349,30 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template match="*" mode="geo-hier">
         <xsl:param name="term"/>
-        
+
         <xsl:variable name="api-response" as="node()">
             <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/places?term=', encode-for-uri($term))))"/>
         </xsl:variable>
-        
-        <xsl:element name="{name()}">                
+
+        <xsl:element name="{name()}">
             <xsl:if test="$api-response//xpf:string[@key = 'uri']">
                 <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
             </xsl:if>
-            
+
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template match="mods:role">
-        
+
         <!-- this will eliminate duplicate roleTerms when both text and code are used -->
         <xsl:choose>
             <xsl:when test="mods:roleTerm[@type = 'code' and @authority = 'marcrelator']">
                 <xsl:variable name="roleTerm" select="mods:roleTerm[@type = 'code' and @authority = 'marcrelator']"/>
-                
+
                 <xsl:element name="role">
                     <xsl:element name="roleTerm">
                         <xsl:attribute name="type">code</xsl:attribute>
@@ -363,12 +385,16 @@
             <xsl:otherwise>
                 <xsl:choose>
                     <xsl:when test="$resolver-on = true()">
-                        <xsl:variable name="term" select="if (mods:roleTerm[@type = 'text']) then mods:roleTerm[@type = 'text'] else mods:roleTerm[1]"/>
-                        
+                        <xsl:variable name="term" select="
+                                if (mods:roleTerm[@type = 'text']) then
+                                    mods:roleTerm[@type = 'text']
+                                else
+                                    mods:roleTerm[1]"/>
+
                         <xsl:variable name="api-response" as="node()">
                             <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/relators?term=', encode-for-uri($term))))"/>
                         </xsl:variable>
-                        
+
                         <xsl:if test="$api-response//xpf:string[@key = 'uri']">
                             <xsl:element name="role">
                                 <xsl:element name="roleTerm">
@@ -387,7 +413,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template match="mods:dateCreated | mods:dateIssued">
         <xsl:element name="{name()}">
             <xsl:choose>
@@ -401,7 +427,7 @@
                 </xsl:otherwise>
             </xsl:choose>
             <xsl:apply-templates select="@*[not(name() = 'encoding')]"/>
-            
+
             <xsl:choose>
                 <xsl:when test="matches(., '^\d+u+$')">
                     <xsl:value-of select="translate(., 'u', 'X')"/>
@@ -409,57 +435,33 @@
                 <xsl:otherwise>
                     <xsl:value-of select="."/>
                 </xsl:otherwise>
-            </xsl:choose>            
+            </xsl:choose>
         </xsl:element>
     </xsl:template>
-    
+
     <xsl:template match="mods:typeOfResource">
         <xsl:element name="typeOfResource">
-            <xsl:choose>
-                <xsl:when test=". = 'text'">
-                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/txt</xsl:attribute>                    
-                </xsl:when>
-                <xsl:when test=". = 'cartographic'">
-                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/cri</xsl:attribute>
-                </xsl:when>
-                <xsl:when test=". = 'notated music'">
-                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/ntm</xsl:attribute>
-                </xsl:when>                
-                <xsl:when test=". = 'still image'">
-                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/sti</xsl:attribute>
-                </xsl:when>
-                <xsl:when test=". = 'moving image'">
-                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/tdi</xsl:attribute>
-                </xsl:when>
-                <xsl:when test=". = 'three dimensional object'">
-                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/tdf</xsl:attribute>
-                </xsl:when>
-                <xsl:when test=". = 'software, multimedia'">
-                    <xsl:attribute name="valueURI">http://id.loc.gov/vocabulary/contentTypes/cop</xsl:attribute>
-                </xsl:when>                                
-            </xsl:choose>
-            
             <xsl:apply-templates select="@*"/>
             <xsl:value-of select="."/>
         </xsl:element>
     </xsl:template>
-    
-    <xsl:template match="mods:genre[@authority]">
+
+    <xsl:template match="mods:genre">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
                 <xsl:variable name="term" select="."/>
-                
+
                 <xsl:variable name="api-response" as="node()">
                     <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/genres?term=', encode-for-uri($term))))"/>
                 </xsl:variable>
-                
+
                 <xsl:choose>
                     <xsl:when test="$api-response//xpf:string[@key = 'uri']">
                         <xsl:element name="{name()}">
                             <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
-                            <xsl:attribute name="authority" select="@authority"/>
+                            <xsl:attribute name="authority" select="mods2la:resolveAuthority($api-response//xpf:string[@key = 'uri'])"/>
                             <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
-                        </xsl:element>                        
+                        </xsl:element>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:copy-of select="self::node()"/>
@@ -471,13 +473,42 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
+    <!-- administrative metadata -->
+    <xsl:template match="mods:recordInfo">
+        <recordInfo>
+            <xsl:apply-templates/>
+
+            <xsl:if test="not(mods:recordChangeDate)">
+                <recordChangeDate encoding="iso8601">
+                    <xsl:value-of select="substring(string(current-date()), 1, 10)"/>
+                </recordChangeDate>
+            </xsl:if>
+        </recordInfo>
+    </xsl:template>
+
+    <xsl:template match="mods:recordChangeDate">
+        <recordChangeDate encoding="iso8601">
+            <xsl:value-of select="substring(string(current-date()), 1, 10)"/>
+        </recordChangeDate>
+    </xsl:template>
+
+    <xsl:template match="mods:recordOrigin">
+        <recordOrigin>
+            <xsl:value-of select="."/>
+            <xsl:text> </xsl:text>
+            <xsl:text>Embedded URIs into MODS to prepare for transformation into Linked Open Data (: </xsl:text>
+            <xsl:value-of select="substring(string(current-date()), 1, 10)"/>
+            <xsl:text>.</xsl:text>
+        </recordOrigin>
+    </xsl:template>
+
     <!-- use the SIRSI ckey to look up the Tracksys API to extract the PID (eliminate need for PID as a param -->
     <xsl:template match="mods:recordIdentifier[@source = 'SIRSI']">
         <xsl:copy-of select="self::node()"/>
-        
+
         <xsl:variable name="ckey" select="normalize-space(.)"/>
-        
+
         <xsl:variable name="api-response" as="node()">
             <node>
                 <xsl:if test="unparsed-text-available(concat('https://tracksys-api-ws-dev.internal.lib.virginia.edu/api/catkey/', encode-for-uri($ckey)))">
@@ -485,13 +516,29 @@
                 </xsl:if>
             </node>
         </xsl:variable>
-        
+
         <xsl:if test="$api-response//xpf:string[@key = 'pid']">
             <xsl:element name="recordIdentifier" namespace="http://www.loc.gov/mods/v3">
                 <xsl:attribute name="source">PID</xsl:attribute>
                 <xsl:value-of select="$api-response//xpf:string[@key = 'pid']"/>
-            </xsl:element>                        
+            </xsl:element>
         </xsl:if>
     </xsl:template>
+
+    <xsl:function name="mods2la:resolveAuthority">
+        <xsl:param name="uri"/>
+
+        <xsl:choose>
+            <xsl:when test="contains($uri, 'geonames.org')">geonames</xsl:when>
+            <xsl:when test="contains($uri, 'vocab.getty.edu/aat/')">aat</xsl:when>
+            <xsl:when test="contains($uri, 'vocab.getty.edu/tgn/')">tgn</xsl:when>
+            <xsl:when test="contains($uri, 'vocab.getty.edu/ulan/')">ulan</xsl:when>
+            <xsl:when test="contains($uri, 'http://id.loc.gov/authorities/names')">lcnaf</xsl:when>
+            <xsl:when test="contains($uri, 'http://id.loc.gov/authorities/subjects')">lcsh</xsl:when>
+            <xsl:when test="contains($uri, 'http://id.loc.gov/authorities/genreForms')">lcgft</xsl:when>
+            <xsl:when test="contains($uri, 'http://id.loc.gov/vocabulary/graphicMaterials')">lctgm</xsl:when>
+            <xsl:when test="contains($uri, 'wikidata.org')">wikidata</xsl:when>
+        </xsl:choose>
+    </xsl:function>
 
 </xsl:stylesheet>

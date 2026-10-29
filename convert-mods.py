@@ -5,7 +5,7 @@ Function: Read a MODS file or directory of MODS files and apply the XSLT transfo
     then transform the enriched MODS into Linked Art JSON-LD and RDF/XML and Turtle
 """
 
-import sys, os, requests, subprocess, math, urllib.parse, time, glob, argparse
+import sys, os, requests, subprocess, math, urllib.parse, time, glob, argparse, json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from rdflib import Graph, plugin
@@ -38,6 +38,11 @@ def transform_mods(output: str, dir=None, file=None):
     #transform to Linked Art JSON-LD and RDF/XML
     cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:{path} -o:json/{output}.json"
     result = subprocess.call(cmd, shell=True, text=True)
+    
+    with open(f"json/{output}.json", "r") as read_file:   
+        obj = json.load(read_file)
+        with open(f"json/{output}.json", "w") as write_file:
+            json.dump(obj, write_file, indent=4)
     
     """
     print("Transforming MODS to Linked Art CIDOC-CRM RDF/XML")
