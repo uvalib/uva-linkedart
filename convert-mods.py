@@ -118,6 +118,8 @@ def main():
             os.makedirs("json")
         if not os.path.isdir("rdf"):
             os.makedirs("rdf")
+        if not os.path.isdir("mods"):
+            os.makedirs("mods")
         
         if args.file:
             if os.path.exists(args.file):
