@@ -375,7 +375,7 @@
 
                 <xsl:element name="role">
                     <xsl:element name="roleTerm">
-                        <xsl:attribute name="type">code</xsl:attribute>
+                        <xsl:attribute name="type">text</xsl:attribute>
                         <xsl:attribute name="authority">marcrelator</xsl:attribute>
                         <xsl:attribute name="valueURI" select="concat('http://id.loc.gov/vocabulary/relators/', $roleTerm)"/>
                         <xsl:value-of select="$roles//role[@marcrelator = concat('http://id.loc.gov/vocabulary/relators/', $roleTerm)]/text()"/>

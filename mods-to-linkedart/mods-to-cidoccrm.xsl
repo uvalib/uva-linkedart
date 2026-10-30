@@ -27,74 +27,87 @@
     </xsl:template>
 
     <xsl:template match="mods:mods">
-        
+
         <xsl:variable name="pid" select="mods:recordInfo/mods:recordIdentifier[@source = 'PID']"/>
-        
+
         <xsl:variable name="typeOfResource">
             <xsl:choose>
                 <xsl:when test="mods:relatedItem[@type = 'original']/mods:typeOfResource">
-                    <xsl:value-of select="mods:relatedItem[@type='original']/mods:typeOfResource"/>
+                    <xsl:value-of select="mods:relatedItem[@type = 'original']/mods:typeOfResource"/>
                 </xsl:when>
                 <xsl:when test="mods:typeOfResource">
                     <xsl:value-of select="mods:typeOfResource"/>
-                </xsl:when>                
+                </xsl:when>
             </xsl:choose>
         </xsl:variable>
-        
+
         <xsl:variable name="information_object">
             <xsl:choose>
                 <xsl:when test="$typeOfResource = 'still image' or $typeOfResource = 'moving image' or $typeOfResource = 'three dimensional object'">crm:E36_Visual_Item</xsl:when>
                 <xsl:otherwise>crm:E33_Linguistic_Object</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        
-        
+
+
         <crm:E22_Human-Made_Object>
             <xsl:attribute name="rdf:about" select="concat('https://search.lib.virginia.edu/sources/images/items/', $pid)"/>
             <rdfs:label>
                 <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
             </rdfs:label>
-            
+
             <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
-            <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:identifier[(@type = 'local' and contains(lower-case(@displayLabel), 'call number')) or@type = 'accession number']" mode="primary-identifier"/>
+            
+            <xsl:apply-templates
+                select="mods:relatedItem[@type = 'original']/mods:identifier[(@type = 'local' and contains(lower-case(@displayLabel), 'call number')) or @type = 'accession number']"
+                mode="primary-identifier"/>
 
             <!-- HMO classification -->
             <xsl:choose>
                 <xsl:when test="mods:relatedItem[@type = 'original']/mods:typeOfResource">
-                    <xsl:apply-templates select="mods:relatedItem[@type='original']/mods:typeOfResource"/>
+                    <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:typeOfResource"/>
                 </xsl:when>
                 <xsl:when test="mods:typeOfResource">
                     <xsl:apply-templates select="mods:typeOfResource"/>
-                </xsl:when>                
+                </xsl:when>
             </xsl:choose>
-            
+
             <xsl:apply-templates select="mods:genre[@authority and @valueURI] | mods:relatedItem[@type = 'original']/mods:genre[@authority and @valueURI]"/>
-            
+
             <!-- HMO "carries" LinguisticObject or "shows" VisualItem -->
-            <xsl:variable name="carrier_property" select="if ($information_object = 'crm:E36_Visual_Item') then 'crm:P65_shows_visual_item' else 'crm:P128_carries'"/>
+            <xsl:variable name="carrier_property" select="
+                    if ($information_object = 'crm:E36_Visual_Item') then
+                        'crm:P65_shows_visual_item'
+                    else
+                        'crm:P128_carries'"/>
 
             <xsl:element name="{$carrier_property}">
                 <xsl:attribute name="rdf:resource" select="concat('https://curio.lib.virginia.edu/view/', $pid)"/>
             </xsl:element>
-            
+
+            <xsl:if test="$information_object = 'crm:E36_Visual_Item'">
+                <xsl:call-template name="mods2la:statements">
+                    <xsl:with-param name="information_object" select="$information_object"/>
+                </xsl:call-template>
+            </xsl:if>
+
             <!-- HMOs that have VisualItems (generally) were created by a Production event -->
             <xsl:if test="$information_object = 'crm:E36_Visual_Item'">
                 <xsl:call-template name="mods2la:creation">
                     <xsl:with-param name="information_object" select="$information_object"/>
                 </xsl:call-template>
-            </xsl:if> 
+            </xsl:if>
 
             <!-- physical description -->
             <!--<xsl:apply-templates select="mods:physicalDescription"/>-->
 
-            
+
 
             <!-- textual statements -->
             <!--<xsl:apply-templates select="mods:abstract"/>
             <xsl:apply-templates select="mods:physicalDescription/mods:extent" mode="statement"/>-->
 
             <!-- collection -->
-            
+
 
             <!--<xsl:if test="string($pid)">
                 <xsl:call-template name="mods2la:images">
@@ -104,7 +117,7 @@
 
         </crm:E22_Human-Made_Object>
         <!-- end of HMO -->
-        
+
         <!-- start of information carrier object -->
         <xsl:element name="{$information_object}">
             <xsl:attribute name="rdf:about" select="concat('https://curio.lib.virginia.edu/view/', $pid)"/>
@@ -112,16 +125,32 @@
                 <xsl:value-of select="concat('Content of ', mods2la:generateTitle(mods:titleInfo))"/>
             </rdfs:label>
             
-            <!-- General subject terms/aboutness, use mods:form conditional -->
+            <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
+            
+            <!-- descriptive statements and physical description applies to LinguisticObject -->
+            <xsl:if test="$information_object = 'crm:E33_Linguistic_Object'">
+                <xsl:call-template name="mods2la:statements">
+                    <xsl:with-param name="information_object" select="$information_object"/>
+                </xsl:call-template>
+            </xsl:if>
+            
+            <!-- LinguisticObjects have a Creation event -->
+            <xsl:if test="$information_object = 'crm:E33_Linguistic_Object'">
+                <xsl:call-template name="mods2la:creation">
+                    <xsl:with-param name="information_object" select="$information_object"/>
+                </xsl:call-template>
+            </xsl:if>
+
+            <!-- General subject terms/aboutness, use mods:form conditional -->            
             <!-- a mods:subject with child level URIs will have individually addressable parts -->
             <xsl:apply-templates select="mods:subject[child::*[@valueURI]]"/>
             <!-- subjects that have top-level URIs with a single topic -->
             <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and @valueURI][mods:topic]"/>
-            <!-- TGN hierarchical geographic: structure like LCSH -->                      
-            
+            <!-- TGN hierarchical geographic: structure like LCSH -->
+
             <!-- Geonames subject places -->
             <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')][last()]"/>
-            
+
             <!-- associate images with IO -->
             <!--<xsl:if test="string($pid)">
                 <xsl:call-template name="mods2la:images">
@@ -129,8 +158,8 @@
                 </xsl:call-template>
             </xsl:if>-->
         </xsl:element>
-        
-        
+
+
         <!-- end of information carrier -->
     </xsl:template>
 
@@ -138,13 +167,13 @@
         <crm:P1_is_identified_by>
             <crm:E33_E41_Linguistic_Appellation>
                 <crm:P190_has_symbolic_content>
-                    <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
+                    <xsl:value-of select="mods2la:generateTitle(self::node())"/>
                 </crm:P190_has_symbolic_content>
                 <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300404670"/>
             </crm:E33_E41_Linguistic_Appellation>
         </crm:P1_is_identified_by>
     </xsl:template>
-    
+
     <xsl:template match="mods:identifier" mode="primary-identifier">
         <crm:P1_is_identified_by>
             <crm:E33_E41_Linguistic_Appellation>
@@ -159,7 +188,7 @@
                         <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300311706"/>
                     </xsl:when>
                 </xsl:choose>
-                
+
             </crm:E33_E41_Linguistic_Appellation>
         </crm:P1_is_identified_by>
     </xsl:template>
@@ -169,16 +198,16 @@
     <xsl:template match="mods:genre[@valueURI]">
         <crm:P2_has_type rdf:resource="{@valueURI}"/>
     </xsl:template>
-    
+
     <xsl:template match="mods:typeOfResource">
         <xsl:variable name="text" select="."/>
-        
+
         <xsl:variable name="resourceType" as="node()">
             <xsl:call-template name="mods2la:typeOfResource">
                 <xsl:with-param name="text" select="$text"/>
             </xsl:call-template>
         </xsl:variable>
-        
+
         <crm:P2_has_type rdf:resource="{$resourceType/@valueURI}"/>
     </xsl:template>
 
@@ -192,12 +221,12 @@
             </crm:E33_Linguistic_Object>
         </crm:P67i_is_referred_to_by>
     </xsl:template>
-    
+
     <xsl:template match="mods:relatedItem[@type = 'original']" mode="production">
         <xsl:param name="event-class"/>
-        
+
         <xsl:apply-templates select="mods:originInfo"/>
-        
+
         <xsl:call-template name="mods2la:creation-contributors">
             <xsl:with-param name="event-class" select="$event-class"/>
         </xsl:call-template>
@@ -329,8 +358,8 @@
                 </crm:P129_is_about>
             </xsl:otherwise>
         </xsl:choose>
-        
-        
+
+
     </xsl:template>
 
     <xsl:template match="*" mode="subject">
@@ -359,30 +388,45 @@
             </crm:E33_Linguistic_Object>
         </crm:P67i_is_referred_to_by>
     </xsl:template>
-    
+
     <!-- CUSTOM TEMPLATES -->
-    <xsl:template name="mods2la:creation">
+    <xsl:template name="mods2la:statements">
         <xsl:param name="information_object"/>
         
+        <xsl:apply-templates select="mods:abstract"/>
+        <xsl:choose>
+            <xsl:when test="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent">
+                <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent" mode="statement"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="mods:physicalDescription/mods:extent" mode="statement"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+    </xsl:template>
+    
+    <xsl:template name="mods2la:creation">
+        <xsl:param name="information_object"/>
+
         <xsl:if test="mods:name or mods:relatedItem[@type = 'original']/mods:name or mods:relatedItem[@type = 'original']/mods:originInfo or mods:originInfo">
             <!-- VisualItems like photographs were produced by a production event, but LinguisticObjects like book texts or maps have a creation event, as a book may have been produced by a different event than the content -->
             <xsl:variable name="event-property" select="
-                if (($information_object) = 'crm:E36_Visual_Item') then
-                'crm:P108i_was_produced_by'
-                else
-                'crm:P94i_was_created_by'"/>
+                    if (($information_object) = 'crm:E36_Visual_Item') then
+                        'crm:P108i_was_produced_by'
+                    else
+                        'crm:P94i_was_created_by'"/>
             <xsl:variable name="event-class" select="
-                if (($information_object) = 'crm:E36_Visual_Item') then
-                'crm:E12_Production'
-                else
-                'crm:E65_Creation'"/>
-            
+                    if (($information_object) = 'crm:E36_Visual_Item') then
+                        'crm:E12_Production'
+                    else
+                        'crm:E65_Creation'"/>
+
             <xsl:element name="{$event-property}">
                 <xsl:element name="{$event-class}">
-                    
+
                     <!-- accommodate differing originInfo, depending on MARC source or manual MODS -->
                     <xsl:choose>
-                        <xsl:when test="mods:relatedItem[@type = 'original']/mods:originInfo or mods:relatedItem[@type = 'original']/mods:name">                            
+                        <xsl:when test="mods:relatedItem[@type = 'original']/mods:originInfo or mods:relatedItem[@type = 'original']/mods:name">
                             <xsl:apply-templates select="mods:relatedItem[@type = 'original']" mode="production">
                                 <xsl:with-param name="event-class" select="$event-class"/>
                             </xsl:apply-templates>
@@ -393,22 +437,22 @@
                             </xsl:apply-templates>
                         </xsl:otherwise>
                     </xsl:choose>
+
+                    <!-- include contributor links if there are not names in the original relatedItem -->
+                    <xsl:if test="mods:name and not(mods:relatedItem[@type = 'original']/mods:name)">
+                        <xsl:call-template name="mods2la:creation-contributors">
+                            <xsl:with-param name="event-class" select="$event-class"/>
+                        </xsl:call-template>
+                    </xsl:if>
                 </xsl:element>
-                
-                <!-- include contributor links if there are not names in the original relatedItem -->
-                <xsl:if test="mods:name and not(mods:relatedItem[@type = 'original']/mods:name)">
-                    <xsl:call-template name="mods2la:creation-contributors">
-                        <xsl:with-param name="event-class" select="$event-class"/>
-                    </xsl:call-template>
-                </xsl:if>
             </xsl:element>
         </xsl:if>
     </xsl:template>
-    
+
     <xsl:template name="mods2la:creation-contributors">
         <xsl:param name="event-class"/>
-        
-        
+
+
         <xsl:variable name="productionHasParts" as="xs:boolean">
             <xsl:choose>
                 <xsl:when test="count(distinct-values(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)) &gt; 1 and count(mods:name) &gt; 1">
@@ -422,7 +466,7 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        
+
         <xsl:choose>
             <xsl:when test="$productionHasParts = true()">
                 <xsl:for-each select="mods:name[@valueURI]">
@@ -431,31 +475,38 @@
                             <xsl:variable name="property">
                                 <xsl:choose>
                                     <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
-                                        <xsl:variable name="uri" select="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
+                                        <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
                                         
-                                        <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                        <xsl:choose>
+                                            <xsl:when test="string($roles//role[@marcrelator = $uri]/@property)">
+                                                <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <xsl:text>carried_out_by</xsl:text>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:text>carried_out_by</xsl:text>
                                     </xsl:otherwise>
                                 </xsl:choose>
                             </xsl:variable>
-                            
+
                             <xsl:element name="crm:{if ($property = 'carried_out_by') then 'P14_carried_out_by' else 'P15_was_influenced_by'}"
                                 namespace="http://www.cidoc-crm.org/cidoc-crm/">
                                 <xsl:attribute name="rdf:resource" select="@valueURI"/>
                             </xsl:element>
-                            
-                            <xsl:for-each select="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
-                                <xsl:variable name="uri" select="@valueURI"/>
-                                
+
+                            <xsl:for-each select="distinct-values(mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)">
+                                <xsl:variable name="uri" select="."/>
+
                                 <crm:P32_used_general_technique>
                                     <xsl:attribute name="rdf:resource" select="
-                                        if ($roles//role[@marcrelator = $uri]/@technique) then
-                                        $roles//role[@marcrelator = $uri]/@technique
-                                        else
-                                        $uri"/>
-                                    
+                                            if ($roles//role[@marcrelator = $uri]/@technique) then
+                                                $roles//role[@marcrelator = $uri]/@technique
+                                            else
+                                                $uri"/>
+
                                 </crm:P32_used_general_technique>
                             </xsl:for-each>
                         </xsl:element>
@@ -467,31 +518,38 @@
                     <xsl:variable name="property">
                         <xsl:choose>
                             <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
-                                <xsl:variable name="uri" select="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
+                                <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
                                 
-                                <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                <xsl:choose>
+                                    <xsl:when test="string($roles//role[@marcrelator = $uri]/@property)">
+                                        <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:text>carried_out_by</xsl:text>
+                                    </xsl:otherwise>
+                                </xsl:choose>
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:text>carried_out_by</xsl:text>
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
-                    
+
                     <xsl:if test="not($property = 'provenance')">
                         <xsl:element name="crm:{if ($property = 'carried_out_by') then 'P14_carried_out_by' else 'P15_was_influenced_by'}"
                             namespace="http://www.cidoc-crm.org/cidoc-crm/">
                             <xsl:attribute name="rdf:resource" select="@valueURI"/>
                         </xsl:element>
-                        
-                        <xsl:for-each select="distinct-values(mods:name/mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)">
+
+                        <xsl:for-each select="distinct-values(mods:role/mods:roleTerm[@authority = 'marcrelator']/@valueURI)">
                             <xsl:variable name="uri" select="."/>
-                            
+
                             <crm:P32_used_general_technique>
                                 <xsl:attribute name="rdf:resource" select="
-                                    if ($roles//role[@marcrelator = $uri]/@technique) then
-                                    $roles//role[@marcrelator = $uri]/@technique
-                                    else
-                                    $uri"/>
+                                        if ($roles//role[@marcrelator = $uri]/@technique) then
+                                            $roles//role[@marcrelator = $uri]/@technique
+                                        else
+                                            $uri"/>
                             </crm:P32_used_general_technique>
                         </xsl:for-each>
                     </xsl:if>
@@ -499,21 +557,21 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <xsl:template name="mods2la:images">
         <xsl:param name="pid"/>
-        
+
         <!-- get exemplar PID IIIF image from API -->
         <xsl:variable name="manifest-uri" select="concat($manifestBaseURL, replace($pid, ':', '-'))"/>
-        
+
         <xsl:variable name="response">
             <xsl:if test="unparsed-text-available($manifest-uri)">
                 <xsl:copy-of select="json-to-xml(unparsed-text($manifest-uri))"/>
             </xsl:if>
         </xsl:variable>
-        
+
         <xsl:variable name="thumbnail-uri" select="$response/xpf:map/xpf:map[@key = 'thumbnail']/xpf:string[@key = '@id']"/>
-        
+
         <crm:P129i_is_subject_of>
             <crm:E33_Linguistic_Object>
                 <la:digitally_carried_by>
@@ -541,13 +599,13 @@
 
     <xsl:template name="mods2la:typeOfResource">
         <xsl:param name="text"/>
-        
+
         <xsl:choose>
             <xsl:when test="$text = 'text'">
                 <type>
                     <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300263751</xsl:attribute>
                     <xsl:text>texts (documents)</xsl:text>
-                </type>                
+                </type>
             </xsl:when>
             <xsl:when test="$text = 'cartographic'">
                 <type>
@@ -595,7 +653,7 @@
                 <type>
                     <xsl:attribute name="valueURI">http://vocab.getty.edu/aat/300028566</xsl:attribute>
                     <xsl:text>software</xsl:text>
-                </type>                
+                </type>
             </xsl:when>
             <xsl:when test="$text = 'mixed material'">
                 <type>
@@ -609,7 +667,7 @@
                 </type>
             </xsl:otherwise>
         </xsl:choose>
-        
+
     </xsl:template>
 
     <!-- FUNCTIONS -->
