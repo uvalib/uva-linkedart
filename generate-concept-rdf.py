@@ -95,6 +95,23 @@ def generate_collections_rdf(rows):
         g.add((name, RDF.type, crm.E33_E41_Linguistic_Appellation))
         g.add((name, crm.P2_has_type, URIRef("http://vocab.getty.edu/aat/300404670")))
         g.add((name, crm.P190_has_symbolic_content, Literal(row[1])))
+        
+        if row[2]:
+            id = BNode()
+            g.add((subject, crm.P1_is_identified_by, id))
+            g.add((id, RDF.type, crm.E42_Identifier))
+            g.add((id, crm.P2_has_type, URIRef("http://vocab.getty.edu/aat/300312355")))
+            g.add((id, crm.P190_has_symbolic_content, Literal(row[2])))
+            
+        activity = BNode()
+        
+        g.add((subject, crm.P16i_was_used_for, activity))
+        g.add((activity, RDF.type, crm.E7_Activity))
+        g.add((activity, crm.P2_has_type, URIRef("http://vocab.getty.edu/aat/300054277"))) #curating
+        g.add((activity, crm.P14_carried_out_by, URIRef(row[5])))
+        
+    #write TTL
+    g.serialize(destination=f"rdf/mods-collections.ttl", format='text/turtle')
 
 def generate_collections_json(rows):
     output = []
