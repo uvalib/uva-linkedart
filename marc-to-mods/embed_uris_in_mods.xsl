@@ -53,16 +53,15 @@
                                 <xsl:apply-templates select="$mods/*">
                                     <xsl:with-param name="pid" select="xpf:string[@key = 'pid']"/>
                                 </xsl:apply-templates>
-                                <identifier type="local" displayLabel="call number">
-                                    <xsl:value-of select="xpf:string[@key = 'call_number']"/>
-                                </identifier>
+                                
+                                <!-- insert the call number if it doesn't exist already -->
+                                <xsl:if test="not($mods//mods:identifier[@displayLabel = 'call number'])">
+                                    <identifier type="local" displayLabel="call number">
+                                        <xsl:value-of select="xpf:string[@key = 'call_number']"/>
+                                    </identifier>
+                                </xsl:if>
                             </mods>
                         </xsl:for-each>
-                        
-                        <!--<xsl:element name="recordIdentifier" namespace="http://www.loc.gov/mods/v3">
-                            <xsl:attribute name="source">PID</xsl:attribute>
-                            <xsl:value-of select="$api-response//xpf:string[@key = 'pid']"/>
-                        </xsl:element>-->
                     </xsl:when>
                     <xsl:otherwise>
                         <mods>

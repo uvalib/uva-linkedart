@@ -182,27 +182,42 @@
                 <xsl:value-of select="$information_object"/>
             </type>
             <_label>
-                <xsl:value-of select="concat('Content of ', mods2la:generateTitle(mods:titleInfo))"/>
+                <xsl:value-of select="concat('Content of ', mods2la:generateTitle(mods:titleInfo[not(@type)][1]))"/>
             </_label>
             
             <identified_by>
                 <_array>
                     <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
                 </_array>
-            </identified_by>
+            </identified_by>            
             
-            <!-- descriptive statements and physical description applies to LinguisticObject -->
             <xsl:if test="$information_object = 'LinguisticObject'">
+                <!-- descriptive statements and physical description applies to LinguisticObject -->
                 <xsl:call-template name="mods2la:statements">
                     <xsl:with-param name="information_object" select="$information_object"/>
                 </xsl:call-template>
-            </xsl:if>
-            
-            <!-- LinguisticObjects have Creation events -->
-            <xsl:if test="$information_object = 'LinguisticObject'">
+                
+                <!-- LinguisticObjects have Creation events -->
                 <xsl:call-template name="mods2la:creation">
                     <xsl:with-param name="information_object" select="$information_object"/>
                 </xsl:call-template>
+                
+                <!-- an LO is part of a larger LO in multi-volume works -->
+                <xsl:if test="mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI']">
+                    <part_of>
+                        <_array>
+                            <_object>
+                                <id>
+                                    <xsl:value-of select="concat('https://search.lib.virginia.edu/sources/images/items/', mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI'])"/>
+                                </id>
+                                <type>LinguisticObject</type>
+                                <_label>
+                                    <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
+                                </_label>
+                            </_object>
+                        </_array>
+                    </part_of>
+                </xsl:if>
             </xsl:if>
             
             <!-- subjects -->

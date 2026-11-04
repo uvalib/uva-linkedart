@@ -138,18 +138,22 @@
 
             <xsl:apply-templates select="mods:titleInfo[not(@type)][1]"/>
 
-            <!-- LinguisticObjects have a Creation event -->
+           
             <xsl:if test="$information_object = 'crm:E33_Linguistic_Object'">
+                <!-- LinguisticObjects have a Creation event -->
                 <xsl:call-template name="mods2la:creation">
                     <xsl:with-param name="information_object" select="$information_object"/>
                 </xsl:call-template>
-            </xsl:if>
-
-            <!-- descriptive statements and physical description applies to LinguisticObject -->
-            <xsl:if test="$information_object = 'crm:E33_Linguistic_Object'">
+                
+                <!-- descriptive statements and physical description applies to LinguisticObject -->
                 <xsl:call-template name="mods2la:statements">
                     <xsl:with-param name="information_object" select="$information_object"/>
                 </xsl:call-template>
+                
+                <!-- an LO is part of a larger LO in multi-volume works -->
+                <xsl:if test="mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI']">
+                    <crm:P106i_forms_part_of rdf:resource="{concat('https://search.lib.virginia.edu/sources/images/items/', mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI'])}"/>
+                </xsl:if>
             </xsl:if>
 
             <!-- General subject terms/aboutness, use mods:form conditional -->
