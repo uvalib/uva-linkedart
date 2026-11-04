@@ -48,17 +48,17 @@
             </xsl:choose>
         </xsl:variable>
 
-
         <crm:E22_Human-Made_Object>
             <xsl:attribute name="rdf:about" select="concat('https://search.lib.virginia.edu/sources/images/items/', $pid)"/>
             <rdfs:label>
-                <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
+                <xsl:value-of select="mods2la:generateTitle(mods:titleInfo[not(@type)][1])"/>
             </rdfs:label>
 
-            <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
-            
+            <!-- tiles and identifiers -->
+            <xsl:apply-templates select="mods:titleInfo[not(@type)][1]"/>
+
             <xsl:apply-templates
-                select="mods:relatedItem[@type = 'original']/mods:identifier[(@type = 'local' and contains(lower-case(@displayLabel), 'call number')) or @type = 'accession number']"
+                select="mods:relatedItem[@type = 'original']/mods:identifier[(@type = 'local' and contains(lower-case(@displayLabel), 'call number')) or @type = 'accession number'] | mods:identifier[@type = 'local' and contains(lower-case(@displayLabel), 'call number')]"
                 mode="primary-identifier"/>
 
             <!-- HMO classification -->
@@ -73,6 +73,10 @@
 
             <xsl:apply-templates select="mods:genre[@authority and @valueURI] | mods:relatedItem[@type = 'original']/mods:genre[@authority and @valueURI]"/>
 
+            <!-- material -->
+            <xsl:apply-templates
+                select="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:form[@type = 'material' and @valueURI] | mods:physicalDescription/mods:form[@type = 'material' and @valueURI]"/>
+
             <!-- HMO "carries" LinguisticObject or "shows" VisualItem -->
             <xsl:variable name="carrier_property" select="
                     if ($information_object = 'crm:E36_Visual_Item') then
@@ -84,12 +88,6 @@
                 <xsl:attribute name="rdf:resource" select="concat('https://curio.lib.virginia.edu/view/', $pid)"/>
             </xsl:element>
 
-            <xsl:if test="$information_object = 'crm:E36_Visual_Item'">
-                <xsl:call-template name="mods2la:statements">
-                    <xsl:with-param name="information_object" select="$information_object"/>
-                </xsl:call-template>
-            </xsl:if>
-
             <!-- HMOs that have VisualItems (generally) were created by a Production event -->
             <xsl:if test="$information_object = 'crm:E36_Visual_Item'">
                 <xsl:call-template name="mods2la:creation">
@@ -97,23 +95,36 @@
                 </xsl:call-template>
             </xsl:if>
 
-            <!-- physical description -->
-            <!--<xsl:apply-templates select="mods:physicalDescription"/>-->
+            <!-- dimensions -->
+            <xsl:if test="mods:physicalDescription/mods:extent or mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent">
+                <xsl:call-template name="mods2la:parse-dimensions">
+                    <xsl:with-param name="extent">
+                        <xsl:choose>
+                            <xsl:when test="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent">
+                                <xsl:value-of select="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="mods:physicalDescription/mods:extent"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:if>
 
-
-
-            <!-- textual statements -->
-            <!--<xsl:apply-templates select="mods:abstract"/>
-            <xsl:apply-templates select="mods:physicalDescription/mods:extent" mode="statement"/>-->
+            <xsl:if test="$information_object = 'crm:E36_Visual_Item'">
+                <xsl:call-template name="mods2la:statements">
+                    <xsl:with-param name="information_object" select="$information_object"/>
+                </xsl:call-template>
+            </xsl:if>
 
             <!-- collection -->
+            <xsl:apply-templates select="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of']"/>
 
-
-            <!--<xsl:if test="string($pid)">
+            <xsl:if test="string($pid)">
                 <xsl:call-template name="mods2la:images">
                     <xsl:with-param name="pid" select="$pid"/>
                 </xsl:call-template>
-            </xsl:if>-->
+            </xsl:if>
 
         </crm:E22_Human-Made_Object>
         <!-- end of HMO -->
@@ -122,18 +133,11 @@
         <xsl:element name="{$information_object}">
             <xsl:attribute name="rdf:about" select="concat('https://curio.lib.virginia.edu/view/', $pid)"/>
             <rdfs:label>
-                <xsl:value-of select="concat('Content of ', mods2la:generateTitle(mods:titleInfo))"/>
+                <xsl:value-of select="concat('Content of ', mods2la:generateTitle(mods:titleInfo[not(@type)][1]))"/>
             </rdfs:label>
-            
-            <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
-            
-            <!-- descriptive statements and physical description applies to LinguisticObject -->
-            <xsl:if test="$information_object = 'crm:E33_Linguistic_Object'">
-                <xsl:call-template name="mods2la:statements">
-                    <xsl:with-param name="information_object" select="$information_object"/>
-                </xsl:call-template>
-            </xsl:if>
-            
+
+            <xsl:apply-templates select="mods:titleInfo[not(@type)][1]"/>
+
             <!-- LinguisticObjects have a Creation event -->
             <xsl:if test="$information_object = 'crm:E33_Linguistic_Object'">
                 <xsl:call-template name="mods2la:creation">
@@ -141,28 +145,35 @@
                 </xsl:call-template>
             </xsl:if>
 
-            <!-- General subject terms/aboutness, use mods:form conditional -->            
+            <!-- descriptive statements and physical description applies to LinguisticObject -->
+            <xsl:if test="$information_object = 'crm:E33_Linguistic_Object'">
+                <xsl:call-template name="mods2la:statements">
+                    <xsl:with-param name="information_object" select="$information_object"/>
+                </xsl:call-template>
+            </xsl:if>
+
+            <!-- General subject terms/aboutness, use mods:form conditional -->
             <!-- a mods:subject with child level URIs will have individually addressable parts -->
             <xsl:apply-templates select="mods:subject[child::*[@valueURI]]"/>
             <!-- subjects that have top-level URIs with a single topic -->
             <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and @valueURI][mods:topic]"/>
-            <!-- TGN hierarchical geographic: structure like LCSH -->
 
             <!-- Geonames subject places -->
             <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')][last()]"/>
 
             <!-- associate images with IO -->
-            <!--<xsl:if test="string($pid)">
+            <xsl:if test="string($pid)">
                 <xsl:call-template name="mods2la:images">
                     <xsl:with-param name="pid" select="$pid"/>
                 </xsl:call-template>
-            </xsl:if>-->
+            </xsl:if>
         </xsl:element>
-
-
         <!-- end of information carrier -->
     </xsl:template>
 
+    <!-- ****************
+        MODS TEMPLATES
+    *******************-->
     <xsl:template match="mods:titleInfo">
         <crm:P1_is_identified_by>
             <crm:E33_E41_Linguistic_Appellation>
@@ -194,7 +205,7 @@
     </xsl:template>
 
 
-    <!-- classifications -->
+    <!-- CLASSIFICATIONS -->
     <xsl:template match="mods:genre[@valueURI]">
         <crm:P2_has_type rdf:resource="{@valueURI}"/>
     </xsl:template>
@@ -211,17 +222,14 @@
         <crm:P2_has_type rdf:resource="{$resourceType/@valueURI}"/>
     </xsl:template>
 
-    <xsl:template match="mods:abstract">
-        <crm:P67i_is_referred_to_by>
-            <crm:E33_Linguistic_Object>
-                <crm:P190_has_symbolic_content>
-                    <xsl:value-of select="normalize-space(.)"/>
-                </crm:P190_has_symbolic_content>
-                <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300435416"/>
-            </crm:E33_Linguistic_Object>
-        </crm:P67i_is_referred_to_by>
+    <!-- PHYSICAL DESCRIPTION -->
+    <xsl:template match="mods:physicalDescription"> </xsl:template>
+
+    <xsl:template match="mods:form[@type = 'material' and @valueURI]">
+        <crm:P45_consists_of rdf:resource="{@valueURI}"/>
     </xsl:template>
 
+    <!-- PRODUCTION/CREATION EVENTS -->
     <xsl:template match="mods:relatedItem[@type = 'original']" mode="production">
         <xsl:param name="event-class"/>
 
@@ -232,7 +240,6 @@
         </xsl:call-template>
     </xsl:template>
 
-    <!-- production properties -->
     <xsl:template match="mods:originInfo">
         <xsl:param name="event-class"/>
 
@@ -323,7 +330,7 @@
         <crm:P7_took_place_at rdf:resource="{@valueURI}"/>
     </xsl:template>
 
-    <!-- subjects 'about' -->
+    <!-- SUBJECTS 'ABOUT' VISUALITEM OR LINGUISTICOBJECT -->
     <xsl:template match="mods:subject[child::*[@valueURI]]">
         <xsl:choose>
             <xsl:when test="count(*) = 1">
@@ -358,8 +365,6 @@
                 </crm:P129_is_about>
             </xsl:otherwise>
         </xsl:choose>
-
-
     </xsl:template>
 
     <xsl:template match="*" mode="subject">
@@ -372,12 +377,24 @@
     </xsl:template>
 
     <!-- la:Set (collection) -->
-    <xsl:template match="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of'][mods:location/mods:url]">
-        <la:member_of rdf:resource="{mods:location/mods:url}"/>
+    <xsl:template match="mods:relatedItem[@type = 'host' and lower-case(@displayLabel) = 'part of']">
+        
+        <xsl:if test="mods:titleInfo/mods:title">
+            <xsl:variable name="title" select="mods:titleInfo/mods:title"/>
+            
+            <xsl:if test="$resolver-on = true()">
+                <xsl:variable name="api-response" as="node()">
+                    <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/collections?title=', encode-for-uri($title))))"/>
+                </xsl:variable>
+                
+                <xsl:if test="$api-response//xpf:string[@key = 'id']">                    
+                    <la:member_of rdf:resource="{concat('https://search.lib.virginia.edu/collection/', $api-response//xpf:string[@key = 'id'])}"/>
+                </xsl:if>
+            </xsl:if>
+        </xsl:if>
     </xsl:template>
 
-    <xsl:template match="mods:physicalDescription"> </xsl:template>
-
+    <!-- STATEMENTS -->
     <xsl:template match="mods:extent" mode="statement">
         <crm:P67i_is_referred_to_by>
             <crm:E33_Linguistic_Object>
@@ -389,11 +406,23 @@
         </crm:P67i_is_referred_to_by>
     </xsl:template>
 
+    <xsl:template match="mods:abstract">
+        <crm:P67i_is_referred_to_by>
+            <crm:E33_Linguistic_Object>
+                <crm:P190_has_symbolic_content>
+                    <xsl:value-of select="normalize-space(.)"/>
+                </crm:P190_has_symbolic_content>
+                <crm:P2_has_type rdf:resource="http://vocab.getty.edu/aat/300435416"/>
+            </crm:E33_Linguistic_Object>
+        </crm:P67i_is_referred_to_by>
+    </xsl:template>
+
     <!-- CUSTOM TEMPLATES -->
     <xsl:template name="mods2la:statements">
         <xsl:param name="information_object"/>
-        
+
         <xsl:apply-templates select="mods:abstract"/>
+
         <xsl:choose>
             <xsl:when test="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent">
                 <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:physicalDescription/mods:extent" mode="statement"/>
@@ -402,9 +431,9 @@
                 <xsl:apply-templates select="mods:physicalDescription/mods:extent" mode="statement"/>
             </xsl:otherwise>
         </xsl:choose>
-        
+
     </xsl:template>
-    
+
     <xsl:template name="mods2la:creation">
         <xsl:param name="information_object"/>
 
@@ -476,7 +505,7 @@
                                 <xsl:choose>
                                     <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
                                         <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
-                                        
+
                                         <xsl:choose>
                                             <xsl:when test="string($roles//role[@marcrelator = $uri]/@property)">
                                                 <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
@@ -519,7 +548,7 @@
                         <xsl:choose>
                             <xsl:when test="mods:role/mods:roleTerm[@authority = 'marcrelator' and @valueURI]">
                                 <xsl:variable name="uri" select="mods:role[1]/mods:roleTerm[@authority = 'marcrelator' and @valueURI][1]/@valueURI"/>
-                                
+
                                 <xsl:choose>
                                     <xsl:when test="string($roles//role[@marcrelator = $uri]/@property)">
                                         <xsl:value-of select="$roles//role[@marcrelator = $uri]/@property"/>
@@ -670,15 +699,75 @@
 
     </xsl:template>
 
+    <!-- parse the extent statement to evaluate pieces tokenized by whitespace if they are numeric:
+        if there is at least one numeric value among pieces, then include the dimension property -->
+    <xsl:template name="mods2la:parse-dimensions">
+        <xsl:param name="extent"/>
+
+        <xsl:variable name="pieces" select="tokenize($extent, ' ')"/>
+
+        <!-- check to see if $pieces[2] is 'x' or 'X' -->
+        <xsl:if test="$pieces[2] = 'x' or $pieces[2] = 'X'">
+            <xsl:variable name="values" as="node()">
+                <values>
+                    <xsl:for-each select="$pieces">
+                        <xsl:if test=". castable as xs:decimal">
+                            <value>
+                                <xsl:value-of select="."/>
+                            </value>
+                        </xsl:if>
+                    </xsl:for-each>
+                </values>
+            </xsl:variable>
+
+            <xsl:if test="count($values/value) &gt; 0">
+                <xsl:for-each select="$values/value">
+                    <crm:P43_has_dimension>
+                        <crm:E54_Dimension>
+                            <crm:P90_has_value>
+                                <xsl:value-of select="."/>
+                            </crm:P90_has_value>
+                            <crm:P2_has_type>
+                                <xsl:attribute name="rdf:resource">
+                                    <!-- height, width, depth -->
+                                    <xsl:choose>
+                                        <xsl:when test="position() = 1">http://vocab.getty.edu/aat/300055644</xsl:when>
+                                        <xsl:when test="position() = 2">http://vocab.getty.edu/aat/300055647</xsl:when>
+                                        <xsl:when test="position() = 3">http://vocab.getty.edu/aat/300072633</xsl:when>
+                                    </xsl:choose>
+                                </xsl:attribute>
+                            </crm:P2_has_type>
+                            <xsl:if
+                                test="contains($extent, 'in') or contains($extent, 'cm') or contains($extent, 'centimeter') or contains($extent, 'mm') or contains($extent, 'millimeter') or contains($extent, 'feet') or contains($extent, 'ft')">
+                                <crm:P91_has_unit>
+                                    <xsl:choose>
+                                        <xsl:when test="contains($extent, 'in')">http://vocab.getty.edu/aat/300379100</xsl:when>
+                                        <xsl:when test="contains($extent, 'feet') or contains($extent, 'ft')">http://vocab.getty.edu/aat/300379101</xsl:when>
+                                        <xsl:when test="contains($extent, 'mm') or contains($extent, 'millimeter')">http://vocab.getty.edu/aat/300379097</xsl:when>
+                                        <xsl:when test="contains($extent, 'cm') or contains($extent, 'centimeter')">http://vocab.getty.edu/aat/300379098</xsl:when>
+                                    </xsl:choose>
+                                </crm:P91_has_unit>
+                            </xsl:if>
+                        </crm:E54_Dimension>
+                    </crm:P43_has_dimension>
+                </xsl:for-each>
+            </xsl:if>
+        </xsl:if>
+    </xsl:template>
+    
     <!-- FUNCTIONS -->
     <xsl:function name="mods2la:generateTitle">
         <xsl:param name="titleInfo"/>
-
-        <xsl:value-of select="normalize-space($titleInfo/mods:title)"/>
-        <xsl:if test="$titleInfo/mods:subTitle">
-            <xsl:text>: </xsl:text>
-            <xsl:value-of select="normalize-space($titleInfo/mods:subTitle)"/>
-        </xsl:if>
+        
+        <xsl:variable name="title">
+            <xsl:value-of select="normalize-space($titleInfo/mods:title)"/>
+            <xsl:if test="$titleInfo/mods:subTitle">
+                <xsl:text>: </xsl:text>
+                <xsl:value-of select="normalize-space($titleInfo/mods:subTitle)"/>
+            </xsl:if>
+        </xsl:variable>
+        
+        <xsl:value-of select="$title"/>
     </xsl:function>
 
 </xsl:stylesheet>

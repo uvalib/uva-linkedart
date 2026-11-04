@@ -9,7 +9,7 @@ Function: Read CSV file of Sirsi ckeys and PIDs to extract MARC XML records from
 import csv, re, os, requests, subprocess, math, urllib.parse, time, glob, argparse
 from xml.etree import ElementTree as ET
 
-SAXON_PATH = "../saxon/SaxonHE12-10J/saxon-he-12.10.jar"
+SAXON_PATH = "../saxon/SaxonHE12-4J/saxon-he-12.4.jar"
 ROWS = 100
 
 #transform MARC XML into MODS from the LC XSLT stylesheet
@@ -70,7 +70,7 @@ def cleanup():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", default="objects", help="Output MODS filename, without .xml extension")
-    parser.add_argument("-i", "--id", help="Process a directory of MODS files")
+    parser.add_argument("-i", "--id", help="Download and transform a single MARC file with a provided ckey")
     args = parser.parse_args()
     
     ckeys = []

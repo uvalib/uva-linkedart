@@ -11,7 +11,7 @@ from pathlib import Path
 from rdflib import Graph, plugin
 from rdflib.serializer import Serializer
 
-SAXON_PATH = "../saxon/SaxonHE12-10J/saxon-he-12.10.jar"
+SAXON_PATH = "../saxon/SaxonHE12-4J/saxon-he-12.4.jar"
 MODS_SCHEMA = "http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/v3/mods-3-6.xsd"
 
 def transform_mods(output: str, dir=None, file=None):
@@ -39,22 +39,24 @@ def transform_mods(output: str, dir=None, file=None):
     cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-linkedart.xsl -s:{path} -o:json/{output}.json"
     result = subprocess.call(cmd, shell=True, text=True)
     
-    with open(f"json/{output}.json", "r") as read_file:   
+    with open(f"json/{output}.json", "r", encoding="utf-8") as read_file:   
         obj = json.load(read_file)
-        with open(f"json/{output}.json", "w") as write_file:
+        with open(f"json/{output}.json", "w", encoding="utf-8") as write_file:
             json.dump(obj, write_file, indent=4)
+            
     
-    """
+    
     print("Transforming MODS to Linked Art CIDOC-CRM RDF/XML")
     
-    cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-cidoccrm.xsl -s:mods/{modsfile} -o:rdf/objects.rdf"
+    cmd = f"java -jar {SAXON_PATH} -xsl:mods-to-linkedart/mods-to-cidoccrm.xsl -s:{path} -o:rdf/{output}.rdf"
     result = subprocess.call(cmd, shell=True, text=True)
     
     print("Transforming RDF/XML to TTL")
+    
     graph = Graph()
-    graph.parse("rdf/objects.rdf", format='application/rdf+xml')
-    graph.serialize(destination="rdf/objects.ttl", format='text/turtle')
-    """
+    graph.parse(f"rdf/{output}.rdf", format='application/rdf+xml')
+    graph.serialize(destination=f"rdf/{output}.ttl", format='text/turtle')
+    
 
 def combine_xml_files(dir, output):
     

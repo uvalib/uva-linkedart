@@ -25,6 +25,61 @@
             <xsl:apply-templates select="@* | node()"/>
         </xsl:copy>
     </xsl:template>
+    
+    <xsl:template match="mods:mods">
+        
+        <!-- if the MODS record is derived from MARC, then look the ckey up in Tracksys to generate one record per PID to accommodate multi-volume works -->
+        <xsl:choose>
+            <xsl:when test="mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI']">
+                <xsl:variable name="ckey" select="normalize-space(mods:recordInfo/mods:recordIdentifier[@source = 'SIRSI'])"/>
+                
+                <xsl:variable name="api-response" as="node()">
+                    <node>
+                        <xsl:if test="unparsed-text-available(concat('https://tracksys-api-ws-dev.internal.lib.virginia.edu/api/catkey/', encode-for-uri($ckey)))">
+                            <xsl:copy-of select="json-to-xml(unparsed-text(concat('https://tracksys-api-ws-dev.internal.lib.virginia.edu/api/catkey/', encode-for-uri($ckey))))"/>
+                        </xsl:if>
+                    </node>
+                </xsl:variable>
+                
+                <xsl:choose>
+                    <xsl:when test="$api-response//xpf:string[@key = 'pid']">
+                        <xsl:variable name="mods" as="node()">
+                            <xsl:copy-of select="self::node()"/>
+                        </xsl:variable>
+                        
+                        
+                        <xsl:for-each select="$api-response//xpf:map">
+                            <mods>
+                                <xsl:apply-templates select="$mods/*">
+                                    <xsl:with-param name="pid" select="xpf:string[@key = 'pid']"/>
+                                </xsl:apply-templates>
+                                <identifier type="local" displayLabel="call number">
+                                    <xsl:value-of select="xpf:string[@key = 'call_number']"/>
+                                </identifier>
+                            </mods>
+                        </xsl:for-each>
+                        
+                        <!--<xsl:element name="recordIdentifier" namespace="http://www.loc.gov/mods/v3">
+                            <xsl:attribute name="source">PID</xsl:attribute>
+                            <xsl:value-of select="$api-response//xpf:string[@key = 'pid']"/>
+                        </xsl:element>-->
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <mods>
+                            <xsl:apply-templates select="@* | node()"/>
+                        </mods>
+                    </xsl:otherwise>
+                </xsl:choose>
+                
+            </xsl:when>
+            <xsl:otherwise>
+                <mods>
+                    <xsl:apply-templates select="@* | node()"/>
+                </mods>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+    </xsl:template>
 
     <!-- remove authorityURI; superfluous -->
     <xsl:template match="@authorityURI"/>
@@ -61,7 +116,7 @@
     </xsl:template>
 
     <!-- subjects -->
-    <xsl:template match="mods:subject[not(@authority)]">
+    <xsl:template match="mods:subject">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
 
@@ -152,7 +207,7 @@
 
     </xsl:template>
 
-    <xsl:template match="mods:subject[@authority = 'lcsh']">
+    <!--<xsl:template match="mods:subject[@authority = 'lcsh']">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
                 <subject authority="lcsh">
@@ -165,7 +220,7 @@
                 </xsl:copy>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
+    </xsl:template>-->
 
     <xsl:template match="*" mode="lcsh">
         <xsl:variable name="term" select="
@@ -279,8 +334,15 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    <xsl:template match="mods:subject[mods:hierarchicalGeographic]">
+        <!-- removing @authority here -->
+        <subject>
+            <xsl:apply-templates select="mods:hierarchicalGeographic"/>
+        </subject>
+    </xsl:template>
 
-    <xsl:template match="mods:subject/mods:hierarchicalGeographic">
+    <xsl:template match="mods:hierarchicalGeographic">
         <xsl:choose>
             <xsl:when test="$resolver-on = true()">
                 <xsl:element name="hierarchicalGeographic" namespace="http://www.loc.gov/mods/v3">
@@ -473,11 +535,49 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    <xsl:template match="mods:form[@type = 'material']">
+        <xsl:choose>
+            <xsl:when test="$resolver-on = true()">
+                <xsl:variable name="term" select="."/>
+                
+                <xsl:variable name="api-response" as="node()">
+                    <xsl:copy-of select="json-to-xml(unparsed-text(concat($resolver-url, 'query/materials?term=', encode-for-uri($term))))"/>
+                </xsl:variable>
+                
+                <xsl:choose>
+                    <xsl:when test="$api-response//xpf:string[@key = 'uri']">
+                        <xsl:element name="{name()}">
+                            <xsl:attribute name="type">material</xsl:attribute>
+                            <xsl:attribute name="valueURI" select="$api-response//xpf:string[@key = 'uri']"/>
+                            <xsl:attribute name="authority" select="mods2la:resolveAuthority($api-response//xpf:string[@key = 'uri'])"/>
+                            <xsl:value-of select="$api-response//xpf:string[@key = 'label']"/>
+                        </xsl:element>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:copy-of select="self::node()"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:copy-of select="self::node()"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
 
     <!-- administrative metadata -->
     <xsl:template match="mods:recordInfo">
+        <xsl:param name="pid"/>
+        
         <recordInfo>
             <xsl:apply-templates/>
+            
+            <!-- insert PID if there isn't one already -->
+            <xsl:if test="string($pid) and not(mods:recordIdentifier[@source = 'PID'])">
+                <recordIdentifier source="PID">
+                    <xsl:value-of select="$pid"/>
+                </recordIdentifier>
+            </xsl:if>
 
             <xsl:if test="not(mods:recordChangeDate)">
                 <recordChangeDate encoding="iso8601">
@@ -497,32 +597,10 @@
         <recordOrigin>
             <xsl:value-of select="."/>
             <xsl:text> </xsl:text>
-            <xsl:text>Embedded URIs into MODS to prepare for transformation into Linked Open Data (: </xsl:text>
+            <xsl:text>Embedded URIs into MODS to prepare for transformation into Linked Open Data:</xsl:text>
             <xsl:value-of select="substring(string(current-date()), 1, 10)"/>
             <xsl:text>.</xsl:text>
         </recordOrigin>
-    </xsl:template>
-
-    <!-- use the SIRSI ckey to look up the Tracksys API to extract the PID (eliminate need for PID as a param -->
-    <xsl:template match="mods:recordIdentifier[@source = 'SIRSI']">
-        <xsl:copy-of select="self::node()"/>
-
-        <xsl:variable name="ckey" select="normalize-space(.)"/>
-
-        <xsl:variable name="api-response" as="node()">
-            <node>
-                <xsl:if test="unparsed-text-available(concat('https://tracksys-api-ws-dev.internal.lib.virginia.edu/api/catkey/', encode-for-uri($ckey)))">
-                    <xsl:copy-of select="json-to-xml(unparsed-text(concat('https://tracksys-api-ws-dev.internal.lib.virginia.edu/api/catkey/', encode-for-uri($ckey))))"/>
-                </xsl:if>
-            </node>
-        </xsl:variable>
-
-        <xsl:if test="$api-response//xpf:string[@key = 'pid']">
-            <xsl:element name="recordIdentifier" namespace="http://www.loc.gov/mods/v3">
-                <xsl:attribute name="source">PID</xsl:attribute>
-                <xsl:value-of select="$api-response//xpf:string[@key = 'pid']"/>
-            </xsl:element>
-        </xsl:if>
     </xsl:template>
 
     <xsl:function name="mods2la:resolveAuthority">

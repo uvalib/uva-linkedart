@@ -51,6 +51,7 @@ def extract_table(table, id = None):
     #if generating collections (la:Set), then output simple Linked Art JSON-LD and/or RDF only from metadata stored in the rows
     if table == "collections":
         generate_collections_json(rows)
+        generate_collections_rdf(rows)
     else:    
         process_rows(table, rows)
         
@@ -64,6 +65,37 @@ def extract_table(table, id = None):
 #-----------------
 # GENERATE LINKED ART JSON-LD FOR COLLECTIONS (SETS)
 #-----------------
+def generate_collections_rdf(rows):
+    print("Generating RDF graph")
+    
+    g = Graph()
+    crm = Namespace('http://www.cidoc-crm.org/cidoc-crm/')
+    la = Namespace('https://linked.art/ns/terms/')
+    opengis = Namespace('http://www.opengis.net/ont/geosparql#')
+    
+    g.bind('crm', crm)
+    g.bind('la', la)
+    g.bind("skos", SKOS)
+    g.bind("xsd", XSD)
+    g.bind("rdf", RDF)
+    g.bind("geo", opengis)
+    
+    for row in rows:
+        subject = URIRef("https://search.lib.virginia.edu/collection/" + row[0])
+            
+        type = URIRef(la.Set)
+        
+        g.add((subject, RDF.type, type))
+        g.add((subject, RDFS.label, Literal(row[1], lang="en")))
+            
+        #CIDOC CRM label
+        name = BNode()
+        
+        g.add((subject, crm.P1_is_identified_by, name))
+        g.add((name, RDF.type, crm.E33_E41_Linguistic_Appellation))
+        g.add((name, crm.P2_has_type, URIRef("http://vocab.getty.edu/aat/300404670")))
+        g.add((name, crm.P190_has_symbolic_content, Literal(row[1])))
+
 def generate_collections_json(rows):
     output = []
     

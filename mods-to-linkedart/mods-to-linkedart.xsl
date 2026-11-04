@@ -66,13 +66,13 @@
             </id>
             <type>HumanMadeObject</type>
             <_label>
-                <xsl:value-of select="mods2la:generateTitle(mods:titleInfo)"/>
+                <xsl:value-of select="mods2la:generateTitle(mods:titleInfo[not(@type)][1])"/>
             </_label>
 
             <identified_by>
                 <_array>
-                    <xsl:apply-templates select="mods:titleInfo[not(@type)]"/>
-                    <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:identifier[(@type = 'local' and contains(lower-case(@displayLabel), 'call number')) or@type = 'accession number']" mode="primary-identifier"/>
+                    <xsl:apply-templates select="mods:titleInfo[not(@type)][1]"/>
+                    <xsl:apply-templates select="mods:relatedItem[@type = 'original']/mods:identifier[(@type = 'local' and contains(lower-case(@displayLabel), 'call number')) or@type = 'accession number'] | mods:identifier[@type = 'local' and contains(lower-case(@displayLabel), 'call number')]" mode="primary-identifier"/>
                 </_array>
             </identified_by>
 
@@ -119,7 +119,7 @@
                             <xsl:value-of select="$information_object"/>
                         </type>
                         <_label>
-                            <xsl:value-of select="concat('Content of ', mods2la:generateTitle(mods:titleInfo))"/>
+                            <xsl:value-of select="concat('Content of ', mods2la:generateTitle(mods:titleInfo[not(@type)][1]))"/>
                         </_label>
                     </_object>
                 </_array>
@@ -217,12 +217,10 @@
                         <!-- a mods:subject with child level URIs will have individually addressable parts -->
                         <xsl:apply-templates select="mods:subject[child::*[@valueURI]]"/>
                         <!-- subjects that have top-level URIs with a single topic -->
-                        <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and @valueURI][mods:topic]"/>
-                        <!-- TGN hierarchical geographic: structure like LCSH -->                      
+                        <xsl:apply-templates select="mods:subject[@authority = 'lcsh' and @valueURI][mods:topic]"/>                
                         
                         <!-- Geonames subject places -->
                         <xsl:apply-templates select="mods:subject/mods:hierarchicalGeographic/*[starts-with(@valueURI, 'https://sws.geonames.org/')][last()]"/>
-                        <!--<xsl:apply-templates select="mods:subject[@authority = 'tgn']/descendant::*[@valueURI]"/>-->
                     </_array>
                 </xsl:element>     
                 
@@ -242,7 +240,7 @@
         <_object>
             <type>Name</type>
             <content>
-                <xsl:value-of select="mods2la:generateTitle(.)"/>
+                <xsl:value-of select="mods2la:generateTitle(self::node())"/>
             </content>
             <classified_as>
                 <_array>
@@ -1030,15 +1028,15 @@
                                             <type>Type</type>
                                             <xsl:choose>
                                                 <xsl:when test="position() = 1">
-                                                    <id>https://vocab.getty.edu/aat/300055644</id>
+                                                    <id>http://vocab.getty.edu/aat/300055644</id>
                                                     <_label>Height</_label>
                                                 </xsl:when>
                                                 <xsl:when test="position() = 2">
-                                                    <id>https://vocab.getty.edu/aat/300055647</id>
+                                                    <id>http://vocab.getty.edu/aat/300055647</id>
                                                     <_label>Width</_label>
                                                 </xsl:when>
                                                 <xsl:when test="position() = 3">
-                                                    <id>https://vocab.getty.edu/aat/300072633</id>
+                                                    <id>http://vocab.getty.edu/aat/300072633</id>
                                                     <_label>Depth</_label>
                                                 </xsl:when>
                                             </xsl:choose>
@@ -1052,19 +1050,19 @@
                                             <type>MeasurementUnit</type>
                                             <xsl:choose>
                                                 <xsl:when test="contains($extent, 'in')">
-                                                    <id>https://vocab.getty.edu/aat/300379100</id>
+                                                    <id>http://vocab.getty.edu/aat/300379100</id>
                                                     <_label>inches</_label>
                                                 </xsl:when>
                                                 <xsl:when test="contains($extent, 'feet') or contains($extent, 'ft')">
-                                                    <id>https://vocab.getty.edu/aat/300379101</id>
+                                                    <id>http://vocab.getty.edu/aat/300379101</id>
                                                     <_label>feet</_label>
                                                 </xsl:when>
                                                 <xsl:when test="contains($extent, 'mm') or contains($extent, 'millimeter')">
-                                                    <id>https://vocab.getty.edu/aat/300379097</id>
+                                                    <id>http://vocab.getty.edu/aat/300379097</id>
                                                     <_label>millimeters</_label>
                                                 </xsl:when>
                                                 <xsl:when test="contains($extent, 'cm') or contains($extent, 'centimeter')">
-                                                    <id>https://vocab.getty.edu/aat/300379098</id>
+                                                    <id>http://vocab.getty.edu/aat/300379098</id>
                                                     <_label>centimeters</_label>
                                                 </xsl:when>                                            
                                             </xsl:choose>
@@ -1157,12 +1155,16 @@
     <!-- FUNCTIONS -->
     <xsl:function name="mods2la:generateTitle">
         <xsl:param name="titleInfo"/>
-
-        <xsl:value-of select="normalize-space($titleInfo/mods:title)"/>
-        <xsl:if test="$titleInfo/mods:subTitle">
-            <xsl:text>: </xsl:text>
-            <xsl:value-of select="normalize-space($titleInfo/mods:subTitle)"/>
-        </xsl:if>
+        
+        <xsl:variable name="title">
+            <xsl:value-of select="normalize-space($titleInfo/mods:title)"/>
+            <xsl:if test="$titleInfo/mods:subTitle">
+                <xsl:text>: </xsl:text>
+                <xsl:value-of select="normalize-space($titleInfo/mods:subTitle)"/>
+            </xsl:if>
+        </xsl:variable>
+        
+        <xsl:value-of select="$title"/>
     </xsl:function>
 
 </xsl:stylesheet>
