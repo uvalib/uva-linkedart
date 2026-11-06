@@ -1,16 +1,17 @@
 """
 Author: Ethan Gruber
-Date: October 2026
+Date: November 2026
 Function: Generate RDF for concepts connected to Linked Art/CIDOC-CRM objects
 """
 
-import sqlite3, argparse, time, csv, os, json
+import sqlite3, argparse, time, csv, os, json, requests, subprocess
 from edtf import parse_edtf, struct_time_to_date
 from rdflib import Graph, URIRef, Literal, Namespace, BNode
 from rdflib.namespace import RDF, XSD, SKOS, RDFS, DCTERMS
 
 DATABASE = 'webapp/entities.db'
-WIKIDATA_ENDPOINT = "https://qlever.dev/wikidata"
+WIKIDATA_ENDPOINT = "https://qlever.dev/api/wikidata"
+headers = {"User-Agent": "EntityNormalization/UVALibrary"}
 
 #wikidata: https://query.wikidata.org/sparql
 #qlever: https://qlever.dev/wikidata
@@ -244,7 +245,7 @@ def process_rows(table, rows):
     if table == 'places' or table == 'subjects':
         for uri, metadata in entities.items():
             if "geonames.org" in uri:
-                name = metadata["geo:toponymName"]
+                name = metadata["geo:name"]
                 
                 #countries
                 if "A.PCL" in metadata["geo:fcode"]:
@@ -659,11 +660,17 @@ def query_lc(uri):
     metadata = {}
     broaderConcepts = []
     
-    g = Graph()
-    mads = Namespace('http://www.loc.gov/mads/rdf/v1#')
+    url = uri.replace("http", "https") + ".rdf"
     
-    url = uri + ".rdf"
-    g.parse(url)
+    response = subprocess.check_output(["curl", "-H", f"User-Agent: {headers['User-Agent']}", url])    
+    
+    #response = requests.get(url, headers=headers)
+    #print(response.text)
+    
+    g = Graph()
+    mads = Namespace('http://www.loc.gov/mads/rdf/v1#')    
+    
+    g.parse(data=response, format='application/rdf+xml')
     entity = URIRef(uri)
 
     if ((entity, RDF.type, mads.PersonalName ) in g) == True:
@@ -802,46 +809,42 @@ def query_wikidata(uri):
           OPTIONAL {?entity wdt:P4953 ?lcgft}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
           OPTIONAL {?entity wdt:P4801 ?relators}
-        }}
+        }
         """
     elif namespace == 'lcgft':        
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <ENDPOINT> {
           ?entity wdt:P4953 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
           OPTIONAL {?entity wdt:P244 ?lcsh}
-        }}
+        }
         """
     elif namespace == 'lctgm':        
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <ENDPOINT> {
           ?entity wdt:P5160 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P4953 ?lcgft}
           OPTIONAL {?entity wdt:P244 ?lcsh}
-        }}
+        }
         """
     elif namespace == 'relators':        
         sparql_query = """
         PREFIX wdt: <ENDPOINT>
         SELECT * WHERE {
-        SERVICE <ENDPOINT> {
           ?entity wdt:P4801 "ID".
           OPTIONAL {?entity wdt:P1014 ?aat}
           OPTIONAL {?entity wdt:P5160 ?lctgm}
           OPTIONAL {?entity wdt:P244 ?lcsh}
-        }}
+        }
         """
     elif namespace == 'lcnaf' or namespace == 'lcsh':
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <ENDPOINT> {
           ?entity wdt:P244 "ID".
           OPTIONAL {?entity wdt:P214 ?viaf}
           OPTIONAL {?entity wdt:P245 ?ulan}
@@ -857,26 +860,24 @@ def query_wikidata(uri):
           OPTIONAL {?entity wdt:P570 ?death}
           OPTIONAL {?entity wdt:P571 ?inception}
           OPTIONAL {?entity wdt:P625 ?coords}
-        }}
+        }
         """ 
     elif namespace == 'geonames':
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <ENDPOINT> {
           ?entity wdt:P1566 "ID".
             OPTIONAL {?entity wdt:P1667 ?tgn}
             OPTIONAL {?entity wdt:P244 ?lcnaf}
             OPTIONAL {?entity wdt:P2163 ?fast}
             OPTIONAL {?entity wdt:P10832 ?wcat}
             OPTIONAL {?entity wdt:P648 ?openlibrary}
-        }}
+        }
         """  
     elif namespace == 'wikidata':
         sparql_query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         SELECT * WHERE {
-        SERVICE <ENDPOINT> {
           BIND (<ID> as ?entity)
           OPTIONAL {?entity wdt:P214 ?viaf}
           OPTIONAL {?entity wdt:P245 ?ulan}
@@ -891,150 +892,81 @@ def query_wikidata(uri):
           OPTIONAL {?entity wdt:P569 ?birth}
           OPTIONAL {?entity wdt:P570 ?death}
           OPTIONAL {?entity wdt:P571 ?inception}
-        }}
-        """ 
-     
-    try:
-        g = Graph()
-        wdt = Namespace('http://www.wikidata.org/prop/direct/')
-        g.bind('wdt', wdt)
-        results = g.query(sparql_query.replace("ID", id).replace("ENDPOINT", WIKIDATA_ENDPOINT))
-    except urllib.error.HTTPError as e:
-        print(e.reason)
-    else:
-        if namespace == "aat":
-            for row in results:
-                if str(row.entity) not in matches:                    
-                    matches.append(str(row.entity))
-                if row.lcgft:
-                    exactMatch = "http://id.loc.gov/authorities/genreForms/" + row.lcgft
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.lctgm:
-                    exactMatch = "http://id.loc.gov/vocabulary/graphicMaterials/" + row.lctgm
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.relators:
-                    exactMatch = "http://id.loc.gov/vocabulary/" + row.relators
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-        if namespace == "lcgft":
-            for row in results:
-                if str(row.entity) not in matches:                    
-                    matches.append(str(row.entity))
-                if row.aat:
-                    exactMatch = "http://vocab.getty.edu/aat/" + row.aat
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.lctgm:
-                    exactMatch = "http://id.loc.gov/vocabulary/graphicMaterials/" + row.lctgm
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-        if namespace == "relators":
-            for row in results:
-                if str(row.entity) not in matches:                    
-                    matches.append(str(row.entity))
-                if row.aat:
-                    exactMatch = "http://vocab.getty.edu/aat/" + row.aat
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.lctgm:
-                    exactMatch = "http://id.loc.gov/vocabulary/graphicMaterials/" + row.lctgm
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.lcsh:
-                    exactMatch = "http://id.loc.gov/authorities/subjects/" + row.lcsh
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-        elif namespace == 'lcnaf' or namespace == 'lcsh' or namespace == 'wikidata':
-            for row in results:     
-                # suppress the Wikidata entity URI if it is the same as the URI passed           
-                if str(row.entity) != uri:
-                    matches.append(str(row.entity)) 
-                if row.viaf:
-                    exactMatch = "http://viaf.org/viaf/" + row.viaf
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.ulan:
-                    exactMatch = "http://vocab.getty.edu/ulan/" + row.ulan
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.wcat:
-                    exactMatch = "https://id.oclc.org/worldcat/entity/" + row.wcat
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.openlibrary:
-                    exactMatch = "https://openlibrary.org/works/" + row.openlibrary
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.snac:
-                    exactMatch = "https://snaccooperative.org/ark:/99166/" + row.snac
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.tgn:
-                    exactMatch = "http://vocab.getty.edu/tgn/" + row.tgn
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.geonames:
-                    exactMatch = "https://sws.geonames.org/" + row.geonames + "/"
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.fast:
-                    exactMatch = "http://id.worldcat.org/fast/" + row.fast
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.aat:
-                    exactMatch = "http://vocab.getty.edu/aat/" + row.aat
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                
-                #coordinates for subjects, distinct from places from LCNAF
-                if namespace == 'lcsh':                    
-                    if row.coords:
-                        metadata["wd:coords"] = str(row.coords)
-                                                
-                #other metadata
-                if row.birth:
-                    if "wd:birth" not in metadata:
-                        metadata["wd:birth"] = str(row.birth) 
-                if row.death:
-                    if "wd:death" not in metadata:
-                        metadata["wd:death"] = str(row.death) 
-                if row.inception:
-                    if "wd:inception" not in metadata:
-                        metadata["wd:inception"] = str(row.inception) 
-                if row.sexorgender:
-                    if "wd:sexorgender" not in metadata:
-                        metadata["wd:sexorgender"] = str(row.sexorgender)   
-                        
-        elif namespace == 'geonames':
-            for row in results:
-                if str(row.entity) not in matches:
-                    matches.append(str(row.entity))
-                if row.tgn:
-                    exactMatch = "http://vocab.getty.edu/tgn/" + row.tgn
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.lcnaf:
-                    exactMatch = "http://id.loc.gov/authorities/names/" + row.lcnaf
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.fast:
-                    exactMatch = "http://id.worldcat.org/fast/" + row.fast
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.wcat:
-                    exactMatch = "https://id.oclc.org/worldcat/entity/" + row.wcat
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
-                if row.openlibrary:
-                    exactMatch = "https://openlibrary.org/works/" + row.openlibrary
-                    if exactMatch not in matches:
-                        matches.append(exactMatch)
+        }
+        """      
     
-
+    try:
+        response = requests.get(WIKIDATA_ENDPOINT, params={"query": sparql_query.replace("ID", id)}, headers={"User-Agent": "EntityNormalization/UVALibrary", "Accept": "application/sparql-results+json"})
+    except requests.exceptions.HTTPError as e:
+        print("Error fetching URI. Waiting 5 seconds.")
+        time.sleep(5)
+        query_wikidata(uri)
+    else:
+        
+        obj = json.loads(response.text)
+        
+        results = []
+        if "results" in obj:
+            for row in obj["results"]["bindings"]:
+                for k,v in row.items():
+                    if k == "birth":
+                        if "wd:birth" not in metadata:
+                            metadata["wd:birth"] = v["value"]
+                    elif k == "death":
+                        if "wd:death" not in metadata:
+                            metadata["wd:death"] = v["value"]
+                    elif k == "inception":
+                        if "wd:inception" not in metadata:
+                            metadata["wd:inception"] = v["value"]
+                    elif k == "sexorgender":
+                        if "wd:sexorgender" not in metadata:
+                            metadata["wd:sexorgender"] = v["value"]
+                    elif k == "entity":
+                        exactMatch = v["value"]
+                        if exactMatch != uri:
+                            if exactMatch not in matches:
+                                matches.append(exactMatch)
+                    else:
+                        exactMatch = uri_for_id(k, v["value"])
+                        if exactMatch is not None:
+                            if exactMatch not in matches:
+                                matches.append(exactMatch)
+        
     metadata["matches"] = matches             
     return metadata
+    
+def uri_for_id(namespace, id):
+    
+    match namespace:
+        case "aat":
+            return "http://vocab.getty.edu/tgn/" + id
+        case "tgn":
+            return "http://vocab.getty.edu/tgn/" + id
+        case "ulan":
+            return "http://vocab.getty.edu/ulan/" + id
+        case "lctgm":
+            return "http://id.loc.gov/vocabulary/graphicMaterials/" + id
+        case "lcnaf":
+            return "http://id.loc.gov/authorities/names/" + id
+        case "lcsh":
+            return "http://id.loc.gov/authorities/subjects/" + id
+        case "lcgft":
+            return "http://id.loc.gov/authorities/genreForms/" + id
+        case "relators":
+            return "http://id.loc.gov/vocabulary/" + id
+        case "fast":
+            return "http://id.worldcat.org/fast/" + id
+        case "wcat":
+            return "https://id.oclc.org/worldcat/entity/" + id
+        case "openlibrary":
+            return "https://openlibrary.org/works/" + id
+        case "snac":
+            return "https://snaccooperative.org/ark:/99166/" + id
+        case "viaf":
+            return "http://viaf.org/viaf/" + id
+        case "geonames":
+            return "https://sws.geonames.org/" + id + "/"
+    
 
 def generate_rdf(table, entities, id = None):
     print("Generating RDF graph")
@@ -1181,7 +1113,7 @@ def generate_rdf(table, entities, id = None):
                 
                 #geographic entities use a different property than general types
                 if "geonames" in uri:
-                    g.add((subject, crm.P89_falls_within, object))
+                    g.add((subject, crm.P9_falls_within, object))
                 else:
                     g.add((subject, SKOS.broader, object))
     
@@ -1243,7 +1175,7 @@ def main():
                 reader = csv.DictReader(file)
                 place_types = list(reader)
         
-        if args.id:        
+        if args.id:
             extract_table(table, id = args.id)
         else:
             extract_table(table)
