@@ -4,17 +4,17 @@ Date: November 2026
 Function: Generate RDF for concepts connected to Linked Art/CIDOC-CRM objects
 """
 
-import sqlite3, argparse, time, csv, os, json, requests, subprocess
+import sqlite3, argparse, time, csv, os, json, requests, subprocess, random
 from edtf import parse_edtf, struct_time_to_date
 from rdflib import Graph, URIRef, Literal, Namespace, BNode
 from rdflib.namespace import RDF, XSD, SKOS, RDFS, DCTERMS
 
 DATABASE = 'webapp/entities.db'
-WIKIDATA_ENDPOINT = "https://qlever.dev/api/wikidata"
+WIKIDATA_ENDPOINT = ["https://query.wikidata.org/sparql", "https://qlever.dev/api/wikidata"]
 headers = {"User-Agent": "EntityNormalization/UVALibrary"}
 
 #wikidata: https://query.wikidata.org/sparql
-#qlever: https://qlever.dev/wikidata
+#qlever: https://qlever.dev/api/wikidata
 
 entities = {}
 
@@ -662,15 +662,15 @@ def query_lc(uri):
     
     url = uri.replace("http", "https") + ".rdf"
     
-    response = subprocess.check_output(["curl", "-H", f"User-Agent: {headers['User-Agent']}", url])    
+    #response = subprocess.check_output(["curl", "-H", f"User-Agent: {headers['User-Agent']}", url])    
     
-    #response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers)
     #print(response.text)
     
     g = Graph()
     mads = Namespace('http://www.loc.gov/mads/rdf/v1#')    
     
-    g.parse(data=response, format='application/rdf+xml')
+    g.parse(data=response.text, format='application/rdf+xml')
     entity = URIRef(uri)
 
     if ((entity, RDF.type, mads.PersonalName ) in g) == True:
@@ -794,9 +794,7 @@ def query_wikidata(uri):
             namespace = 'relators'
         elif 'vocab.getty.edu/aat/' in uri:
             namespace = 'aat'
-        
-    print("Querying", id, "in Wikidata")   
-    
+            
     metadata = {}
     matches = []
     
@@ -895,42 +893,57 @@ def query_wikidata(uri):
         }
         """      
     
-    try:
-        response = requests.get(WIKIDATA_ENDPOINT, params={"query": sparql_query.replace("ID", id)}, headers={"User-Agent": "EntityNormalization/UVALibrary", "Accept": "application/sparql-results+json"})
-    except requests.exceptions.HTTPError as e:
-        print("Error fetching URI. Waiting 5 seconds.")
-        time.sleep(5)
-        query_wikidata(uri)
+    
+    index = round(random.uniform(0, 1))
+    endpoint_url = WIKIDATA_ENDPOINT[index]
+    
+    print(f"Querying {uri} in Wikidata ({endpoint_url.split('/')[2]})")   
+    
+    response = requests.get(endpoint_url, params={"query": sparql_query.replace("ID", id)}, 
+                            headers={"User-Agent": "EntityNormalization/UVALibrary", "Accept": "application/sparql-results+json"},
+                            timeout=5)
+    
+    status_code = response.status_code
+    
+    if status_code == 200:
+        try:
+            obj = json.loads(response.text)
+        except:
+            print("Error parsing response. Trying again.")
+            time.sleep(1)
+            query_wikidata(uri)
+        else:
+            results = []
+            if "results" in obj:
+                for row in obj["results"]["bindings"]:
+                    for k,v in row.items():
+                        if k == "birth":
+                            if "wd:birth" not in metadata:
+                                metadata["wd:birth"] = v["value"]
+                        elif k == "death":
+                            if "wd:death" not in metadata:
+                                metadata["wd:death"] = v["value"]
+                        elif k == "inception":
+                            if "wd:inception" not in metadata:
+                                metadata["wd:inception"] = v["value"]
+                        elif k == "sexorgender":
+                            if "wd:sexorgender" not in metadata:
+                                metadata["wd:sexorgender"] = v["value"]
+                        elif k == "entity":
+                            exactMatch = v["value"]
+                            if exactMatch != uri:
+                                if exactMatch not in matches:
+                                    matches.append(exactMatch)
+                        else:
+                            exactMatch = uri_for_id(k, v["value"])
+                            if exactMatch is not None:
+                                if exactMatch not in matches:
+                                    matches.append(exactMatch)
+                                
     else:
-        
-        obj = json.loads(response.text)
-        
-        results = []
-        if "results" in obj:
-            for row in obj["results"]["bindings"]:
-                for k,v in row.items():
-                    if k == "birth":
-                        if "wd:birth" not in metadata:
-                            metadata["wd:birth"] = v["value"]
-                    elif k == "death":
-                        if "wd:death" not in metadata:
-                            metadata["wd:death"] = v["value"]
-                    elif k == "inception":
-                        if "wd:inception" not in metadata:
-                            metadata["wd:inception"] = v["value"]
-                    elif k == "sexorgender":
-                        if "wd:sexorgender" not in metadata:
-                            metadata["wd:sexorgender"] = v["value"]
-                    elif k == "entity":
-                        exactMatch = v["value"]
-                        if exactMatch != uri:
-                            if exactMatch not in matches:
-                                matches.append(exactMatch)
-                    else:
-                        exactMatch = uri_for_id(k, v["value"])
-                        if exactMatch is not None:
-                            if exactMatch not in matches:
-                                matches.append(exactMatch)
+        print("Received non 200 reponse. Trying again.")
+        time.sleep(1)
+        query_wikidata(uri)
         
     metadata["matches"] = matches             
     return metadata
